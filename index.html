@@ -2,32 +2,39 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Gestionnaire de menus en ligne</title>
+  <title>Menus personnels en ligne</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <!-- Firebase v8 SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 </head>
 <body>
   <div class="container">
-    <div id="menu-selection">
-      <h1>Mes menus</h1>
-      <div id="menu-list"></div>
-      <button id="add-menu">➕ Nouveau menu</button>
+    <div id="auth-zone">
+      <button id="login-google">Connexion avec Google</button>
+      <span id="user-info"></span>
     </div>
-    <div id="menu-editor" class="hidden">
-      <button id="back-to-list">← Retour</button>
-      <input type="text" id="menu-title" placeholder="Nom du menu">
-      <label>Bannière :<input type="file" id="banner-upload" accept="image/*"></label>
-      <div id="banner-preview"></div>
-      <label>Logo : <input type="file" id="logo-upload" accept="image/*"></label>
-      <div id="logo-preview"></div>
-      <div id="categories"></div>
-      <button id="add-category">Ajouter une catégorie</button>
-      <div class="publish-actions">
-        <button id="publish-online">Publier en ligne</button>
-        <button id="view-published" class="view-published inactive" disabled>Visualiser le menu publié</button>
+    <div id="main-app" class="hidden">
+      <div id="menu-selection">
+        <h1>Mes menus</h1>
+        <div id="menu-list"></div>
+        <button id="add-menu">➕ Nouveau menu</button>
+      </div>
+      <div id="menu-editor" class="hidden">
+        <button id="back-to-list">← Retour</button>
+        <input type="text" id="menu-title" placeholder="Nom du menu">
+        <label>Bannière :<input type="file" id="banner-upload" accept="image/*"></label>
+        <div id="banner-preview"></div>
+        <label>Logo : <input type="file" id="logo-upload" accept="image/*"></label>
+        <div id="logo-preview"></div>
+        <div id="categories"></div>
+        <button id="add-category">Ajouter une catégorie</button>
+        <div class="publish-actions">
+          <button id="publish-online">Publier en ligne</button>
+          <button id="view-published" class="view-published inactive" disabled>Visualiser le menu publié</button>
+        </div>
       </div>
     </div>
   </div>

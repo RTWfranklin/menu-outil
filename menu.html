@@ -34,10 +34,11 @@
 
     var params = new URLSearchParams(window.location.search);
     var menuId = params.get('id');
-    if (!menuId) {
+    var uid = params.get('uid');
+    if (!menuId || !uid) {
       document.getElementById('menu').innerText = "Menu introuvable";
     } else {
-      db.collection('menus').doc(menuId).get().then(function(doc) {
+      db.collection('users').doc(uid).collection('menus').doc(menuId).get().then(function(doc) {
         if (!doc.exists) {
           document.getElementById('menu').innerText = "Menu introuvable";
           return;

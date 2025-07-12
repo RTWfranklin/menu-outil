@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
   
-    // Sélecteurs DOM
+    // DOM selectors
+    var authZone = document.getElementById('auth-zone');
+    var loginGoogleBtn = document.getElementById('login-google');
+    var userInfo = document.getElementById('user-info');
+    var mainApp = document.getElementById('main-app');
     var menuList = document.getElementById('menu-list');
     var menuSelection = document.getElementById('menu-selection');
     var menuEditor = document.getElementById('menu-editor');
@@ -28,13 +32,75 @@ document.addEventListener('DOMContentLoaded', function() {
     var publishOnlineBtn = document.getElementById('publish-online');
     var viewPublishedBtn = document.getElementById('view-published');
   
-    var menus = JSON.parse(localStorage.getItem('menus')) || [];
+    // User & menu data
+    var user = null;
+    var menus = [];
     var currentMenuId = null;
   
-    function saveMenus() {
-      localStorage.setItem('menus', JSON.stringify(menus));
+    // Auth
+    loginGoogleBtn.onclick = function() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .catch(function(error) {
+          alert("Erreur de connexion : " + error.message);
+        });
+    };
+  
+    firebase.auth().onAuthStateChanged(function(u) {
+      user = u;
+      if (user) {
+        userInfo.innerText = "Connecté : " + (user.displayName || user.email);
+        authZone.classList.add('hidden');
+        mainApp.classList.remove('hidden');
+        loadMenus();
+      } else {
+        userInfo.innerText = "Non connecté";
+        authZone.classList.remove('hidden');
+        mainApp.classList.add('hidden');
+      }
+    });
+  
+    // Charger les menus Firestore de l'utilisateur
+    function loadMenus() {
+      if (!user) return;
+      db.collection('users').doc(user.uid).collection('menus').get()
+        .then(function(querySnapshot) {
+          menus = [];
+          querySnapshot.forEach(function(doc) {
+            var menu = doc.data();
+            menu.firestoreId = doc.id;
+            menus.push(menu);
+          });
+          renderMenus();
+        });
     }
   
+    // Sauvegarder/mettre à jour le menu dans Firestore
+    function saveMenuToFirestore(menu, cb) {
+      if (!user) return;
+      var menusRef = db.collection('users').doc(user.uid).collection('menus');
+      if (menu.firestoreId) {
+        menusRef.doc(menu.firestoreId).set(menu).then(function() {
+          if (cb) cb(menu.firestoreId);
+        });
+      } else {
+        menusRef.add(menu).then(function(docRef) {
+          menu.firestoreId = docRef.id;
+          if (cb) cb(docRef.id);
+        });
+      }
+    }
+  
+    // Supprimer un menu
+    function deleteMenu(menu, index) {
+      if (!user || !menu.firestoreId) return;
+      db.collection('users').doc(user.uid).collection('menus').doc(menu.firestoreId).delete().then(function() {
+        menus.splice(index, 1);
+        renderMenus();
+      });
+    }
+  
+    // UI menus
     function renderMenus() {
       menuList.innerHTML = '';
       menus.forEach(function(menu, index) {
@@ -48,9 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
         delBtn.className = 'delete-btn';
         delBtn.onclick = function() {
           if (confirm('Supprimer ce menu ?')) {
-            menus.splice(index, 1);
-            saveMenus();
-            renderMenus();
+            deleteMenu(menu, index);
           }
         };
         menuList.appendChild(delBtn);
@@ -91,7 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
           renderImagePreview(type, e.target.result);
           if (currentMenuId !== null) {
             menus[currentMenuId][type] = e.target.result;
-            saveMenus();
           }
         };
         reader.readAsDataURL(file);
@@ -151,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
       var temp = categories[index];
       categories[index] = categories[newIndex];
       categories[newIndex] = temp;
-      saveMenus();
       editMenu(currentMenuId);
     }
   
@@ -181,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
     addMenuBtn.onclick = function() {
       menus.push({ title: '', categories: [], banner: '', logo: '' });
-      saveMenus();
       renderMenus();
     };
   
@@ -189,14 +250,13 @@ document.addEventListener('DOMContentLoaded', function() {
       menuSelection.classList.remove('hidden');
       menuEditor.classList.add('hidden');
       saveCurrentMenu();
-      saveMenus();
       renderMenus();
+      loadMenus();
     };
   
     menuTitleInput.oninput = function() {
       if (currentMenuId !== null) {
         menus[currentMenuId].title = menuTitleInput.value;
-        saveMenus();
       }
     };
   
@@ -218,18 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (name) categories.push({ name: name, items: items });
       });
       menus[currentMenuId].categories = categories;
-    }
-  
-    function publishMenuOnline(menu) {
-      if (menu.firestoreId) {
-        return db.collection('menus').doc(menu.firestoreId).set(menu).then(function() {
-          return menu.firestoreId;
-        });
-      }
-      return db.collection('menus').add(menu).then(function(docRef) {
-        menu.firestoreId = docRef.id;
-        saveMenus();
-        return docRef.id;
+      // Save in Firestore
+      saveMenuToFirestore(menus[currentMenuId], function() {
+        loadMenus();
       });
     }
   
@@ -237,9 +288,9 @@ document.addEventListener('DOMContentLoaded', function() {
       saveCurrentMenu();
       if (currentMenuId === null) return;
       var menu = menus[currentMenuId];
-      publishMenuOnline(menu).then(function(id) {
+      saveMenuToFirestore(menu, function(id) {
         updateViewPublishedButton();
-        var publicUrl = window.location.origin + "/menu.html?id=" + id;
+        var publicUrl = window.location.origin + "/menu.html?uid=" + user.uid + "&id=" + id;
         prompt("Voici l’URL à utiliser pour le QR code :", publicUrl);
       });
     };
@@ -257,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
         viewPublishedBtn.classList.remove("inactive");
         viewPublishedBtn.classList.add("active");
         viewPublishedBtn.disabled = false;
-        var publicUrl = window.location.origin + "/menu.html?id=" + menu.firestoreId;
+        var publicUrl = window.location.origin + "/menu.html?uid=" + user.uid + "&id=" + menu.firestoreId;
         viewPublishedBtn.dataset.url = publicUrl;
       } else {
         viewPublishedBtn.classList.add("inactive");
@@ -272,6 +323,4 @@ document.addEventListener('DOMContentLoaded', function() {
       var url = viewPublishedBtn.dataset.url;
       if (url) window.open(url, "_blank");
     };
-  
-    renderMenus();
   });

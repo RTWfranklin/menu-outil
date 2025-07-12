@@ -26,37 +26,6 @@ body {
     font-weight: bold;
     cursor: pointer;
   }
-  .publish-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
-  }
-  #publish-online {
-    flex: 1;
-  }
-  #view-published {
-    flex: 1;
-    transition: background 0.2s, color 0.2s;
-  }
-  
-  /* Bouton visualisation: grisé quand désactivé, vert quand activé */
-  .view-published.inactive {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    border: none;
-    opacity: 0.8;
-  }
-  .view-published.active {
-    background-color: #28a745;
-    color: white;
-    cursor: pointer;
-    border: none;
-    font-weight: bold;
-    opacity: 1;
-  }
-  
-  /* Autres styles inchangés */
   .delete-btn {
     background: #dc3545;
     margin-top: 5px;
@@ -90,4 +59,50 @@ body {
     max-height: 100px;
     display: block;
     margin-bottom: 10px;
+  }
+  .publish-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  .view-published.inactive {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    border: none;
+    opacity: 0.8;
+  }
+  .view-published.active {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    opacity: 1;
+  }
+  #login-google {
+    background: #ea4335;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+  }
+  #login-google[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  #user-info {
+    font-size: 1em;
+    color: #222;
+    margin-left: 12px;
+  }
+  #auth-zone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    justify-content: center;
   }
