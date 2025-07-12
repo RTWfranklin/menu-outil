@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <title>Menu en ligne</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+  <!-- Firebase v8 SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <link rel="stylesheet" href="style.css" />
   <style>
     body { font-family: Arial, sans-serif; background: #f4f4f8; padding: 20px; }
@@ -20,7 +20,7 @@
 <body>
   <div id="menu"></div>
   <script>
-    const firebaseConfig = {
+    var firebaseConfig = {
       apiKey: "AIzaSyCxVS6IvetneJ1Q5kr8t5d7F3qd8oe8KjQ",
       authDomain: "menu-outil.firebaseapp.com",
       projectId: "menu-outil",
@@ -30,29 +30,29 @@
       measurementId: "G-18ZGPKGBQD"
     };
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    var db = firebase.firestore();
 
-    const params = new URLSearchParams(window.location.search);
-    const menuId = params.get('id');
+    var params = new URLSearchParams(window.location.search);
+    var menuId = params.get('id');
     if (!menuId) {
       document.getElementById('menu').innerText = "Menu introuvable";
     } else {
-      db.collection('menus').doc(menuId).get().then(doc => {
+      db.collection('menus').doc(menuId).get().then(function(doc) {
         if (!doc.exists) {
           document.getElementById('menu').innerText = "Menu introuvable";
           return;
         }
-        const menu = doc.data();
-        let html = '';
-        if (menu.banner) html += `<img src="${menu.banner}" class="banner">`;
-        if (menu.logo) html += `<img src="${menu.logo}" class="logo">`;
-        html += `<h1>${menu.title}</h1>`;
-        (menu.categories || []).forEach(cat => {
-          html += `<h2>${cat.name}</h2><ul>`;
-          (cat.items || []).forEach(item => {
-            html += `<li>${item.name} - ${item.price}</li>`;
+        var menu = doc.data();
+        var html = '';
+        if (menu.banner) html += '<img src="' + menu.banner + '" class="banner">';
+        if (menu.logo) html += '<img src="' + menu.logo + '" class="logo">';
+        html += '<h1>' + menu.title + '</h1>';
+        (menu.categories || []).forEach(function(cat) {
+          html += '<h2>' + cat.name + '</h2><ul>';
+          (cat.items || []).forEach(function(item) {
+            html += '<li>' + item.name + ' - ' + item.price + '</li>';
           });
-          html += `</ul>`;
+          html += '</ul>';
         });
         document.getElementById('menu').innerHTML = html;
       });
