@@ -4,14 +4,12 @@
   <meta charset="UTF-8">
   <title>Menus personnels en ligne</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Firebase v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Barre profil (après connexion) -->
   <div id="profile-bar" class="hidden">
     <div class="profile-avatar" id="profile-avatar" title="Profil">
       <img id="avatar-img" src="" alt="Profil"/>
@@ -23,8 +21,6 @@
       </div>
     </div>
   </div>
-  
-  <!-- Landing page (avant connexion) -->
   <div class="landing-bg" id="landing-bg">
     <div class="landing-center">
       <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Logo Google" class="landing-logo" />
@@ -40,8 +36,6 @@
       </div>
     </div>
   </div>
-  
-  <!-- Application principale (après connexion) -->
   <div class="container hidden" id="main-app">
     <div id="menu-selection">
       <h1>Mes menus</h1>
@@ -59,6 +53,7 @@
       <button id="add-category">Ajouter une catégorie</button>
       <div class="publish-actions">
         <button id="publish-online">Publier en ligne</button>
+        <button id="save-changes" class="save-changes">Envoyer les modifications</button>
         <button id="view-published" class="view-published inactive" disabled>Visualiser le menu publié</button>
       </div>
     </div>

@@ -3,7 +3,6 @@ body, html {
     padding: 0;
     height: 100%;
   }
-  
   .landing-bg {
     min-height: 100vh;
     background: linear-gradient(135deg, #e9eefc 0%, #f6f7fa 100%);
@@ -11,7 +10,6 @@ body, html {
     align-items: center;
     justify-content: center;
   }
-  
   .landing-center {
     background: white;
     border-radius: 24px;
@@ -22,29 +20,24 @@ body, html {
     width: 100%;
     animation: fadein 0.7s cubic-bezier(.56,1.45,.73,1.01);
   }
-  
   @keyframes fadein {
     from { opacity: 0; transform: scale(.97);}
     to { opacity: 1; transform: scale(1);}
   }
-  
   .landing-logo {
     width: 60px;
     margin-bottom: 18px;
     filter: drop-shadow(0 2px 6px rgba(66,133,244,0.16));
   }
-  
   .landing-desc {
     color: #555;
     margin-bottom: 30px;
     font-size: 1.05em;
   }
-  
   .landing-highlight {
     color: #1967d2;
     font-weight: 500;
   }
-  
   .google-btn {
     background: #fff;
     color: #444;
@@ -63,23 +56,19 @@ body, html {
     outline: none;
     border: none;
   }
-  
   .google-btn:active {
     transform: scale(0.97);
   }
-  
   .google-btn:hover, .google-btn:focus {
     background: #f1f3f4;
     box-shadow: 0 6px 18px rgba(66,133,244,0.10);
   }
-  
   .google-icon {
     width: 28px;
     height: 28px;
     margin-right: 10px;
     vertical-align: middle;
   }
-  
   #user-info {
     display: block;
     margin-top: 14px;
@@ -87,7 +76,6 @@ body, html {
     font-size: 1em;
     font-weight: 500;
   }
-  
   @media (max-width: 500px) {
     .landing-center {
       padding: 28px 8px;
@@ -97,7 +85,6 @@ body, html {
       width: 44px;
     }
   }
-  
   /* ---- Barre profil ---- */
   #profile-bar {
     position: fixed;
@@ -107,7 +94,6 @@ body, html {
     display: flex;
     align-items: center;
   }
-  
   .profile-avatar {
     width: 44px;
     height: 44px;
@@ -129,7 +115,6 @@ body, html {
   .profile-avatar:hover {
     box-shadow: 0 6px 16px rgba(66,133,244,0.15);
   }
-  
   /* Menu déroulant profil */
   #profile-menu {
     position: absolute;
@@ -163,7 +148,6 @@ body, html {
     cursor: pointer;
     margin-top: 2px;
   }
-  
   /* ---- Reste de l'outil ---- */
   .container {
     max-width: 800px;
@@ -236,18 +220,46 @@ body, html {
     gap: 15px;
     margin-top: 20px;
   }
+  .save-changes {
+    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+    color: white;
+    border-radius: 16px;
+    font-weight: bold;
+    padding: 0 24px;
+    height: 42px;
+    box-shadow: 0 2px 8px rgba(56,249,215,0.10);
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    border: none;
+  }
+  .save-changes:hover, .save-changes:focus {
+    background: linear-gradient(90deg, #38f9d7 0%, #43e97b 100%);
+    box-shadow: 0 4px 18px rgba(56,249,215,0.14);
+    transform: scale(1.04);
+  }
+  .view-published {
+    background: linear-gradient(90deg, #1967d2 0%, #43a1ff 100%);
+    color: white;
+    border-radius: 16px;
+    font-weight: bold;
+    padding: 0 24px;
+    height: 42px;
+    box-shadow: 0 2px 8px rgba(25,103,210,0.10);
+    border: none;
+    transition: background 0.18s, box-shadow 0.18s, transform 0.12s;
+    opacity: 1;
+  }
+  .view-published.active:hover, .view-published.active:focus {
+    background: linear-gradient(90deg, #43a1ff 0%, #1967d2 100%);
+    box-shadow: 0 4px 18px rgba(25,103,210,0.14);
+    transform: scale(1.04);
+  }
   .view-published.inactive {
-    background-color: #cccccc;
+    background: #cccccc;
     color: #666666;
     cursor: not-allowed;
-    border: none;
     opacity: 0.8;
-  }
-  .view-published.active {
-    background-color: #28a745;
-    color: white;
-    cursor: pointer;
+    border-radius: 16px;
+    box-shadow: none;
     border: none;
-    font-weight: bold;
-    opacity: 1;
+    transform: none;
   }
