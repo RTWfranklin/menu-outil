@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
+    var storage = firebase.storage();
   
     // DOM selectors
     var authZone = document.getElementById('auth-zone');
@@ -73,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   
-    // Profile menu logic
     profileAvatar.onclick = function(e) {
       profileMenu.classList.toggle('hidden');
       e.stopPropagation();
@@ -88,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
       profileMenu.classList.add('hidden');
     };
   
-    // Load menus from Firestore
     function loadMenus() {
       if (!user) return;
       db.collection('users').doc(user.uid).collection('menus').get()
@@ -102,24 +101,19 @@ document.addEventListener('DOMContentLoaded', function() {
           renderMenus();
         });
     }
-  
-    // Save or update menu to Firestore
     function saveMenuToFirestore(menu, cb) {
       if (!user) return;
       var menusRef = db.collection('users').doc(user.uid).collection('menus');
       if (menu.firestoreId) {
-        menusRef.doc(menu.firestoreId).set(menu).then(function() {
-          if (cb) cb(menu.firestoreId);
-        });
+        menusRef.doc(menu.firestoreId).set(menu)
+          .then(function() { if (cb) cb(menu.firestoreId); })
+          .catch(function(error) { alert("Erreur enregistrement menu: " + error.message); });
       } else {
-        menusRef.add(menu).then(function(docRef) {
-          menu.firestoreId = docRef.id;
-          if (cb) cb(docRef.id);
-        });
+        menusRef.add(menu)
+          .then(function(docRef) { menu.firestoreId = docRef.id; if (cb) cb(docRef.id); })
+          .catch(function(error) { alert("Erreur enregistrement menu: " + error.message); });
       }
     }
-  
-    // Delete a menu
     function deleteMenu(menu, index) {
       if (!user || !menu.firestoreId) return;
       db.collection('users').doc(user.uid).collection('menus').doc(menu.firestoreId).delete().then(function() {
@@ -127,8 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
         renderMenus();
       });
     }
-  
-    // Render menus list
     function renderMenus() {
       menuList.innerHTML = '';
       menus.forEach(function(menu, index) {
@@ -148,8 +140,6 @@ document.addEventListener('DOMContentLoaded', function() {
         menuList.appendChild(delBtn);
       });
     }
-  
-    // Edit a menu
     function editMenu(index) {
       currentMenuId = index;
       var menu = menus[index];
@@ -164,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       updateViewPublishedButton();
     }
-  
     function renderImagePreview(type, src) {
       var container = type === 'banner' ? bannerPreviewContainer : logoPreviewContainer;
       container.innerHTML = '';
@@ -174,19 +163,23 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(img);
       }
     }
-  
     function handleImageUpload(input, type) {
       input.onchange = function () {
         var file = input.files[0];
         if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          renderImagePreview(type, e.target.result);
-          if (currentMenuId !== null) {
-            menus[currentMenuId][type] = e.target.result;
-          }
-        };
-        reader.readAsDataURL(file);
+        // upload the image to Firebase Storage
+        var storagePath = "menus/" + (user ? user.uid : "nouser") + "/global_" + type + "_" + Date.now() + "_" + file.name;
+        var storageRef = storage.ref(storagePath);
+        storageRef.put(file).then(function(snapshot) {
+          snapshot.ref.getDownloadURL().then(function(url) {
+            renderImagePreview(type, url);
+            if (currentMenuId !== null) {
+              menus[currentMenuId][type] = url;
+            }
+          });
+        }).catch(function(error) {
+          alert("Erreur upload " + type + ": " + error.message);
+        });
       };
     }
     handleImageUpload(bannerUpload, 'banner');
@@ -234,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
   
       categoriesContainer.appendChild(wrapper);
     }
-  
     function moveCategory(index, direction) {
       if (currentMenuId === null) return;
       var categories = menus[currentMenuId].categories;
@@ -245,14 +237,13 @@ document.addEventListener('DOMContentLoaded', function() {
       categories[newIndex] = temp;
       editMenu(currentMenuId);
     }
-  
-    // Plat = nom, prix, image
-    function addItem(container, name, price, itemIndex, categoryWrapper, imgData) {
+    function addItem(container, name, price, itemIndex, categoryWrapper, imgUrl) {
       name = name || '';
       price = price || '';
-      imgData = imgData || '';
+      imgUrl = imgUrl || '';
       var div = document.createElement('div');
       div.className = 'item';
+  
       var nameInput = document.createElement('input');
       nameInput.type = 'text';
       nameInput.placeholder = 'Nom';
@@ -266,30 +257,46 @@ document.addEventListener('DOMContentLoaded', function() {
       imgUpload.type = 'file';
       imgUpload.accept = 'image/*';
       imgUpload.style.marginTop = "8px";
+  
       var imgPreview = document.createElement('div');
       imgPreview.style.marginTop = "7px";
-      if (imgData) {
+      if (imgUrl) {
+        var imgTag = document.createElement('img');
+        imgTag.src = imgUrl;
+        imgTag.style.maxWidth = '80px';
+        imgTag.style.maxHeight = '80px';
+        imgTag.style.borderRadius = '8px';
+        imgPreview.appendChild(imgTag);
+      }
+  
+      imgUpload.onchange = function () {
+        var file = imgUpload.files[0];
+        if (!file) return;
+        // Affiche l'aperçu local
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          imgPreview.innerHTML = '';
           var imgTag = document.createElement('img');
-          imgTag.src = imgData;
+          imgTag.src = e.target.result;
           imgTag.style.maxWidth = '80px';
           imgTag.style.maxHeight = '80px';
           imgTag.style.borderRadius = '8px';
           imgPreview.appendChild(imgTag);
-      }
-      imgUpload.onchange = function () {
-          var file = imgUpload.files[0];
-          if (!file) return;
-          var reader = new FileReader();
-          reader.onload = function (e) {
-              imgPreview.innerHTML = '';
-              var imgTag = document.createElement('img');
-              imgTag.src = e.target.result;
-              imgTag.style.maxWidth = '80px';
-              imgTag.style.maxHeight = '80px';
-              imgTag.style.borderRadius = '8px';
-              imgPreview.appendChild(imgTag);
-          };
-          reader.readAsDataURL(file);
+        };
+        reader.readAsDataURL(file);
+  
+        // Upload sur Firebase Storage
+        var menuId = menus[currentMenuId] && menus[currentMenuId].firestoreId ? menus[currentMenuId].firestoreId : "draft";
+        var platIndex = container.querySelectorAll('.item').length;
+        var storagePath = "menus/" + (user ? user.uid : "nouser") + "/" + menuId + "/plats/" + Date.now() + "_" + file.name;
+        var storageRef = storage.ref(storagePath);
+        storageRef.put(file).then(function(snapshot) {
+          snapshot.ref.getDownloadURL().then(function(url) {
+            div.dataset.imgUrl = url;
+          });
+        }).catch(function(error) {
+          alert("Erreur upload image plat: " + error.message);
+        });
       };
   
       div.appendChild(nameInput);
@@ -303,6 +310,11 @@ document.addEventListener('DOMContentLoaded', function() {
       delBtn.style.width = 'auto';
       delBtn.onclick = function() { div.remove(); };
       div.appendChild(delBtn);
+  
+      // Stocker l'URL de l'image, si déjà existante
+      if (imgUrl) {
+        div.dataset.imgUrl = imgUrl;
+      }
   
       container.appendChild(div);
     }
@@ -341,15 +353,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var items = [];
         catEl.querySelectorAll('.item').forEach(function(itemEl) {
           var inputs = itemEl.querySelectorAll('input[type="text"]');
-          var imgPreview = itemEl.querySelector('div');
-          var imgSrc = '';
-          if (imgPreview && imgPreview.querySelector('img')) {
-            imgSrc = imgPreview.querySelector('img').src;
-          }
+          var imgUrl = itemEl.dataset.imgUrl || ""; // récupère l'URL Storage
           items.push({
             name: inputs[0].value,
             price: inputs[1].value,
-            img: imgSrc
+            img: imgUrl
           });
         });
         if (name) categories.push({ name: name, items: items });
