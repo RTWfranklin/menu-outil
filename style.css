@@ -215,6 +215,15 @@ body, html {
   .item {
     padding-left: 20px;
     margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .item img {
+    max-width: 80px;
+    max-height: 80px;
+    border-radius: 8px;
+    margin-top: 3px;
   }
   #banner-preview img, #logo-preview img {
     max-width: 100%;

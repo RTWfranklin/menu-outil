@@ -7,15 +7,7 @@
   <!-- Firebase v8 SDK -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f8; padding: 20px; }
-    .banner { max-width: 100%; margin-bottom: 10px; }
-    .logo { max-height: 100px; margin-bottom: 10px; }
-    h1 { margin-top: 30px; }
-    h2 { margin-top: 20px; }
-    ul { margin-bottom: 30px; }
-  </style>
+  <link rel="stylesheet" href="menu-style.css" />
 </head>
 <body>
   <div id="menu"></div>
@@ -35,27 +27,52 @@
     var params = new URLSearchParams(window.location.search);
     var menuId = params.get('id');
     var uid = params.get('uid');
+    var menuDiv = document.getElementById('menu');
+
     if (!menuId || !uid) {
-      document.getElementById('menu').innerText = "Menu introuvable";
+      menuDiv.innerHTML = "<div class='menu-error'>Menu introuvable</div>";
     } else {
       db.collection('users').doc(uid).collection('menus').doc(menuId).get().then(function(doc) {
         if (!doc.exists) {
-          document.getElementById('menu').innerText = "Menu introuvable";
+          menuDiv.innerHTML = "<div class='menu-error'>Menu introuvable</div>";
           return;
         }
         var menu = doc.data();
-        var html = '';
-        if (menu.banner) html += '<img src="' + menu.banner + '" class="banner">';
-        if (menu.logo) html += '<img src="' + menu.logo + '" class="logo">';
-        html += '<h1>' + menu.title + '</h1>';
+        var html = "";
+        // Bannière
+        if (menu.banner) {
+          html += '<div class="menu-banner"><img src="' + menu.banner + '" alt="Bannière"></div>';
+        }
+        // Logo & titre
+        html += '<div class="menu-header">';
+        if (menu.logo) {
+          html += '<div class="menu-logo"><img src="' + menu.logo + '" alt="Logo"></div>';
+        }
+        html += '<h1 class="menu-title">' + (menu.title || "") + '</h1>';
+        html += '</div>';
+
+        // Catégories
+        html += '<div class="menu-categories">';
         (menu.categories || []).forEach(function(cat) {
-          html += '<h2>' + cat.name + '</h2><ul>';
+          html += '<section class="menu-category">';
+          html += '<h2 class="category-title">' + cat.name + '</h2>';
+          html += '<div class="category-items">';
           (cat.items || []).forEach(function(item) {
-            html += '<li>' + item.name + ' - ' + item.price + '</li>';
+            html += '<div class="menu-item-card">';
+            if (item.img) {
+              html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
+            }
+            html += '<div class="item-info">';
+            html += '<span class="item-name">' + item.name + '</span>';
+            if (item.price) html += '<span class="item-price">' + item.price + '</span>';
+            html += '</div>';
+            html += '</div>';
           });
-          html += '</ul>';
+          html += '</div>';
+          html += '</section>';
         });
-        document.getElementById('menu').innerHTML = html;
+        html += '</div>';
+        menuDiv.innerHTML = html;
       });
     }
   </script>

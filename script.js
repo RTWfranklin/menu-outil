@@ -227,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
       var itemList = document.createElement('div');
       items.forEach(function(item, itemIndex) {
-        addItem(itemList, item.name, item.price, itemIndex, wrapper);
+        addItem(itemList, item.name, item.price, itemIndex, wrapper, item.img || '');
       });
       wrapper.appendChild(itemList);
   
@@ -256,9 +256,11 @@ document.addEventListener('DOMContentLoaded', function() {
       editMenu(currentMenuId);
     }
   
-    function addItem(container, name, price, itemIndex, categoryWrapper) {
+    // --- MODIF: Plat = nom, prix, image ---
+    function addItem(container, name, price, itemIndex, categoryWrapper, imgData) {
       name = name || '';
       price = price || '';
+      imgData = imgData || '';
       var div = document.createElement('div');
       div.className = 'item';
       var nameInput = document.createElement('input');
@@ -269,14 +271,50 @@ document.addEventListener('DOMContentLoaded', function() {
       priceInput.type = 'text';
       priceInput.placeholder = 'Prix';
       priceInput.value = price;
+  
+      // Image upload
+      var imgUpload = document.createElement('input');
+      imgUpload.type = 'file';
+      imgUpload.accept = 'image/*';
+      imgUpload.style.marginTop = "8px";
+      var imgPreview = document.createElement('div');
+      imgPreview.style.marginTop = "7px";
+      if (imgData) {
+          var imgTag = document.createElement('img');
+          imgTag.src = imgData;
+          imgTag.style.maxWidth = '80px';
+          imgTag.style.maxHeight = '80px';
+          imgTag.style.borderRadius = '8px';
+          imgPreview.appendChild(imgTag);
+      }
+      imgUpload.onchange = function () {
+          var file = imgUpload.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function (e) {
+              imgPreview.innerHTML = '';
+              var imgTag = document.createElement('img');
+              imgTag.src = e.target.result;
+              imgTag.style.maxWidth = '80px';
+              imgTag.style.maxHeight = '80px';
+              imgTag.style.borderRadius = '8px';
+              imgPreview.appendChild(imgTag);
+          };
+          reader.readAsDataURL(file);
+      };
+  
       div.appendChild(nameInput);
       div.appendChild(priceInput);
+      div.appendChild(imgUpload);
+      div.appendChild(imgPreview);
+  
       var delBtn = document.createElement('button');
       delBtn.textContent = '🗑️';
       delBtn.className = 'delete-btn';
       delBtn.style.width = 'auto';
       delBtn.onclick = function() { div.remove(); };
       div.appendChild(delBtn);
+  
       container.appendChild(div);
     }
   
@@ -303,6 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
       addCategory();
     };
   
+    // --- MODIF: enregistrement image plat ---
     function saveCurrentMenu() {
       if (currentMenuId === null) return;
       var categories = [];
@@ -311,8 +350,18 @@ document.addEventListener('DOMContentLoaded', function() {
         var name = catInputs[0] ? catInputs[0].value : '';
         var items = [];
         catEl.querySelectorAll('.item').forEach(function(itemEl) {
-          var inputs = itemEl.querySelectorAll('input');
-          items.push({ name: inputs[0].value, price: inputs[1].value });
+          var inputs = itemEl.querySelectorAll('input[type="text"]');
+          var imgInput = itemEl.querySelector('input[type="file"]');
+          var imgPreview = itemEl.querySelector('div');
+          var imgSrc = '';
+          if (imgPreview && imgPreview.querySelector('img')) {
+            imgSrc = imgPreview.querySelector('img').src;
+          }
+          items.push({ 
+            name: inputs[0].value, 
+            price: inputs[1].value,
+            img: imgSrc
+          });
         });
         if (name) categories.push({ name: name, items: items });
       });
