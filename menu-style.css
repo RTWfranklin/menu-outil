@@ -278,32 +278,52 @@ body {
   justify-content: center;
 }
   .item-badge {
-    background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
-    color: #1967d2;
-    font-size: 0.81em;
-    font-weight: 600;
-    border-radius: 10px;
-    padding: 2px 10px 2px 10px;
-    letter-spacing: 0.01em;
-    box-shadow: 0 1px 6px rgba(66,133,244,0.06);
-    border: none;
-    outline: none;
-    user-select: none;
-    transition: background 0.18s, color 0.18s;
-    margin-bottom: 2px;
-  }
-  .item-badge[data-badge='Vegan'] {
-    background: linear-gradient(90deg, #a8e063 0%, #56ab2f 100%);
-    color: #205c20;
-  }
-  .item-badge[data-badge='Nouveau'] {
-    background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);
-    color: #7e5a00;
-  }
-  .item-badge[data-badge='Spécialité'] {
-    background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
-    color: #185a9d;
-  }
+  display: inline-block;
+  padding: 3px 13px 3px 13px;
+  border-radius: 16px;
+  font-size: 0.98em;
+  font-weight: 600;
+  margin: 0 4px 0 0;
+  color: #222;
+  background: #eaeaea;
+  box-shadow: 0 1px 7px rgba(80,80,80,0.08);
+  letter-spacing: 0.01em;
+  vertical-align: middle;
+  user-select: none;
+  transition: background 0.16s, color 0.16s;
+  line-height: 1.2;
+  position: relative;
+}
+.item-badge[data-badge="Vegan"] {
+  background: #e5fbe4;
+  color: #278c4c;
+  border: 1.2px solid #b5e9c6;
+}
+.item-badge[data-badge="Nouveau"] {
+  background: #eaf1fb;
+  color: #2a5ca8;
+  border: 1.2px solid #b7cbe6;
+}
+.item-badge[data-badge="Populaire"] {
+  background: linear-gradient(90deg, #ffd700 0%, #fff5cc 100%);
+  color: #b38600;
+  border: 1.2px solid #ffe066;
+  padding-left: 1.9em;
+}
+.item-badge[data-badge="Populaire"]::before {
+  content: '⭐';
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.08em;
+  filter: drop-shadow(0 1px 0 #fff8);
+}
+.item-badge[data-badge="Spécialité"] {
+  background: #f7f7f8;
+  color: #6c6a6a;
+  border: 1.2px solid #e2e2e2;
+}
   
   /* Description sous le nom */
   .item-desc {
