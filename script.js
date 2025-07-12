@@ -263,6 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
       name = name || '';
       price = price || '';
       imgUrl = imgUrl || '';
+      var desc = '';
+
       desc = desc || '';
       var div = document.createElement('div');
       div.className = 'item';
