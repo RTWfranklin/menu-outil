@@ -10,7 +10,32 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
-    var storage = firebase.storage();
+    // Configuration Cloudinary
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dcwbucaxl/image/upload';
+    const CLOUDINARY_UPLOAD_PRESET = 'menu_unsigned';
+
+    // Fonction utilitaire d'upload Cloudinary
+    function uploadImageToCloudinary(file, callback, errorCallback) {
+      const url = CLOUDINARY_URL;
+      const preset = CLOUDINARY_UPLOAD_PRESET;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', preset);
+
+      fetch(url, {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.secure_url) {
+            callback(data.secure_url);
+          } else {
+            errorCallback(data.error && data.error.message ? data.error.message : 'Erreur Cloudinary');
+          }
+        })
+        .catch(err => errorCallback(err.message));
+    }
   
     // DOM selectors
     var authZone = document.getElementById('auth-zone');
@@ -167,18 +192,14 @@ document.addEventListener('DOMContentLoaded', function() {
       input.onchange = function () {
         var file = input.files[0];
         if (!file) return;
-        // upload the image to Firebase Storage
-        var storagePath = "menus/" + (user ? user.uid : "nouser") + "/global_" + type + "_" + Date.now() + "_" + file.name;
-        var storageRef = storage.ref(storagePath);
-        storageRef.put(file).then(function(snapshot) {
-          snapshot.ref.getDownloadURL().then(function(url) {
-            renderImagePreview(type, url);
-            if (currentMenuId !== null) {
-              menus[currentMenuId][type] = url;
-            }
-          });
-        }).catch(function(error) {
-          alert("Erreur upload " + type + ": " + error.message);
+        // upload the image to Cloudinary
+        uploadImageToCloudinary(file, function(url) {
+          renderImagePreview(type, url);
+          if (currentMenuId !== null) {
+            menus[currentMenuId][type] = url;
+          }
+        }, function(errorMsg) {
+          alert("Erreur upload " + type + ": " + errorMsg);
         });
       };
     }
@@ -285,17 +306,11 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         reader.readAsDataURL(file);
   
-        // Upload sur Firebase Storage
-        var menuId = menus[currentMenuId] && menus[currentMenuId].firestoreId ? menus[currentMenuId].firestoreId : "draft";
-        var platIndex = container.querySelectorAll('.item').length;
-        var storagePath = "menus/" + (user ? user.uid : "nouser") + "/" + menuId + "/plats/" + Date.now() + "_" + file.name;
-        var storageRef = storage.ref(storagePath);
-        storageRef.put(file).then(function(snapshot) {
-          snapshot.ref.getDownloadURL().then(function(url) {
-            div.dataset.imgUrl = url;
-          });
-        }).catch(function(error) {
-          alert("Erreur upload image plat: " + error.message);
+        // Upload sur Cloudinary
+        uploadImageToCloudinary(file, function(url) {
+          div.dataset.imgUrl = url;
+        }, function(errorMsg) {
+          alert('Erreur upload image plat: ' + errorMsg);
         });
       };
   
