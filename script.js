@@ -237,7 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
       var btn = document.createElement('button');
       btn.textContent = 'Ajouter un plat';
-      btn.onclick = function() { addItem(itemList, '', '', null, wrapper); };
+      btn.className = 'add-item-btn';
+      btn.onclick = function() { addItem(itemList, '', '', null, wrapper, '', []); };
       wrapper.appendChild(btn);
   
       var delCatBtn = document.createElement('button');
