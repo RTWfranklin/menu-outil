@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     firebase.initializeApp(firebaseConfig);
     var db = firebase.firestore();
   
+    // DOM selectors
     var authZone = document.getElementById('auth-zone');
     var loginGoogleBtn = document.getElementById('login-google');
     var userInfo = document.getElementById('user-info');
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var viewPublishedBtn = document.getElementById('view-published');
     var saveChangesBtn = document.getElementById('save-changes');
   
+    // Profile bar
     var profileBar = document.getElementById('profile-bar');
     var profileAvatar = document.getElementById('profile-avatar');
     var avatarImg = document.getElementById('avatar-img');
@@ -40,10 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
     var landingBg = document.getElementById('landing-bg');
   
+    // User & menu data
     var user = null;
     var menus = [];
     var currentMenuId = null;
   
+    // Auth
     loginGoogleBtn.onclick = function() {
       var provider = new firebase.auth.GoogleAuthProvider();
       firebase.auth().signInWithPopup(provider)
@@ -69,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   
+    // Profile menu logic
     profileAvatar.onclick = function(e) {
       profileMenu.classList.toggle('hidden');
       e.stopPropagation();
@@ -83,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
       profileMenu.classList.add('hidden');
     };
   
+    // Load menus from Firestore
     function loadMenus() {
       if (!user) return;
       db.collection('users').doc(user.uid).collection('menus').get()
@@ -96,6 +102,8 @@ document.addEventListener('DOMContentLoaded', function() {
           renderMenus();
         });
     }
+  
+    // Save or update menu to Firestore
     function saveMenuToFirestore(menu, cb) {
       if (!user) return;
       var menusRef = db.collection('users').doc(user.uid).collection('menus');
@@ -110,6 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       }
     }
+  
+    // Delete a menu
     function deleteMenu(menu, index) {
       if (!user || !menu.firestoreId) return;
       db.collection('users').doc(user.uid).collection('menus').doc(menu.firestoreId).delete().then(function() {
@@ -117,6 +127,8 @@ document.addEventListener('DOMContentLoaded', function() {
         renderMenus();
       });
     }
+  
+    // Render menus list
     function renderMenus() {
       menuList.innerHTML = '';
       menus.forEach(function(menu, index) {
@@ -136,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
         menuList.appendChild(delBtn);
       });
     }
+  
+    // Edit a menu
     function editMenu(index) {
       currentMenuId = index;
       var menu = menus[index];
@@ -150,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       updateViewPublishedButton();
     }
+  
     function renderImagePreview(type, src) {
       var container = type === 'banner' ? bannerPreviewContainer : logoPreviewContainer;
       container.innerHTML = '';
@@ -159,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(img);
       }
     }
+  
     function handleImageUpload(input, type) {
       input.onchange = function () {
         var file = input.files[0];
@@ -175,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     handleImageUpload(bannerUpload, 'banner');
     handleImageUpload(logoUpload, 'logo');
+  
     function addCategory(name, items, catIndex) {
       name = name || '';
       items = items || [];
@@ -217,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
       categoriesContainer.appendChild(wrapper);
     }
+  
     function moveCategory(index, direction) {
       if (currentMenuId === null) return;
       var categories = menus[currentMenuId].categories;
@@ -227,6 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
       categories[newIndex] = temp;
       editMenu(currentMenuId);
     }
+  
+    // Plat = nom, prix, image
     function addItem(container, name, price, itemIndex, categoryWrapper, imgData) {
       name = name || '';
       price = price || '';
@@ -286,26 +306,33 @@ document.addEventListener('DOMContentLoaded', function() {
   
       container.appendChild(div);
     }
+  
     addMenuBtn.onclick = function() {
       menus.push({ title: '', categories: [], banner: '', logo: '' });
       renderMenus();
     };
+  
     backToListBtn.onclick = function() {
       menuSelection.classList.remove('hidden');
       menuEditor.classList.add('hidden');
-      saveCurrentMenu();
-      renderMenus();
-      loadMenus();
+      saveCurrentMenu(function() {
+        renderMenus();
+        loadMenus();
+      });
     };
+  
     menuTitleInput.oninput = function() {
       if (currentMenuId !== null) {
         menus[currentMenuId].title = menuTitleInput.value;
       }
     };
+  
     addCategoryBtn.onclick = function() {
       addCategory();
     };
-    function saveCurrentMenu() {
+  
+    // Save menu, then callback (e.g. update button, show alert)
+    function saveCurrentMenu(cb) {
       if (currentMenuId === null) return;
       var categories = [];
       categoriesContainer.querySelectorAll('.category').forEach(function(catEl) {
@@ -314,14 +341,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var items = [];
         catEl.querySelectorAll('.item').forEach(function(itemEl) {
           var inputs = itemEl.querySelectorAll('input[type="text"]');
-          var imgInput = itemEl.querySelector('input[type="file"]');
           var imgPreview = itemEl.querySelector('div');
           var imgSrc = '';
           if (imgPreview && imgPreview.querySelector('img')) {
             imgSrc = imgPreview.querySelector('img').src;
           }
-          items.push({ 
-            name: inputs[0].value, 
+          items.push({
+            name: inputs[0].value,
             price: inputs[1].value,
             img: imgSrc
           });
@@ -331,22 +357,26 @@ document.addEventListener('DOMContentLoaded', function() {
       menus[currentMenuId].categories = categories;
       saveMenuToFirestore(menus[currentMenuId], function() {
         loadMenus();
+        if (cb) cb();
       });
     }
+  
     publishOnlineBtn.onclick = function() {
-      saveCurrentMenu();
-      if (currentMenuId === null) return;
-      var menu = menus[currentMenuId];
-      saveMenuToFirestore(menu, function(id) {
+      saveCurrentMenu(function() {
         updateViewPublishedButton();
-        var publicUrl = window.location.origin + "/menu.html?uid=" + user.uid + "&id=" + id;
+        var menu = menus[currentMenuId];
+        var publicUrl = window.location.origin + "/menu.html?uid=" + user.uid + "&id=" + menu.firestoreId;
         prompt("Voici l’URL à utiliser pour le QR code :", publicUrl);
       });
     };
+  
     saveChangesBtn.onclick = function() {
-      saveCurrentMenu();
-      alert("Le menu a bien été mis à jour !");
+      saveCurrentMenu(function() {
+        updateViewPublishedButton();
+        alert("Le menu a bien été mis à jour !");
+      });
     };
+  
     function updateViewPublishedButton() {
       if (currentMenuId === null) {
         viewPublishedBtn.classList.add("inactive");
@@ -369,6 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
         viewPublishedBtn.dataset.url = "";
       }
     }
+  
     viewPublishedBtn.onclick = function() {
       if (viewPublishedBtn.disabled) return;
       var url = viewPublishedBtn.dataset.url;
