@@ -172,3 +172,37 @@ body {
       height: 56px;
     }
   }
+
+  .cat-nav {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    background: #fafbfc;
+    z-index: 100;
+    padding: 12px 0 8px 0;
+    border-bottom: 1px solid #ececec;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .cat-nav-btn {
+    background: none;
+    border: none;
+    font-size: 1.08em;
+    color: #1967d2;
+    padding: 7px 18px;
+    border-radius: 22px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s;
+    outline: none;
+  }
+  .cat-nav-btn.active,
+  .cat-nav-btn:hover {
+    background: #1967d2;
+    color: #fff;
+  }
