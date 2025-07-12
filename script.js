@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Firebase v8 config (copie depuis la console Firebase)
+    // Firebase v8 config
     var firebaseConfig = {
       apiKey: "AIzaSyCxVS6IvetneJ1Q5kr8t5d7F3qd8oe8KjQ",
       authDomain: "menu-outil.firebaseapp.com",
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var categoriesContainer = document.getElementById('categories');
     var addCategoryBtn = document.getElementById('add-category');
     var publishOnlineBtn = document.getElementById('publish-online');
+    var viewPublishedBtn = document.getElementById('view-published');
   
     var menus = JSON.parse(localStorage.getItem('menus')) || [];
     var currentMenuId = null;
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
       (menu.categories || []).forEach(function(cat, catIndex) {
         addCategory(cat.name, cat.items, catIndex);
       });
+      updateViewPublishedButton();
     }
   
     function renderImagePreview(type, src) {
@@ -236,9 +238,39 @@ document.addEventListener('DOMContentLoaded', function() {
       if (currentMenuId === null) return;
       var menu = menus[currentMenuId];
       publishMenuOnline(menu).then(function(id) {
+        updateViewPublishedButton();
         var publicUrl = window.location.origin + "/menu.html?id=" + id;
         prompt("Voici l’URL à utiliser pour le QR code :", publicUrl);
       });
+    };
+  
+    function updateViewPublishedButton() {
+      if (currentMenuId === null) {
+        viewPublishedBtn.classList.add("inactive");
+        viewPublishedBtn.classList.remove("active");
+        viewPublishedBtn.disabled = true;
+        viewPublishedBtn.dataset.url = "";
+        return;
+      }
+      var menu = menus[currentMenuId];
+      if (menu && menu.firestoreId) {
+        viewPublishedBtn.classList.remove("inactive");
+        viewPublishedBtn.classList.add("active");
+        viewPublishedBtn.disabled = false;
+        var publicUrl = window.location.origin + "/menu.html?id=" + menu.firestoreId;
+        viewPublishedBtn.dataset.url = publicUrl;
+      } else {
+        viewPublishedBtn.classList.add("inactive");
+        viewPublishedBtn.classList.remove("active");
+        viewPublishedBtn.disabled = true;
+        viewPublishedBtn.dataset.url = "";
+      }
+    }
+  
+    viewPublishedBtn.onclick = function() {
+      if (viewPublishedBtn.disabled) return;
+      var url = viewPublishedBtn.dataset.url;
+      if (url) window.open(url, "_blank");
     };
   
     renderMenus();

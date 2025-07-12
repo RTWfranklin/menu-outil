@@ -26,6 +26,37 @@ body {
     font-weight: bold;
     cursor: pointer;
   }
+  .publish-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  #publish-online {
+    flex: 1;
+  }
+  #view-published {
+    flex: 1;
+    transition: background 0.2s, color 0.2s;
+  }
+  
+  /* Bouton visualisation: grisé quand désactivé, vert quand activé */
+  .view-published.inactive {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    border: none;
+    opacity: 0.8;
+  }
+  .view-published.active {
+    background-color: #28a745;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-weight: bold;
+    opacity: 1;
+  }
+  
+  /* Autres styles inchangés */
   .delete-btn {
     background: #dc3545;
     margin-top: 5px;
