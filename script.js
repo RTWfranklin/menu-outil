@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
       var itemList = document.createElement('div');
       items.forEach(function(item, itemIndex) {
-        addItem(itemList, item.name, item.price, itemIndex, wrapper, item.img || '');
+        addItem(itemList, item.name, item.price, itemIndex, wrapper, item.img || '', item.badges || []);
       });
       wrapper.appendChild(itemList);
   
@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
       name = name || '';
       price = price || '';
       imgUrl = imgUrl || '';
+      desc = desc || '';
       var div = document.createElement('div');
       div.className = 'item';
   
@@ -273,6 +274,41 @@ document.addEventListener('DOMContentLoaded', function() {
       priceInput.type = 'text';
       priceInput.placeholder = 'Prix';
       priceInput.value = price;
+      var descInput = document.createElement('input');
+      descInput.type = 'text';
+      descInput.placeholder = 'Description';
+      descInput.value = '';
+  
+      // Badges disponibles
+      var BADGES = [
+        {label: 'Vegan', value: 'Vegan'},
+        {label: 'Nouveau', value: 'Nouveau'},
+        {label: 'Populaire', value: 'Populaire'},
+        {label: 'Spécialité', value: 'Spécialité'}
+      ];
+      var badgesWrapper = document.createElement('div');
+      badgesWrapper.className = 'badges-editor';
+      badgesWrapper.style.margin = "6px 0 9px 0";
+      badgesWrapper.style.display = "flex";
+      badgesWrapper.style.gap = "10px";
+      badgesWrapper.style.flexWrap = "wrap";
+  
+      // Détecte badges déjà présents
+      var initialBadges = Array.isArray(badges) ? badges : [];
+      BADGES.forEach(function(badge) {
+        var label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '4px';
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = badge.value;
+        // Pré-cocher si badge déjà présent
+        if (initialBadges.includes(badge.value)) checkbox.checked = true;
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(badge.label));
+        badgesWrapper.appendChild(label);
+      });
   
       var imgUpload = document.createElement('input');
       imgUpload.type = 'file';
@@ -316,6 +352,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
       div.appendChild(nameInput);
       div.appendChild(priceInput);
+      div.appendChild(descInput);
+      div.appendChild(badgesWrapper);
       div.appendChild(imgUpload);
       div.appendChild(imgPreview);
   
@@ -369,11 +407,16 @@ document.addEventListener('DOMContentLoaded', function() {
         catEl.querySelectorAll('.item').forEach(function(itemEl) {
           var inputs = itemEl.querySelectorAll('input[type="text"]');
           var imgUrl = itemEl.dataset.imgUrl || ""; // récupère l'URL Storage
-          items.push({
-            name: inputs[0].value,
-            price: inputs[1].value,
-            img: imgUrl
-          });
+          // Récupère les badges cochés
+var badgesInputs = Array.from(itemEl.querySelectorAll('.badges-editor input[type="checkbox"]'));
+var badges = badgesInputs.filter(function(chk){return chk.checked;}).map(function(chk){return chk.value;});
+items.push({
+  name: inputs[0] ? inputs[0].value : '',
+  price: inputs[1] ? inputs[1].value : '',
+  desc: inputs[2] ? inputs[2].value : '',
+  img: imgUrl,
+  badges: badges
+});
         });
         if (name) categories.push({ name: name, items: items });
       });
