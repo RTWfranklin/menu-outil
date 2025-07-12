@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Firebase v8 config
+    // Firebase config
     var firebaseConfig = {
       apiKey: "AIzaSyCxVS6IvetneJ1Q5kr8t5d7F3qd8oe8KjQ",
       authDomain: "menu-outil.firebaseapp.com",
@@ -32,6 +32,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var publishOnlineBtn = document.getElementById('publish-online');
     var viewPublishedBtn = document.getElementById('view-published');
   
+    // Profile bar
+    var profileBar = document.getElementById('profile-bar');
+    var profileAvatar = document.getElementById('profile-avatar');
+    var avatarImg = document.getElementById('avatar-img');
+    var profileMenu = document.getElementById('profile-menu');
+    var profileName = document.getElementById('profile-name');
+    var logoutBtn = document.getElementById('logout-btn');
+  
+    var landingBg = document.getElementById('landing-bg');
+  
     // User & menu data
     var user = null;
     var menus = [];
@@ -46,19 +56,48 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
   
+    // Switch UI on login
     firebase.auth().onAuthStateChanged(function(u) {
       user = u;
       if (user) {
-        userInfo.innerText = "Connecté : " + (user.displayName || user.email);
-        authZone.classList.add('hidden');
+        // Profile bar
+        profileBar.classList.remove('hidden');
+        avatarImg.src = user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || user.email);
+        profileName.textContent = user.displayName || user.email;
+  
+        // Show main app, hide landing
         mainApp.classList.remove('hidden');
+        landingBg.classList.add('hidden');
+  
+        // Load menus
         loadMenus();
       } else {
-        userInfo.innerText = "Non connecté";
-        authZone.classList.remove('hidden');
+        // Hide app, show landing, hide profile bar
+        profileBar.classList.add('hidden');
         mainApp.classList.add('hidden');
+        landingBg.classList.remove('hidden');
+        userInfo.innerText = "Non connecté";
       }
     });
+  
+    // Profil avatar clic : toggle menu
+    profileAvatar.onclick = function(e) {
+      profileMenu.classList.toggle('hidden');
+      e.stopPropagation();
+    };
+  
+    // Clique en dehors du menu : ferme
+    document.addEventListener('click', function(e) {
+      if (!profileBar.contains(e.target)) {
+        profileMenu.classList.add('hidden');
+      }
+    });
+  
+    // Déconnexion
+    logoutBtn.onclick = function() {
+      firebase.auth().signOut();
+      profileMenu.classList.add('hidden');
+    };
   
     // Charger les menus Firestore de l'utilisateur
     function loadMenus() {
