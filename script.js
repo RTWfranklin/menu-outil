@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
       categories[newIndex] = temp;
       editMenu(currentMenuId);
     }
-    function addItem(container, name, price, itemIndex, categoryWrapper, imgUrl) {
+    function addItem(container, name, price, itemIndex, categoryWrapper, imgUrl, badges) {
       name = name || '';
       price = price || '';
       imgUrl = imgUrl || '';
