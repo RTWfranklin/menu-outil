@@ -32,6 +32,18 @@
     if (!menuId || !uid) {
       menuDiv.innerHTML = "<div class='menu-error'>Menu introuvable</div>";
     } else {
+      // Skeleton loading
+      menuDiv.innerHTML = `
+        <div class="skeleton-menu">
+          <div class="skeleton-banner"></div>
+          <div class="skeleton-header"></div>
+          <div class="skeleton-categories">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+          </div>
+        </div>
+      `;
       db.collection('users').doc(uid).collection('menus').doc(menuId).get().then(function(doc) {
         if (!doc.exists) {
           menuDiv.innerHTML = "<div class='menu-error'>Menu introuvable</div>";
@@ -67,8 +79,18 @@
             if (item.img) {
               html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
             }
+            // Badges
+            if (item.badges && item.badges.length) {
+              html += '<div class="item-badges">';
+              item.badges.forEach(function(badge) {
+                html += '<span class="item-badge" data-badge="' + badge + '">' + badge + '</span>';
+              });
+              html += '</div>';
+            }
             html += '<div class="item-info">';
             html += '<span class="item-name">' + item.name + '</span>';
+            // Descriptif
+            if (item.desc) html += '<div class="item-desc">' + item.desc + '</div>';
             if (item.price) html += '<span class="item-price">' + item.price + '</span>';
             html += '</div>';
             html += '</div>';
