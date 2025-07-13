@@ -49,8 +49,8 @@
 .logo {
   position: absolute;
   left: 50%;
-  transform: translate(-50%,50%);
-  bottom: -40px;
+  transform: translate(-50%, 40%);
+  bottom: -32px;
   background: #fff;
   border: 3px solid #fff;
   box-shadow: 0 2px 12px #0002;
@@ -60,6 +60,15 @@
   object-fit: cover;
   z-index: 10;
 }
+@media (max-width: 700px) {
+  .logo {
+    width: 62px;
+    height: 62px;
+    bottom: -24px;
+    transform: translate(-50%, 35%);
+  }
+}
+
 #menu-title {
   font-family: 'Montserrat', Arial, sans-serif;
   font-size: 2.2rem;
