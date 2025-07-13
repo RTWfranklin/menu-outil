@@ -1,0 +1,13 @@
+{
+  "name": "menu-v1",
+  "version": "1.0.0",
+  "description": "Application de gestion de menus organisée en modules.",
+  "type": "module",
+  "scripts": {
+    "start": "echo 'Ouvrez index.html dans votre navigateur'"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^2.8.0"
+  }
+}
