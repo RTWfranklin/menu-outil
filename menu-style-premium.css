@@ -1,4 +1,90 @@
 /* --- Style premium sobre inspiré cookie.menu --- */
+.public-menu-header {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 40px;
+  overflow: visible;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  z-index: 2;
+}
+
+.banner-logo-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 180px;
+  max-height: 220px;
+  overflow: visible;
+}
+
+.banner {
+  width: 100vw;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  margin: 0;
+  box-shadow: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+.logo {
+  position: absolute;
+  left: 50%;
+  bottom: -40px;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 12px #0002;
+  z-index: 10;
+  object-fit: cover;
+}
+
+.public-menu-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  position: relative;
+  z-index: 3;
+  margin-top: 76px !important;
+}
+
+#menu-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1b2952;
+  margin: 0 0 12px 0;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 700px) {
+  .banner-logo-wrapper {
+    height: 120px;
+    max-height: 140px;
+  }
+  .logo {
+    width: 62px;
+    height: 62px;
+    bottom: -28px;
+  }
+  .public-menu-header-content {
+    margin-top: 48px !important;
+  }
+}
+
 .public-menu-wrapper {
   max-width: 700px;
   margin: 32px auto;

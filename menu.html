@@ -63,7 +63,8 @@
         html += '</div>';
         html += '<div class="public-menu-header-content">';
         html += '<h1 id="menu-title">' + (menu.title || "") + '</h1>';
-        html += '</div></header>';
+        html += '</div>';
+        html += '</header>';
         // Barre de navigation catégories
         html += '<nav class="category-nav">';
         (menu.categories || []).forEach(function(cat, idx) {
