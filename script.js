@@ -175,7 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
       renderImagePreview('logo', menu.logo || '');
       categoriesContainer.innerHTML = '';
       (menu.categories || []).forEach(function(cat, catIndex) {
-        addCategory(cat.name, cat.items, catIndex, cat.subcategories || []);
+        addCategory(
+          cat.name || '',
+          Array.isArray(cat.items) ? cat.items : [],
+          catIndex,
+          Array.isArray(cat.subcategories) ? cat.subcategories : []
+        );
       });
       updateViewPublishedButton();
     }
@@ -199,17 +204,63 @@ document.addEventListener('DOMContentLoaded', function() {
             menus[currentMenuId][type] = url;
           }
         }, function(errorMsg) {
-          alert("Erreur upload " + type + ": " + errorMsg);
+          alert('Erreur upload image plat: ' + errorMsg);
         });
       };
     }
-  
-    function addItem(container, name, price, itemIndex, categoryWrapper, imgUrl, badges) {
-      name = name || '';
-      price = price || '';
-      imgUrl = imgUrl || '';
-      var desc = '';
+var menus = [];
+var currentMenuId = null;
 
+// Auth
+loginGoogleBtn.onclick = function() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .catch(function(error) {
+      alert("Erreur de connexion : " + error.message);
+    });
+};
+
+firebase.auth().onAuthStateChanged(function(u) {
+  user = u;
+  if (user) {
+    profileBar.classList.remove('hidden');
+    avatarImg.src = user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(user.displayName || user.email);
+    profileName.textContent = user.displayName || user.email;
+    mainApp.classList.remove('hidden');
+    landingBg.classList.add('hidden');
+    loadMenus();
+  } else {
+    profileBar.classList.add('hidden');
+    mainApp.classList.add('hidden');
+    landingBg.classList.remove('hidden');
+    userInfo.innerText = "Non connecté";
+  }
+});
+
+profileAvatar.onclick = function(e) {
+  profileMenu.classList.toggle('hidden');
+  e.stopPropagation();
+};
+document.addEventListener('click', function(e) {
+  if (!profileBar.contains(e.target)) {
+    profileMenu.classList.add('hidden');
+  }
+});
+logoutBtn.onclick = function() {
+  firebase.auth().signOut();
+  profileMenu.classList.add('hidden');
+};
+
+function loadMenus() {
+  if (!user) return;
+  db.collection('users').doc(user.uid).collection('menus').get()
+    .then(function(querySnapshot) {
+      menus = [];
+      querySnapshot.forEach(function(doc) {
+        var menu = doc.data();
+        menu.firestoreId = doc.id;
+        menus.push(menu);
+      });
       desc = desc || '';
       var div = document.createElement('div');
       div.className = 'item';
@@ -316,49 +367,48 @@ document.addEventListener('DOMContentLoaded', function() {
       if (imgUrl) {
         div.dataset.imgUrl = imgUrl;
       }
-  
       container.appendChild(div);
-    }
-  
-    addMenuBtn.onclick = function() {
-      menus.push({ title: '', categories: [], banner: '', logo: '' });
-      renderMenus();
-    };
-  
-    backToListBtn.onclick = function() {
-      menuSelection.classList.remove('hidden');
-      menuEditor.classList.add('hidden');
-      saveCurrentMenu(function() {
-        renderMenus();
-        loadMenus();
-      });
-    };
-  
-    menuTitleInput.oninput = function() {
-      if (currentMenuId !== null) {
-        menus[currentMenuId].title = menuTitleInput.value;
-      }
-    };
-  
-    addCategoryBtn.onclick = function() {
-      addCategory();
-    };
-  
-    // Save menu, then callback (e.g. update button, show alert)
-    function saveCurrentMenu(cb) {
-      if (currentMenuId === null) return;
-      var categories = [];
-      categoriesContainer.querySelectorAll('.category').forEach(function(catEl) {
-        var catInputs = catEl.querySelectorAll('input[type="text"]');
-        var name = catInputs[0] ? catInputs[0].value : '';
-        // Gestion sous-catégories
-        var subcatNodes = catEl.querySelectorAll('.subcategory');
-        var subcategories = [];
-        if (subcatNodes.length > 0) {
-          subcatNodes.forEach(function(subcatEl) {
-            var subcatInputs = subcatEl.querySelectorAll('input[type="text"]');
-            var subcatName = subcatInputs[0] ? subcatInputs[0].value : '';
-            var subcatItems = [];
+}
+
+addMenuBtn.onclick = function() {
+  menus.push({ title: '', categories: [], banner: '', logo: '' });
+  renderMenus();
+};
+
+backToListBtn.onclick = function() {
+  menuSelection.classList.remove('hidden');
+  menuEditor.classList.add('hidden');
+  saveCurrentMenu(function() {
+    renderMenus();
+    loadMenus();
+  });
+};
+
+menuTitleInput.oninput = function() {
+  if (currentMenuId !== null) {
+    menus[currentMenuId].title = menuTitleInput.value;
+  }
+};
+
+addCategoryBtn.onclick = function() {
+  addCategory();
+};
+
+// Save menu, then callback (e.g. update button, show alert)
+function saveCurrentMenu(cb) {
+  if (currentMenuId === null) return;
+  var categories = [];
+  categoriesContainer.querySelectorAll('.category').forEach(function(catEl) {
+    var catInputs = catEl.querySelectorAll('input[type="text"]');
+    var name = catInputs[0] ? catInputs[0].value : '';
+    // Gestion sous-catégories
+    var subcatNodes = catEl.querySelectorAll('.subcategory');
+    var subcategories = [];
+    if (subcatNodes.length > 0) {
+      subcatNodes.forEach(function(subcatEl) {
+        var subcatInputs = subcatEl.querySelectorAll('input[type="text"]');
+        var subcatName = subcatInputs[0] ? subcatInputs[0].value : '';
+        var subcatItems = [];
             subcatEl.querySelectorAll('.item').forEach(function(itemEl) {
               var inputs = itemEl.querySelectorAll('input[type="text"]');
               var imgUrl = itemEl.dataset.imgUrl || "";
@@ -398,6 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMenus();
         if (cb) cb();
       });
+    }
     }
   
     publishOnlineBtn.onclick = function() {
@@ -444,4 +495,4 @@ document.addEventListener('DOMContentLoaded', function() {
       var url = viewPublishedBtn.dataset.url;
       if (url) window.open(url, "_blank");
     };
-  });
+}); // <-- fermeture du DOMContentLoaded
