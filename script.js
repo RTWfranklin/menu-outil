@@ -274,6 +274,7 @@ function loadMenus() {
       desc = desc || '';
       var div = document.createElement('div');
       div.className = 'item';
+      var imgUrl = '';
   
       var nameInput = document.createElement('input');
       nameInput.type = 'text';
