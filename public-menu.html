@@ -37,7 +37,7 @@
   if(menu.logo) {
     document.getElementById('logo').src = menu.logo;
     document.getElementById('logo').style.display = '';
-  }
+  } // (À adapter dans la génération HTML si besoin, pour garantir que le logo est bien en dehors du header-content)
   const categories = menu.categories || [];
   // Génération navigation catégories
   const nav = document.getElementById('category-nav');
