@@ -53,12 +53,14 @@
         var html = "";
         html += '<div class="public-menu-wrapper">';
         html += '<header class="public-menu-header">';
+        html += '<div class="banner-logo-wrapper">';
         if (menu.banner) {
           html += '<img class="banner" src="' + menu.banner + '" alt="Bannière">';
         }
         if (menu.logo) {
           html += '<img class="logo" src="' + menu.logo + '" alt="Logo">';
         }
+        html += '</div>';
         html += '<div class="public-menu-header-content">';
         html += '<h1 id="menu-title">' + (menu.title || "") + '</h1>';
         html += '</div></header>';
