@@ -33,8 +33,16 @@ export function handleImageUpload(input, type) {
   };
 }
 
-export function updateViewPublishedButton() {
-  // TODO: logique d'activation/désactivation du bouton "voir en ligne"
+export function updateViewPublishedButton(menu) {
+  const viewPublishedBtn = document.getElementById('view-published');
+  if (!viewPublishedBtn) return;
+  if (menu && menu.firestoreId) {
+    viewPublishedBtn.disabled = false;
+    viewPublishedBtn.classList.remove('inactive');
+  } else {
+    viewPublishedBtn.disabled = true;
+    viewPublishedBtn.classList.add('inactive');
+  }
 }
 
 export function renderMenus() {
@@ -82,6 +90,7 @@ export function renderMenus() {
 export function editMenu(index) {
   setCurrentMenuId(index);
   const menu = menus[index];
+  updateViewPublishedButton(menu);
   document.getElementById('menu-selection').classList.add('hidden');
   document.getElementById('menu-editor').classList.remove('hidden');
   document.getElementById('menu-title').value = menu.title || '';
@@ -361,12 +370,18 @@ export function setupUI() {
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
         const menu = menus[currentMenuId];
         const db = firebase.firestore();
-        db.collection('public_menus').doc(menu.firestoreId || '').set({
-          ...menu,
+        // Filtrer les champs pour Firestore public
+        const { title, banner, logo, categories } = menu;
+        const publicMenu = {
+          title: title || '',
+          banner: banner || '',
+          logo: logo || '',
+          categories: Array.isArray(categories) ? categories : [],
           public: true,
           owner: window.currentUser.uid,
           publishedAt: new Date().toISOString()
-        }).then(function() {
+        };
+        db.collection('public_menus').doc(menu.firestoreId || '').set(publicMenu).then(function() {
           alert('Menu publié en ligne !');
           // Active le bouton de visualisation
           const viewPublishedBtn = document.getElementById('view-published');
