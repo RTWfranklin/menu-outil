@@ -36,10 +36,17 @@ export function saveMenuToFirestore(menu, user, cb) {
 }
 
 export function deleteMenu(menu, index, user) {
-  if (!user || !menu.firestoreId) return;
+  console.log('[DEBUG] deleteMenu called with:', {menu, index, user, firestoreId: menu.firestoreId});
+  if (!user || !menu.firestoreId) {
+    console.warn('[DEBUG] deleteMenu: user ou menu.firestoreId manquant', {user, firestoreId: menu.firestoreId});
+    return;
+  }
   const db = getDb();
   db.collection('users').doc(user.uid).collection('menus').doc(menu.firestoreId).delete().then(function() {
     menus.splice(index, 1);
+    console.log('[DEBUG] Menu supprimé localement, index:', index);
+  }).catch(function(err) {
+    console.error('[DEBUG] Erreur Firestore deleteMenu:', err);
   });
 }
 
