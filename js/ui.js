@@ -323,7 +323,14 @@ export function setupUI() {
         saveMenuToFirestore(menu, window.currentUser, function() {
           loadMenus(window.currentUser, function() {
             renderMenus();
-            editMenu(currentMenuId);
+            // Retrouve le bon index du menu courant après reload
+            const newIndex = menus.findIndex(m => m.firestoreId === menu.firestoreId);
+            if (newIndex !== -1) {
+              editMenu(newIndex);
+            } else {
+              document.getElementById('menu-editor').classList.add('hidden');
+              document.getElementById('menu-selection').classList.remove('hidden');
+            }
             addCategoryBtn.disabled = false;
           });
         });
