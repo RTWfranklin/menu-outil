@@ -211,6 +211,15 @@ document.addEventListener('DOMContentLoaded', function() {
 var menus = [];
 var currentMenuId = null;
 
+// Fonction utilitaire d'ajout de catégorie pour compatibilité avec les appels existants
+function addCategory() {
+  if (typeof menus === 'undefined' || currentMenuId === null) return;
+  if (!menus[currentMenuId].categories) menus[currentMenuId].categories = [];
+  menus[currentMenuId].categories.push({ name: '', items: [] });
+  if (typeof renderMenus === 'function') renderMenus();
+}
+
+
 // Auth
 loginGoogleBtn.onclick = function() {
   var provider = new firebase.auth.GoogleAuthProvider();
@@ -315,7 +324,7 @@ function loadMenus() {
       imgUpload.type = 'file';
       imgUpload.accept = 'image/*';
       imgUpload.style.marginTop = "8px";
-  
+
       var imgPreview = document.createElement('div');
       imgPreview.style.marginTop = "7px";
       if (imgUrl) {
@@ -326,7 +335,9 @@ function loadMenus() {
         imgTag.style.borderRadius = '8px';
         imgPreview.appendChild(imgTag);
       }
-  
+
+      var badges = [];
+
       imgUpload.onchange = function (event) {
         var file = event.target.files[0];
         if (!file) return;
