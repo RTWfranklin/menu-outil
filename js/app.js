@@ -10,6 +10,7 @@ const mainApp = document.getElementById('main-app');
 const landingBg = document.getElementById('landing-bg');
 const userInfo = document.getElementById('user-info');
 
+import { setupUI } from './ui.js';
 function showConnectedUI(user) {
   mainApp.classList.remove('hidden');
   landingBg.classList.add('hidden');
@@ -24,7 +25,10 @@ function showConnectedUI(user) {
     profileName.textContent = user.displayName || user.email;
   }
   window.currentUser = user;
+  // (Re)wiring complet de l'UI après connexion
+  setupUI();
 }
+
 
 
 function showDisconnectedUI() {
@@ -42,6 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const avatar = document.getElementById('profile-avatar');
   const menuContent = document.getElementById('profile-menu-content');
   const closeMenuBtn = document.getElementById('close-profile-menu');
+  if (!avatar) { console.warn('profile-avatar introuvable'); alert('Erreur : #profile-avatar manquant'); }
+  if (!menuContent) { console.warn('profile-menu-content introuvable'); alert('Erreur : #profile-menu-content manquant'); }
   if (avatar && menuContent) {
     avatar.addEventListener('click', (e) => {
       e.stopPropagation();
