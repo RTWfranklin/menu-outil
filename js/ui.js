@@ -310,7 +310,12 @@ export function setupUI() {
   // Ajout de catégorie
   if (addCategoryBtn) { console.log('[UI] Bouton add-category trouvé, wiring...');
     addCategoryBtn.onclick = function() {
-      if (currentMenuId === null || !menus[currentMenuId]) return;
+      if (addCategoryBtn.disabled) return; // anti-double-clic
+      addCategoryBtn.disabled = true;
+      if (currentMenuId === null || !menus[currentMenuId]) {
+        addCategoryBtn.disabled = false;
+        return;
+      }
       const menu = menus[currentMenuId];
       menu.categories = menu.categories || [];
       menu.categories.push({ name: "Nouvelle catégorie", items: [] });
@@ -319,8 +324,11 @@ export function setupUI() {
           loadMenus(window.currentUser, function() {
             renderMenus();
             editMenu(currentMenuId);
+            addCategoryBtn.disabled = false;
           });
         });
+      } else {
+        addCategoryBtn.disabled = false;
       }
     };
   }
