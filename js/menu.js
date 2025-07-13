@@ -1,8 +1,8 @@
 // Fonctions liées à la gestion des menus
 import { getDb } from './firebase.js';
 
-let menus = [];
-let currentMenuId = null;
+export let menus = [];
+export let currentMenuId = null;
 
 export function loadMenus(user) {
   if (!user) return;
