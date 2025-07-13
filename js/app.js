@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       showConnectedUI(user);
       loadMenus(user);
+      import('./ui.js').then(mod => mod.setupUI());
     } else {
       showDisconnectedUI();
     }
