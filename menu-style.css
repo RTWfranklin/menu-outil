@@ -429,3 +429,30 @@ body {
       word-break: break-word;
     }
   }
+
+  /* --- Fixe responsive mobile anti-débordement de cartes plats --- */
+@media (max-width: 600px) {
+    .menu-category, .menu-categories {
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    .category-items {
+      margin: 0 !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    .menu-item-card {
+      width: 98vw !important;
+      max-width: 98vw !important;
+      min-width: 0 !important;
+      margin: 0 auto 14px auto !important;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+  }
