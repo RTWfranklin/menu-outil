@@ -51,87 +51,75 @@
         }
         var menu = doc.data();
         var html = "";
-        // Bannière
+        html += '<div class="public-menu-wrapper">';
+        html += '<header class="public-menu-header">';
         if (menu.banner) {
-          html += '<div class="menu-banner"><img src="' + menu.banner + '" alt="Bannière"></div>';
+          html += '<img class="banner" src="' + menu.banner + '" alt="Bannière">';
         }
-        // Logo & titre
-        html += '<div class="menu-header">';
+        html += '<div class="public-menu-header-content">';
         if (menu.logo) {
-          html += '<div class="menu-logo"><img src="' + menu.logo + '" alt="Logo"></div>';
+          html += '<img class="logo" src="' + menu.logo + '" alt="Logo">';
         }
-        html += '<h1 class="menu-title">' + (menu.title || "") + '</h1>';
-        html += '</div>';
+        html += '<h1 id="menu-title">' + (menu.title || "") + '</h1>';
+        html += '</div></header>';
         // Barre de navigation catégories
-        html += '<nav class="cat-nav">';
+        html += '<nav class="category-nav">';
         (menu.categories || []).forEach(function(cat, idx) {
-          html += '<button class="cat-nav-btn" data-catidx="'+idx+'">' + cat.name + '</button>';
+          html += '<button class="category-nav-btn" data-catidx="'+idx+'">' + cat.name + '</button>';
         });
         html += '</nav>';
         // Catégories
-        html += '<div class="menu-categories">';
+        html += '<main class="categories-list">';
         (menu.categories || []).forEach(function(cat, idx) {
-          html += '<section class="menu-category" id="cat-'+idx+'">';
-          html += '<h2 class="category-title">' + cat.name + '</h2>';
+          html += '<section class="category-section" id="cat-section-'+idx+'">';
+          html += '<h2 class="category-section-title">' + cat.name + '</h2>';
           if (cat.subcategories && cat.subcategories.length > 0) {
             cat.subcategories.forEach(function(subcat) {
               html += '<h3 class="subcategory-title" style="margin:18px 0 6px 0;font-size:1.07em;color:#555;font-weight:500">' + subcat.name + '</h3>';
-              html += '<div class="category-items">';
               (subcat.items || []).forEach(function(item) {
-                html += '<div class="menu-item-card">';
+                html += '<div class="dish-card">';
                 if (item.img) {
-                  html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
+                  html += '<img class="dish-img" src="' + item.img + '" alt="' + item.name + '">';
                 }
-                // Badges
+                html += '<div class="dish-info">';
+                html += '<div class="dish-title">' + item.name + '</div>';
+                if (item.desc) html += '<div class="dish-desc">' + item.desc + '</div>';
                 if (item.badges && item.badges.length) {
-                  html += '<div class="item-badges">';
-                  item.badges.forEach(function(badge) {
-                    html += '<span class="item-badge" data-badge="' + badge + '">' + badge + '</span>';
-                  });
-                  html += '</div>';
+                  html += '<span class="badges">' + item.badges.join(', ') + '</span>';
                 }
-                html += '<div class="item-info">';
-                html += '<span class="item-name">' + item.name + '</span>';
-                if (item.desc) html += '<div class="item-desc">' + item.desc + '</div>';
-                if (item.price) html += '<span class="item-price">' + item.price + '</span>';
                 html += '</div>';
+                if (item.price) html += '<div class="dish-price">' + item.price + '</div>';
                 html += '</div>';
               });
-              html += '</div>';
             });
           } else {
-            html += '<div class="category-items">';
             (cat.items || []).forEach(function(item) {
-              html += '<div class="menu-item-card">';
+              html += '<div class="dish-card">';
               if (item.img) {
-                html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
+                html += '<img class="dish-img" src="' + item.img + '" alt="' + item.name + '">';
               }
+              html += '<div class="dish-info">';
+              html += '<div class="dish-title">' + item.name + '</div>';
+              if (item.desc) html += '<div class="dish-desc">' + item.desc + '</div>';
               if (item.badges && item.badges.length) {
-                html += '<div class="item-badges">';
-                item.badges.forEach(function(badge) {
-                  html += '<span class="item-badge" data-badge="' + badge + '">' + badge + '</span>';
-                });
-                html += '</div>';
+                html += '<span class="badges">' + item.badges.join(', ') + '</span>';
               }
-              html += '<div class="item-info">';
-              html += '<span class="item-name">' + item.name + '</span>';
-              if (item.desc) html += '<div class="item-desc">' + item.desc + '</div>';
-              if (item.price) html += '<span class="item-price">' + item.price + '</span>';
               html += '</div>';
+              if (item.price) html += '<div class="dish-price">' + item.price + '</div>';
               html += '</div>';
             });
-            html += '</div>';
           }
           html += '</section>';
         });
+        html += '</main>';
         html += '</div>';
         menuDiv.innerHTML = html;
         // Navigation fluide et surbrillance catégorie active
-        var navBtns = document.querySelectorAll('.cat-nav-btn');
-        var catSections = document.querySelectorAll('.menu-category');
+        var navBtns = document.querySelectorAll('.category-nav-btn');
+        var catSections = document.querySelectorAll('.category-section');
         navBtns.forEach(function(btn, idx) {
           btn.addEventListener('click', function() {
-            document.getElementById('cat-'+idx).scrollIntoView({ behavior: 'smooth', block: 'start' });
+            document.getElementById('cat-section-'+idx).scrollIntoView({ behavior: 'smooth', block: 'start' });
           });
         });
         window.addEventListener('scroll', function() {
