@@ -1,7 +1,4 @@
 // Initialisation de Firebase et fonctions liées à Firestore
-import firebase from "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
-import "https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js";
-
 let db = null;
 
 export function initFirebase() {
