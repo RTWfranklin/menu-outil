@@ -54,4 +54,4 @@ export function editMenu(index) {
   // Elle sera déplacée dans ui.js pour la séparation stricte UI/logique
 }
 
-export { menus, currentMenuId };
+
