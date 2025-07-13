@@ -57,10 +57,10 @@
         if (menu.banner) {
           html += '<img class="banner" src="' + menu.banner + '" alt="Bannière">';
         }
-        html += '</div>';
         if (menu.logo) {
-          html += '<div class="logo-wrapper"><img class="logo" src="' + menu.logo + '" alt="Logo"></div>';
+          html += '<img class="logo" src="' + menu.logo + '" alt="Logo">';
         }
+        html += '</div>';
         html += '<div class="public-menu-header-content">';
         html += '<h1 id="menu-title">' + (menu.title || "") + '</h1>';
         html += '</div></header>';
