@@ -40,7 +40,7 @@
 .logo {
   position: absolute;
   left: 50%;
-  bottom: -40px;
+  top: 140px;
   transform: translateX(-50%);
   width: 80px;
   height: 80px;
@@ -73,10 +73,14 @@
 }
 
 @media (max-width: 700px) {
+  .banner {
+    height: 120px;
+    max-height: 140px;
+  }
   .logo {
     width: 62px;
     height: 62px;
-    bottom: -28px;
+    top: 90px;
   }
   .public-menu-header-content {
     margin-top: 38px;
