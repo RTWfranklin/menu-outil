@@ -1,7 +1,7 @@
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 import { addCategory } from './category.js';
-import { menus, currentMenuId, saveMenuToFirestore, deleteMenu } from './menu.js';
+import { menus, currentMenuId, saveMenuToFirestore, deleteMenu, setCurrentMenuId } from './menu.js';
 
 import { uploadImageToCloudinary } from './firebase.js';
 
@@ -63,7 +63,7 @@ export function renderMenus() {
 }
 
 export function editMenu(index) {
-  currentMenuId = index;
+  setCurrentMenuId(index);
   const menu = menus[index];
   document.getElementById('menu-selection').classList.add('hidden');
   document.getElementById('menu-editor').classList.remove('hidden');

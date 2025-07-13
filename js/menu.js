@@ -3,6 +3,8 @@ import { getDb } from './firebase.js';
 
 export let menus = [];
 export let currentMenuId = null;
+export function setCurrentMenuId(id) { currentMenuId = id; }
+
 
 export function loadMenus(user) {
   if (!user) return;
@@ -43,15 +45,6 @@ export function deleteMenu(menu, index, user) {
   });
 }
 
-export function renderMenus() {
-  // Cette fonction doit être branchée à l'UI (menuList, etc.)
-  // Elle sera déplacée dans ui.js pour la séparation stricte UI/logique
-}
 
-export function editMenu(index) {
-  currentMenuId = index;
-  // Cette fonction doit être branchée à l'UI (menuEditor, menuSelection, etc.)
-  // Elle sera déplacée dans ui.js pour la séparation stricte UI/logique
-}
 
 
