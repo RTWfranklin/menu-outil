@@ -448,8 +448,8 @@ body {
       overflow-x: hidden;
     }
     .menu-item-card {
-      width: 98vw !important;
-      max-width: 98vw !important;
+      width: 92vw !important;
+      max-width: 92vw !important;
       min-width: 0 !important;
       margin: 0 auto 14px auto !important;
       box-sizing: border-box;
