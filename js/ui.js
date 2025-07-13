@@ -248,7 +248,7 @@ export function setupUI() {
   const addCategoryBtn = document.getElementById('add-category');
 
   // Ajout d'un menu (à compléter selon ta logique d'ajout)
-  if (addMenuBtn) {
+  if (addMenuBtn) { console.log('[UI] Bouton add-menu trouvé, wiring...');
     addMenuBtn.onclick = function() {
       // Crée un nouveau menu vierge
       const newMenu = { title: '', banner: '', logo: '', categories: [] };
@@ -267,7 +267,7 @@ export function setupUI() {
   }
 
   // Retour à la liste
-  if (backToListBtn) {
+  if (backToListBtn) { console.log('[UI] Bouton back-to-list trouvé, wiring...');
     backToListBtn.onclick = function() {
       document.getElementById('menu-editor').classList.add('hidden');
       document.getElementById('menu-selection').classList.remove('hidden');
@@ -288,13 +288,13 @@ export function setupUI() {
   if (logoUpload) handleImageUpload(logoUpload, 'logo');
 
   // Ajout de catégorie
-  if (addCategoryBtn) {
+  if (addCategoryBtn) { console.log('[UI] Bouton add-category trouvé, wiring...');
     addCategoryBtn.onclick = addCategory;
   }
 
   // Sauvegarde du menu courant
   const saveChangesBtn = document.getElementById('save-changes');
-  if (saveChangesBtn) {
+  if (saveChangesBtn) { console.log('[UI] Bouton save-changes trouvé, wiring...');
     saveChangesBtn.onclick = function() {
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
         saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
@@ -308,7 +308,7 @@ export function setupUI() {
 
   // Publication en ligne du menu courant
   const publishOnlineBtn = document.getElementById('publish-online');
-  if (publishOnlineBtn) {
+  if (publishOnlineBtn) { console.log('[UI] Bouton publish-online trouvé, wiring...');
     publishOnlineBtn.onclick = function() {
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
         const menu = menus[currentMenuId];
