@@ -9,7 +9,7 @@ export function loadMenus(user) {
   const db = getDb();
   db.collection('users').doc(user.uid).collection('menus').get()
     .then(function(querySnapshot) {
-      menus = [];
+      menus.length = 0;
       querySnapshot.forEach(function(doc) {
         var menu = doc.data();
         menu.firestoreId = doc.id;
