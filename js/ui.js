@@ -54,6 +54,9 @@ export function renderMenus() {
       if (confirm('Supprimer ce menu ?')) {
         if (window.currentUser) {
           deleteMenu(menu, index, window.currentUser);
+          renderMenus();
+          document.getElementById('menu-editor').classList.add('hidden');
+          document.getElementById('menu-selection').classList.remove('hidden');
         } else {
           alert('Non connecté');
         }
