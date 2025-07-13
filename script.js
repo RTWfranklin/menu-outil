@@ -325,8 +325,8 @@ function loadMenus() {
         imgPreview.appendChild(imgTag);
       }
   
-      imgUpload.onchange = function () {
-        var file = imgUpload.files[0];
+      imgUpload.onchange = function (event) {
+        var file = event.target.files[0];
         if (!file) return;
         // Affiche l'aperçu local
         var reader = new FileReader();
@@ -449,7 +449,8 @@ function saveCurrentMenu(cb) {
         if (cb) cb();
       });
     }
-    }
+
+  }
   
     publishOnlineBtn.onclick = function() {
       saveCurrentMenu(function() {
