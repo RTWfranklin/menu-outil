@@ -261,6 +261,7 @@ function loadMenus() {
         menu.firestoreId = doc.id;
         menus.push(menu);
       });
+      var desc = '';
       desc = desc || '';
       var div = document.createElement('div');
       div.className = 'item';
@@ -391,7 +392,11 @@ menuTitleInput.oninput = function() {
 };
 
 addCategoryBtn.onclick = function() {
-  addCategory();
+  // Ajoute une catégorie vide à l'UI et au tableau menus
+  if (!menus[currentMenuId]) return;
+  if (!menus[currentMenuId].categories) menus[currentMenuId].categories = [];
+  menus[currentMenuId].categories.push({ name: '', items: [] });
+  renderMenus();
 };
 
 // Save menu, then callback (e.g. update button, show alert)
