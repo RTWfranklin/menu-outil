@@ -2,7 +2,7 @@
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 import { addCategory } from './category.js';
 import { menus, currentMenuId } from './menu.js';
-export { setupUI };
+
 import { uploadImageToCloudinary } from './firebase.js';
 
 export function renderImagePreview(type, src) {
