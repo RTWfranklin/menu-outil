@@ -456,3 +456,10 @@ body {
       overflow: hidden;
     }
   }
+
+  @media (max-width: 600px) {
+    .category-title {
+      padding-left: 4vw;
+      box-sizing: border-box;
+    }
+  }
