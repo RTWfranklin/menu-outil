@@ -50,6 +50,7 @@ export function renderMenus() {
     delBtn.textContent = '🗑️ Supprimer';
     delBtn.className = 'delete-btn';
     delBtn.onclick = function() {
+      console.log('[UI] Clic bouton supprimer menu', index);
       if (confirm('Supprimer ce menu ?')) {
         if (window.currentUser) {
           deleteMenu(menu, index, window.currentUser);
@@ -95,6 +96,7 @@ export function editMenu(index) {
     delCatBtn.textContent = '🗑️';
     delCatBtn.title = 'Supprimer cette catégorie';
     delCatBtn.onclick = function() {
+      console.log('[UI] Clic bouton supprimer catégorie', catIndex);
       if (confirm('Supprimer cette catégorie ?')) {
         menu.categories.splice(catIndex, 1);
         renderMenus();
@@ -214,6 +216,7 @@ export function editMenu(index) {
       delItemBtn.textContent = '🗑️';
       delItemBtn.title = 'Supprimer cet item';
       delItemBtn.onclick = function() {
+        console.log('[UI] Clic bouton supprimer item', itemIndex);
         if (confirm('Supprimer cet item ?')) {
           cat.items.splice(itemIndex, 1);
           renderMenus();
