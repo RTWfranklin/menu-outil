@@ -1,7 +1,7 @@
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 import { addCategory } from './category.js';
-import { menus, currentMenuId } from './menu.js';
+import { menus, currentMenuId, saveMenuToFirestore, deleteMenu } from './menu.js';
 
 import { uploadImageToCloudinary } from './firebase.js';
 
