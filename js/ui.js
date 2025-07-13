@@ -43,7 +43,16 @@ export function renderMenus() {
     // Bouton pour éditer
     const btn = document.createElement('button');
     btn.textContent = menu.title || "Menu " + (index + 1);
-    btn.onclick = function() { editMenu(index); };
+    btn.onclick = function() {
+        if (menus[index]) {
+          editMenu(index);
+        } else {
+          console.warn('[UI] Menu inexistant pour index', index);
+          renderMenus();
+          document.getElementById('menu-editor').classList.add('hidden');
+          document.getElementById('menu-selection').classList.remove('hidden');
+        }
+      };
     menuList.appendChild(btn);
     // Bouton pour supprimer
     const delBtn = document.createElement('button');
@@ -53,10 +62,13 @@ export function renderMenus() {
       console.log('[UI] Clic bouton supprimer menu', index);
       if (confirm('Supprimer ce menu ?')) {
         if (window.currentUser) {
-          deleteMenu(menu, index, window.currentUser);
-          renderMenus();
-          document.getElementById('menu-editor').classList.add('hidden');
-          document.getElementById('menu-selection').classList.remove('hidden');
+          deleteMenu(menu, index, window.currentUser, function() {
+            loadMenus(window.currentUser, function() {
+              renderMenus();
+              document.getElementById('menu-editor').classList.add('hidden');
+              document.getElementById('menu-selection').classList.remove('hidden');
+            });
+          });
         } else {
           alert('Non connecté');
         }
@@ -253,22 +265,23 @@ export function setupUI() {
   const logoUpload = document.getElementById('logo-upload');
   const addCategoryBtn = document.getElementById('add-category');
 
+  // Appel initial à renderMenus();
+  if (window.currentUser) {
+    loadMenus(window.currentUser, renderMenus);
+  }
+
   // Ajout d'un menu (à compléter selon ta logique d'ajout)
   if (addMenuBtn) { console.log('[UI] Bouton add-menu trouvé, wiring...');
     addMenuBtn.onclick = function() {
       // Crée un nouveau menu vierge
       const newMenu = { title: '', banner: '', logo: '', categories: [] };
-      // Sauvegarde dans Firestore
-      if (window.currentUser) {
-        saveMenuToFirestore(newMenu, window.currentUser, function(id) {
-          newMenu.firestoreId = id;
-          menus.push(newMenu);
-          if (typeof renderMenus === 'function') renderMenus();
-          if (typeof editMenu === 'function') editMenu(menus.length - 1);
+      menus.push(newMenu);
+      saveMenuToFirestore(newMenu, window.currentUser, function() {
+        loadMenus(window.currentUser, function() {
+          renderMenus();
+          editMenu(menus.length - 1);
         });
-      } else {
-        alert('Veuillez vous connecter pour créer un menu.');
-      }
+      });
     };
   }
 

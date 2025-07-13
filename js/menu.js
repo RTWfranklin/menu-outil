@@ -6,7 +6,7 @@ export let currentMenuId = null;
 export function setCurrentMenuId(id) { currentMenuId = id; }
 
 
-export function loadMenus(user) {
+export function loadMenus(user, cb) {
   if (!user) return;
   const db = getDb();
   db.collection('users').doc(user.uid).collection('menus').get()
@@ -17,6 +17,7 @@ export function loadMenus(user) {
         menu.firestoreId = doc.id;
         menus.push(menu);
       });
+      if (cb) cb();
     });
 }
 
@@ -35,7 +36,7 @@ export function saveMenuToFirestore(menu, user, cb) {
   }
 }
 
-export function deleteMenu(menu, index, user) {
+export function deleteMenu(menu, index, user, cb) {
   console.log('[DEBUG] deleteMenu called with:', {menu, index, user, firestoreId: menu.firestoreId});
   if (!user || !menu.firestoreId) {
     console.warn('[DEBUG] deleteMenu: user ou menu.firestoreId manquant', {user, firestoreId: menu.firestoreId});
@@ -45,6 +46,7 @@ export function deleteMenu(menu, index, user) {
   db.collection('users').doc(user.uid).collection('menus').doc(menu.firestoreId).delete().then(function() {
     menus.splice(index, 1);
     console.log('[DEBUG] Menu supprimé localement, index:', index);
+    if (cb) cb();
   }).catch(function(err) {
     console.error('[DEBUG] Erreur Firestore deleteMenu:', err);
   });
