@@ -1,7 +1,8 @@
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 // Fonctions de manipulation du DOM et de l'interface utilisateur
 import { addCategory } from './category.js';
-import { menus, currentMenuId, saveMenuToFirestore, deleteMenu, setCurrentMenuId } from './menu.js';
+// Import des fonctions et variables nécessaires
+import { menus, currentMenuId, saveMenuToFirestore, deleteMenu, setCurrentMenuId, loadMenus } from './menu.js';
 
 import { uploadImageToCloudinary } from './firebase.js';
 
