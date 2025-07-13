@@ -406,3 +406,26 @@ body {
       font-size: 0.97em;
     }
   }
+
+  /* --- Fixe responsive mobile anti-débordement --- */
+@media (max-width: 600px) {
+    .item-name, .item-desc, .item-price {
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 95vw;
+    }
+    .item-badges {
+      flex-wrap: wrap;
+      gap: 4px 2px;
+      max-width: 94vw;
+      overflow-x: auto;
+    }
+    .item-badge {
+      font-size: 0.91em;
+      padding: 3px 9px;
+      margin-bottom: 2px;
+      max-width: 90vw;
+      white-space: normal;
+      word-break: break-word;
+    }
+  }
