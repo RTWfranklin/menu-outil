@@ -368,7 +368,7 @@ function loadMenus() {
         div.dataset.imgUrl = imgUrl;
       }
       container.appendChild(div);
-}
+})
 
 addMenuBtn.onclick = function() {
   menus.push({ title: '', categories: [], banner: '', logo: '' });
