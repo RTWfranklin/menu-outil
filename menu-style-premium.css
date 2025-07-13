@@ -96,33 +96,9 @@
 }
 
 
-.banner {
-  width: 100vw;
-  min-height: 180px;
-  max-height: 240px;
-  object-fit: cover;
-  display: block;
-  border-radius: 0;
-  margin: 0;
-  box-shadow: none;
-  position: relative;
-  z-index: 1;
-}
 
-.logo {
-  position: absolute;
-  left: 50%;
-  top: 140px;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid #fff;
-  box-shadow: 0 2px 12px #0002;
-  z-index: 10;
-  object-fit: cover;
-}
+
+
 
 .public-menu-header-content {
   display: flex;
@@ -159,42 +135,9 @@
   }
 }
 
-.public-menu-header-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 60px;
-  gap: 12px;
-  padding: 0;
-  position: relative;
-  z-index: 3;
-}
-.banner {
-  width: 100vw;
-  min-height: 180px;
-  max-height: 240px;
-  object-fit: cover;
-  display: block;
-  border-radius: 0;
-  margin: 0;
-  box-shadow: none;
-  position: relative;
-  z-index: 1;
-}
-.logo {
-  position: absolute;
-  left: 50%;
-  bottom: -36px;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #fff;
-  border: 3px solid #fff;
-  box-shadow: 0 2px 12px #0002;
-  z-index: 10;
-  object-fit: cover;
-}
+
+
+
 @media (max-width: 700px) {
   .logo {
     width: 62px;
@@ -204,14 +147,7 @@
   }
 }
 
-#menu-title {
-  font-family: 'Montserrat', Arial, sans-serif;
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #1b2952;
-  letter-spacing: 0.01em;
-}
+
 
 .category-nav {
   display: flex;
