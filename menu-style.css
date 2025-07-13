@@ -87,7 +87,7 @@
   display: block;
   height: 3.5px;
   border-radius: 2px 2px 0 0;
-  background: linear-gradient(90deg,#f7c873 0%,#e8b547 100%);
+  background: linear-gradient(90deg,#f5f6fa 0%,#fff 100%);
   position: absolute;
   left: 20%;
   right: 20%;
@@ -118,7 +118,7 @@
   margin-bottom: 18px;
   margin-top: 26px;
   letter-spacing: 0.5px;
-  border-left: 5px solid #f7c873;
+  border-left: 5px solid #3a5ba0;
   padding-left: 17px;
 }
 .dish-card {
@@ -134,7 +134,7 @@
   position: relative;
 }
 .dish-card:hover {
-  box-shadow: 0 8px 44px #f7c87355, 0 2px 12px #e8b54733;
+  box-shadow: 0 8px 44px #3a5ba044, 0 2px 12px #3a5ba022;
   transform: translateY(-2px) scale(1.012);
 }
 .dish-img {
@@ -176,14 +176,14 @@
 }
 .badges {
   background: #f7c873;
-  color: #7a5a00;
+  color: #1b2952;
   font-size: 0.97em;
   padding: 3px 10px;
   border-radius: 6px;
   margin-left: 10px;
   font-weight: 600;
   display: inline-block;
-  box-shadow: 0 1px 4px #f7c87344;
+  box-shadow: 0 1px 4px #3a5ba044;
 }
 @media (max-width: 700px) {
   .public-menu-wrapper {
@@ -285,7 +285,7 @@
   margin-top: 6px;
 }
 .category-nav-btn.active, .category-nav-btn:hover {
-  background: #ffe3a3;
+  background: #f5f6fa;
   color: #c97d00;
 }
 .categories-list {
@@ -315,7 +315,7 @@
   transition: box-shadow 0.18s;
 }
 .dish-card:hover {
-  box-shadow: 0 4px 18px #f7c87355;
+  box-shadow: 0 4px 18px #3a5ba044;
 }
 .dish-img {
   width: 72px;
@@ -340,7 +340,7 @@
 }
 .dish-desc {
   font-size: 0.98rem;
-  color: #7a5a00;
+  color: #1b2952;
   margin: 0;
 }
 .dish-price {
@@ -352,7 +352,7 @@
 }
 .badges {
   background: #ffe08a;
-  color: #7a5a00;
+  color: #1b2952;
   font-size: 0.95em;
   padding: 2px 8px;
   border-radius: 5px;
