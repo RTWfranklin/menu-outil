@@ -309,7 +309,20 @@ export function setupUI() {
 
   // Ajout de catégorie
   if (addCategoryBtn) { console.log('[UI] Bouton add-category trouvé, wiring...');
-    addCategoryBtn.onclick = addCategory;
+    addCategoryBtn.onclick = function() {
+      if (currentMenuId === null || !menus[currentMenuId]) return;
+      const menu = menus[currentMenuId];
+      menu.categories = menu.categories || [];
+      menu.categories.push({ name: "Nouvelle catégorie", items: [] });
+      if (window.currentUser) {
+        saveMenuToFirestore(menu, window.currentUser, function() {
+          loadMenus(window.currentUser, function() {
+            renderMenus();
+            editMenu(currentMenuId);
+          });
+        });
+      }
+    };
   }
 
   // Sauvegarde du menu courant
