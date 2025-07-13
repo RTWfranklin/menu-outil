@@ -17,7 +17,6 @@ export function loadMenus(user) {
         menu.firestoreId = doc.id;
         menus.push(menu);
       });
-      renderMenus();
     });
 }
 
@@ -41,7 +40,6 @@ export function deleteMenu(menu, index, user) {
   const db = getDb();
   db.collection('users').doc(user.uid).collection('menus').doc(menu.firestoreId).delete().then(function() {
     menus.splice(index, 1);
-    renderMenus();
   });
 }
 

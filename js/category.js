@@ -1,5 +1,6 @@
 // Fonctions liées à la gestion des catégories
-import { menus, currentMenuId, renderMenus } from './menu.js';
+import { menus, currentMenuId } from './menu.js';
+import { renderMenus } from './ui.js';
 
 export function addCategory() {
   if (typeof menus === 'undefined' || currentMenuId === null) return;
