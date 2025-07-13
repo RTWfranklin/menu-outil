@@ -1,7 +1,4 @@
 // Module d'authentification Firebase
-import firebase from "https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js";
-import "https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js";
-
 let currentUser = null;
 
 export function loginGoogle() {
