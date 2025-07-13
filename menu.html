@@ -74,29 +74,55 @@
         (menu.categories || []).forEach(function(cat, idx) {
           html += '<section class="menu-category" id="cat-'+idx+'">';
           html += '<h2 class="category-title">' + cat.name + '</h2>';
-          html += '<div class="category-items">';
-          (cat.items || []).forEach(function(item) {
-            html += '<div class="menu-item-card">';
-            if (item.img) {
-              html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
-            }
-            // Badges
-            if (item.badges && item.badges.length) {
-              html += '<div class="item-badges">';
-              item.badges.forEach(function(badge) {
-                html += '<span class="item-badge" data-badge="' + badge + '">' + badge + '</span>';
+          if (cat.subcategories && cat.subcategories.length > 0) {
+            cat.subcategories.forEach(function(subcat) {
+              html += '<h3 class="subcategory-title" style="margin:18px 0 6px 0;font-size:1.07em;color:#555;font-weight:500">' + subcat.name + '</h3>';
+              html += '<div class="category-items">';
+              (subcat.items || []).forEach(function(item) {
+                html += '<div class="menu-item-card">';
+                if (item.img) {
+                  html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
+                }
+                // Badges
+                if (item.badges && item.badges.length) {
+                  html += '<div class="item-badges">';
+                  item.badges.forEach(function(badge) {
+                    html += '<span class="item-badge" data-badge="' + badge + '">' + badge + '</span>';
+                  });
+                  html += '</div>';
+                }
+                html += '<div class="item-info">';
+                html += '<span class="item-name">' + item.name + '</span>';
+                if (item.desc) html += '<div class="item-desc">' + item.desc + '</div>';
+                if (item.price) html += '<span class="item-price">' + item.price + '</span>';
+                html += '</div>';
+                html += '</div>';
               });
               html += '</div>';
-            }
-            html += '<div class="item-info">';
-            html += '<span class="item-name">' + item.name + '</span>';
-            // Descriptif
-            if (item.desc) html += '<div class="item-desc">' + item.desc + '</div>';
-            if (item.price) html += '<span class="item-price">' + item.price + '</span>';
+            });
+          } else {
+            html += '<div class="category-items">';
+            (cat.items || []).forEach(function(item) {
+              html += '<div class="menu-item-card">';
+              if (item.img) {
+                html += '<div class="item-img"><img src="' + item.img + '" alt="' + item.name + '"></div>';
+              }
+              if (item.badges && item.badges.length) {
+                html += '<div class="item-badges">';
+                item.badges.forEach(function(badge) {
+                  html += '<span class="item-badge" data-badge="' + badge + '">' + badge + '</span>';
+                });
+                html += '</div>';
+              }
+              html += '<div class="item-info">';
+              html += '<span class="item-name">' + item.name + '</span>';
+              if (item.desc) html += '<div class="item-desc">' + item.desc + '</div>';
+              if (item.price) html += '<span class="item-price">' + item.price + '</span>';
+              html += '</div>';
+              html += '</div>';
+            });
             html += '</div>';
-            html += '</div>';
-          });
-          html += '</div>';
+          }
           html += '</section>';
         });
         html += '</div>';

@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
       renderImagePreview('logo', menu.logo || '');
       categoriesContainer.innerHTML = '';
       (menu.categories || []).forEach(function(cat, catIndex) {
-        addCategory(cat.name, cat.items, catIndex);
+        addCategory(cat.name, cat.items, catIndex, cat.subcategories || []);
       });
       updateViewPublishedButton();
     }
@@ -203,62 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
       };
     }
-    handleImageUpload(bannerUpload, 'banner');
-    handleImageUpload(logoUpload, 'logo');
   
-    function addCategory(name, items, catIndex) {
-      name = name || '';
-      items = items || [];
-      var wrapper = document.createElement('div');
-      wrapper.className = 'category';
-      if (typeof catIndex === "number") {
-        var upBtn = document.createElement('button');
-        upBtn.textContent = '↑';
-        upBtn.className = 'move-btn';
-        upBtn.onclick = function() { moveCategory(catIndex, -1); };
-        wrapper.appendChild(upBtn);
-        var downBtn = document.createElement('button');
-        downBtn.textContent = '↓';
-        downBtn.className = 'move-btn';
-        downBtn.onclick = function() { moveCategory(catIndex, 1); };
-        wrapper.appendChild(downBtn);
-      }
-      var input = document.createElement('input');
-      input.type = 'text';
-      input.placeholder = 'Nom de la catégorie';
-      input.value = name;
-      wrapper.appendChild(input);
-  
-      var itemList = document.createElement('div');
-      items.forEach(function(item, itemIndex) {
-        addItem(itemList, item.name, item.price, itemIndex, wrapper, item.img || '', item.badges || []);
-      });
-      wrapper.appendChild(itemList);
-  
-      var btn = document.createElement('button');
-      btn.textContent = 'Ajouter un plat';
-      btn.className = 'add-item-btn';
-      btn.onclick = function() { addItem(itemList, '', '', null, wrapper, '', []); };
-      wrapper.appendChild(btn);
-  
-      var delCatBtn = document.createElement('button');
-      delCatBtn.textContent = '🗑️ Supprimer catégorie';
-      delCatBtn.className = 'delete-btn';
-      delCatBtn.onclick = function() { wrapper.remove(); };
-      wrapper.appendChild(delCatBtn);
-  
-      categoriesContainer.appendChild(wrapper);
-    }
-    function moveCategory(index, direction) {
-      if (currentMenuId === null) return;
-      var categories = menus[currentMenuId].categories;
-      var newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= categories.length) return;
-      var temp = categories[index];
-      categories[index] = categories[newIndex];
-      categories[newIndex] = temp;
-      editMenu(currentMenuId);
-    }
     function addItem(container, name, price, itemIndex, categoryWrapper, imgUrl, badges) {
       name = name || '';
       price = price || '';
@@ -406,22 +351,47 @@ document.addEventListener('DOMContentLoaded', function() {
       categoriesContainer.querySelectorAll('.category').forEach(function(catEl) {
         var catInputs = catEl.querySelectorAll('input[type="text"]');
         var name = catInputs[0] ? catInputs[0].value : '';
-        var items = [];
-        catEl.querySelectorAll('.item').forEach(function(itemEl) {
-          var inputs = itemEl.querySelectorAll('input[type="text"]');
-          var imgUrl = itemEl.dataset.imgUrl || ""; // récupère l'URL Storage
-          // Récupère les badges cochés
-var badgesInputs = Array.from(itemEl.querySelectorAll('.badges-editor input[type="checkbox"]'));
-var badges = badgesInputs.filter(function(chk){return chk.checked;}).map(function(chk){return chk.value;});
-items.push({
-  name: inputs[0] ? inputs[0].value : '',
-  price: inputs[1] ? inputs[1].value : '',
-  desc: inputs[2] ? inputs[2].value : '',
-  img: imgUrl,
-  badges: badges
-});
-        });
-        if (name) categories.push({ name: name, items: items });
+        // Gestion sous-catégories
+        var subcatNodes = catEl.querySelectorAll('.subcategory');
+        var subcategories = [];
+        if (subcatNodes.length > 0) {
+          subcatNodes.forEach(function(subcatEl) {
+            var subcatInputs = subcatEl.querySelectorAll('input[type="text"]');
+            var subcatName = subcatInputs[0] ? subcatInputs[0].value : '';
+            var subcatItems = [];
+            subcatEl.querySelectorAll('.item').forEach(function(itemEl) {
+              var inputs = itemEl.querySelectorAll('input[type="text"]');
+              var imgUrl = itemEl.dataset.imgUrl || "";
+              var badgesInputs = Array.from(itemEl.querySelectorAll('.badges-editor input[type="checkbox"]'));
+              var badges = badgesInputs.filter(function(chk){return chk.checked;}).map(function(chk){return chk.value;});
+              subcatItems.push({
+                name: inputs[0] ? inputs[0].value : '',
+                price: inputs[1] ? inputs[1].value : '',
+                desc: inputs[2] ? inputs[2].value : '',
+                img: imgUrl,
+                badges: badges
+              });
+            });
+            if (subcatName) subcategories.push({ name: subcatName, items: subcatItems });
+          });
+          if (name) categories.push({ name: name, subcategories: subcategories });
+        } else {
+          var items = [];
+          catEl.querySelectorAll('.item').forEach(function(itemEl) {
+            var inputs = itemEl.querySelectorAll('input[type="text"]');
+            var imgUrl = itemEl.dataset.imgUrl || "";
+            var badgesInputs = Array.from(itemEl.querySelectorAll('.badges-editor input[type="checkbox"]'));
+            var badges = badgesInputs.filter(function(chk){return chk.checked;}).map(function(chk){return chk.value;});
+            items.push({
+              name: inputs[0] ? inputs[0].value : '',
+              price: inputs[1] ? inputs[1].value : '',
+              desc: inputs[2] ? inputs[2].value : '',
+              img: imgUrl,
+              badges: badges
+            });
+          });
+          if (name) categories.push({ name: name, items: items });
+        }
       });
       menus[currentMenuId].categories = categories;
       saveMenuToFirestore(menus[currentMenuId], function() {
