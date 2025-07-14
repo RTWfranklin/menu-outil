@@ -194,6 +194,11 @@
     text-align: center !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
+    width: 100vw;
+    left: 50%;
+    position: relative;
+    transform: translateX(-50%);
+    box-sizing: border-box;
   }
 }
 
