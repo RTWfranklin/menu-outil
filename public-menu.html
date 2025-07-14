@@ -32,15 +32,13 @@
     }
 
     function renderMenu(menu) {
-  // Génère la bannière en dehors du wrapper principal
-  var bannerHtml = '';
-  if (menu.banner) {
-    bannerHtml += '<div class="banner-container"><img class="banner" src="' + menu.banner + '" alt="Bannière"></div>';
-  }
-  // Génère le wrapper principal avec le logo à cheval
+  // Génère le header premium avec la bannière en fond et le logo à cheval
   var wrapper = document.querySelector('.public-menu-wrapper');
   var html = '';
   html += '<header class="public-menu-header">';
+  if (menu.banner) {
+    html += '<img class="banner" src="' + menu.banner + '" alt="Bannière">';
+  }
   html += '<div class="banner-logo-wrapper">';
   if (menu.logo) {
     html += '<img class="logo" src="' + menu.logo + '" alt="Logo">';
@@ -53,14 +51,6 @@
   html += '<nav id="category-nav" class="category-nav"></nav>';
   html += '<main id="categories-list" class="categories-list"></main>';
   wrapper.innerHTML = html;
-
-  // Insère la bannière avant le wrapper principal (si elle existe)
-  var parent = wrapper.parentNode;
-  var oldBanner = document.querySelector('.banner-container');
-  if (oldBanner) oldBanner.remove();
-  if (bannerHtml) {
-    wrapper.insertAdjacentHTML('beforebegin', bannerHtml);
-  }
 
   // Génération navigation catégories
   const nav = document.getElementById('category-nav');

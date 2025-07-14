@@ -512,45 +512,37 @@ html, body {
 
 /* --- Fin ajout/ajustement --- */
 
-/* --- Ajout pour bannière full width en haut de page --- */
+/* --- Nettoyage et ajustement pour header bannière+logo superposés --- */
 .banner-container {
-  width: 100vw;
+  display: none !important;
+}
+.public-menu-header {
   position: relative;
+  width: 100vw;
   left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  z-index: 1;
-  overflow: hidden;
-  height: 220px;
+  transform: translateX(-50%);
+  min-height: 220px;
+  margin-bottom: 60px;
+  background: none;
+  padding: 0;
+  z-index: 2;
+  overflow: visible;
 }
 .banner {
   width: 100vw;
   height: 220px;
   object-fit: cover;
   display: block;
-  margin: 0 auto;
   border-radius: 0;
+  margin: 0 auto;
   box-shadow: none;
-  position: static;
+  position: relative;
   z-index: 1;
 }
-@media (max-width: 700px) {
-  .banner-container {
-    height: 120px;
-  }
-  .banner {
-    height: 120px;
-    max-height: 140px;
-  }
-}
-/* --- Fin ajout --- */
-
-/* --- Correction position logo à cheval sur la bannière --- */
 .banner-logo-wrapper {
   position: absolute;
   left: 50%;
-  top: 110px; /* remonte le logo */
+  top: 140px;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
@@ -562,19 +554,47 @@ html, body {
   border: none;
   box-shadow: none;
 }
-
-.public-menu-header-content {
-  margin-top: 90px !important; /* décale le titre sous le logo */
+.logo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  border: 6px solid #fff;
+  box-shadow: 0 4px 24px #0002, 0 1.5px 7px #0001;
+  display: block;
+  position: relative;
+  z-index: 11;
 }
-
+.public-menu-header-content {
+  margin-top: 90px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 3;
+}
 @media (max-width: 700px) {
+  .public-menu-header {
+    min-height: 120px;
+  }
+  .banner {
+    height: 120px;
+    max-height: 140px;
+  }
   .banner-logo-wrapper {
-    top: 40px; /* remonte le logo sur mobile */
+    top: 40px;
     width: 90px;
     height: 90px;
+  }
+  .logo {
+    width: 90px;
+    height: 90px;
+    border-width: 4px;
   }
   .public-menu-header-content {
     margin-top: 55px !important;
   }
 }
-/* --- Fin correction --- */
+/* --- Fin ajustement --- */
