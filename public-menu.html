@@ -154,25 +154,25 @@ window.addEventListener('DOMContentLoaded', function() {
   <footer class="site-footer">
     <div class="footer-links">
       <a href="mentions-legales.html" title="Mentions légales">
-        <span style="vertical-align:middle;">&#128221;</span> Mentions légales
+        <span style="vertical-align:middle;opacity:0.7;font-size:1.08em;">&#128221;</span> Mentions légales
       </a>
       <span class="footer-sep">·</span>
       <a href="politique-confidentialite.html" title="Politique de confidentialité">
-        <span style="vertical-align:middle;">&#128274;</span> Politique de confidentialité
+        <span style="vertical-align:middle;opacity:0.7;font-size:1.08em;">&#128274;</span> Politique de confidentialité
       </a>
     </div>
-    <div class="footer-copy">&copy; 2025 Menu Premium · Réalisé avec <span style="color:#e25555;">&#10084;&#65039;</span></div>
+    <div class="footer-copy">&copy; 2025 Menu Premium</div>
   </footer>
   <style>
     .site-footer {
-      background: linear-gradient(90deg, #faf7f2 0%, #f7eac2 100%);
-      border-radius: 18px 18px 0 0;
-      box-shadow: 0 -2px 12px #0001;
-      padding: 24px 0 14px 0;
-      margin: 54px 0 0 0;
+      background: #f7f7f7;
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -1px 8px #0001;
+      padding: 22px 0 12px 0;
+      margin: 48px 0 0 0;
       text-align: center;
-      font-size: 1.04em;
-      color: #8e7c5b;
+      font-size: 1.01em;
+      color: #444;
       width: 100%;
       max-width: 100vw;
     }
@@ -180,44 +180,48 @@ window.addEventListener('DOMContentLoaded', function() {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 18px;
+      gap: 14px;
       flex-wrap: wrap;
-      margin-bottom: 7px;
+      margin-bottom: 6px;
     }
     .footer-links a {
-      color: #b88a2a;
+      color: #444;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.18s;
+      font-weight: 500;
+      transition: color 0.15s;
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      opacity: 0.92;
     }
     .footer-links a:hover {
-      color: #c97d00;
+      color: #111;
       text-decoration: underline;
+      opacity: 1;
     }
     .footer-sep {
-      color: #e2c98a;
-      font-size: 1.4em;
-      margin: 0 8px;
+      color: #aaa;
+      font-size: 1.2em;
+      margin: 0 7px;
       user-select: none;
+      opacity: 0.7;
     }
     .footer-copy {
-      font-size: 0.98em;
-      color: #b5a37c;
+      font-size: 0.97em;
+      color: #777;
       margin-top: 2px;
+      opacity: 0.85;
     }
     @media (max-width: 600px) {
       .site-footer {
-        padding: 18px 0 10px 0;
-        font-size: 0.99em;
+        padding: 15px 0 8px 0;
+        font-size: 0.97em;
       }
       .footer-links {
-        gap: 10px;
+        gap: 8px;
       }
       .footer-copy {
-        font-size: 0.93em;
+        font-size: 0.92em;
       }
     }
   </style>
