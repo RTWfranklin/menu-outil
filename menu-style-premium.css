@@ -251,7 +251,7 @@ html, body {
   display: flex;
   overflow-x: auto;
   gap: 16px;
-  justify-content: center;
+  justify-content: flex-start !important;
   background: none;
   box-shadow: none;
   border: none;
