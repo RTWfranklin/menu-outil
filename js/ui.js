@@ -328,15 +328,20 @@ export function setupUI() {
       const menu = menus[currentMenuId];
       menu.categories = menu.categories || [];
       menu.categories.push({ name: "Nouvelle catégorie", items: [] });
+      console.log('[DEBUG] Ajout catégorie - menu AVANT saveMenuToFirestore:', JSON.parse(JSON.stringify(menu)));
       if (window.currentUser) {
         saveMenuToFirestore(menu, window.currentUser, function() {
+          console.log('[DEBUG] saveMenuToFirestore terminé (succès) pour menu:', menu.firestoreId);
           loadMenus(window.currentUser, function() {
+            console.log('[DEBUG] loadMenus terminé après ajout catégorie. Menus rechargés:', JSON.parse(JSON.stringify(menus)));
             renderMenus();
             // Retrouve le bon index du menu courant après reload
             const newIndex = menus.findIndex(m => m.firestoreId === menu.firestoreId);
             if (newIndex !== -1) {
+              console.log('[DEBUG] Catégories du menu rechargé:', JSON.parse(JSON.stringify(menus[newIndex].categories)));
               editMenu(newIndex);
             } else {
+              console.warn('[DEBUG] Menu courant introuvable après reload');
               document.getElementById('menu-editor').classList.add('hidden');
               document.getElementById('menu-selection').classList.remove('hidden');
             }
