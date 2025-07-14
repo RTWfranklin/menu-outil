@@ -254,6 +254,32 @@ export function editMenu(index) {
             }
           };
           itemDiv.appendChild(delItemBtn);
+          // Ajout input file pour image
+          const imgInput = document.createElement('input');
+          imgInput.type = 'file';
+          imgInput.accept = 'image/*';
+          imgInput.onchange = function(e) {
+            const file = imgInput.files[0];
+            if (!file) return;
+            uploadImageToCloudinary(file, function(url) {
+              item.imgUrl = url;
+              const imgPreview = document.createElement('img');
+              imgPreview.style.maxHeight = '40px';
+              imgPreview.style.display = item.imgUrl ? '' : 'none';
+              if (item.imgUrl) imgPreview.src = item.imgUrl;
+              itemDiv.appendChild(imgPreview);
+              saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+            }, function(errorMsg) {
+              alert('Erreur upload image plat: ' + errorMsg);
+            });
+          };
+          itemDiv.appendChild(imgInput);
+          // Preview image
+          const imgPreview = document.createElement('img');
+          imgPreview.style.maxHeight = '40px';
+          imgPreview.style.display = item.imgUrl ? '' : 'none';
+          if (item.imgUrl) imgPreview.src = item.imgUrl;
+          itemDiv.appendChild(imgPreview);
           subItemsDiv.appendChild(itemDiv);
         });
         // Bouton ajout item dans sous-catégorie
@@ -261,7 +287,7 @@ export function editMenu(index) {
         addItemBtn.textContent = 'Ajouter un item';
         addItemBtn.onclick = function() {
           if (!subcat.items) subcat.items = [];
-          subcat.items.push({ name: '', price: '', desc: '', badges: [] });
+          subcat.items.push({ name: '', price: '', desc: '', badges: [], imgUrl: '' });
           saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
             editMenu(index);
           });
@@ -365,6 +391,32 @@ export function editMenu(index) {
           }
         };
         itemDiv.appendChild(delItemBtn);
+        // Ajout input file pour image
+        const imgInput2 = document.createElement('input');
+        imgInput2.type = 'file';
+        imgInput2.accept = 'image/*';
+        imgInput2.onchange = function(e) {
+          const file = imgInput2.files[0];
+          if (!file) return;
+          uploadImageToCloudinary(file, function(url) {
+            item.imgUrl = url;
+            const imgPreview2 = document.createElement('img');
+            imgPreview2.style.maxHeight = '40px';
+            imgPreview2.style.display = item.imgUrl ? '' : 'none';
+            if (item.imgUrl) imgPreview2.src = item.imgUrl;
+            itemDiv.appendChild(imgPreview2);
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+          }, function(errorMsg) {
+            alert('Erreur upload image plat: ' + errorMsg);
+          });
+        };
+        itemDiv.appendChild(imgInput2);
+        // Preview image
+        const imgPreview2 = document.createElement('img');
+        imgPreview2.style.maxHeight = '40px';
+        imgPreview2.style.display = item.imgUrl ? '' : 'none';
+        if (item.imgUrl) imgPreview2.src = item.imgUrl;
+        itemDiv.appendChild(imgPreview2);
         itemsDiv.appendChild(itemDiv);
       });
       // Bouton ajout item dans catégorie (fallback)
@@ -372,7 +424,7 @@ export function editMenu(index) {
       addItemBtn.textContent = 'Ajouter un item';
       addItemBtn.onclick = function() {
         if (!cat.items) cat.items = [];
-        cat.items.push({ name: '', price: '', desc: '', badges: [] });
+        cat.items.push({ name: '', price: '', desc: '', badges: [], imgUrl: '' });
         saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
           editMenu(index);
         });
