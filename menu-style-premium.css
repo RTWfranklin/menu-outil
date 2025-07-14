@@ -178,7 +178,29 @@ html, body {
   z-index: 1;
 }
 
+/* --- LOGO UNIQUE --- */
 .logo {
+  position: absolute;
+  left: 50%;
+  bottom: -35px;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 12px #0002;
+  z-index: 10;
+  object-fit: cover;
+}
+@media (max-width: 700px) {
+  .logo {
+    width: 100px;
+    height: 100px;
+    bottom: -20px;
+  }
+}
+
   position: absolute;
   left: 50%;
   bottom: -40px;
@@ -218,7 +240,29 @@ html, body {
     height: 120px;
     max-height: 140px;
   }
+  /* --- LOGO UNIQUE --- */
+.logo {
+  position: absolute;
+  left: 50%;
+  bottom: -35px;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 12px #0002;
+  z-index: 10;
+  object-fit: cover;
+}
+@media (max-width: 700px) {
   .logo {
+    width: 100px;
+    height: 100px;
+    bottom: -20px;
+  }
+}
+
     width: 62px;
     height: 62px;
     bottom: -28px;
@@ -287,7 +331,29 @@ html, body {
   z-index: 1;
 }
 
+/* --- LOGO UNIQUE --- */
 .logo {
+  position: absolute;
+  left: 50%;
+  bottom: -35px;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 12px #0002;
+  z-index: 10;
+  object-fit: cover;
+}
+@media (max-width: 700px) {
+  .logo {
+    width: 100px;
+    height: 100px;
+    bottom: -20px;
+  }
+}
+
   position: absolute;
   left: 50%;
   bottom: -40px;
@@ -350,7 +416,29 @@ html, body {
     height: 120px;
     max-height: 140px;
   }
+  /* --- LOGO UNIQUE --- */
+.logo {
+  position: absolute;
+  left: 50%;
+  bottom: -35px;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 12px #0002;
+  z-index: 10;
+  object-fit: cover;
+}
+@media (max-width: 700px) {
   .logo {
+    width: 100px;
+    height: 100px;
+    bottom: -20px;
+  }
+}
+
     width: 62px;
     height: 62px;
     top: 90px;
