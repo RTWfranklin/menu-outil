@@ -439,3 +439,75 @@ html, body {
     padding: 18px 10px 0 10px;
   }
 }
+
+/* --- Ajout/ajustement pour bannière et logo centrés et superposés --- */
+
+.public-menu-header {
+  position: relative;
+  width: 100%;
+  min-height: 220px; /* hauteur suffisante pour la bannière + logo */
+  margin-bottom: 60px; /* espace sous le header */
+  background: none;
+  padding: 0;
+  z-index: 2;
+}
+
+.banner {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  border-radius: 0;
+  margin: 0 auto;
+  box-shadow: none;
+  position: relative;
+  z-index: 1;
+}
+
+.banner-logo-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 170px; /* place le logo à cheval sur la bannière */
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #fff;
+  border: 6px solid #fff;
+  box-shadow: 0 4px 24px #0002, 0 1.5px 7px #0001;
+  display: block;
+  position: relative;
+  z-index: 11;
+}
+
+@media (max-width: 700px) {
+  .banner {
+    height: 120px;
+    max-height: 140px;
+  }
+  .banner-logo-wrapper {
+    top: 80px;
+    width: 90px;
+    height: 90px;
+  }
+  .logo {
+    width: 90px;
+    height: 90px;
+    border-width: 4px;
+  }
+}
+
+/* --- Fin ajout/ajustement --- */
