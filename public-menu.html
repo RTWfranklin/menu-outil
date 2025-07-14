@@ -71,6 +71,8 @@
     if(idx === 0) btn.classList.add('active');
     nav.appendChild(btn);
   });
+  // Correction mobile : forcer le scroll tout à gauche
+  if (nav) nav.scrollLeft = 0;
   // Génération sections de plats par catégorie
   const main = document.getElementById('categories-list');
   main.innerHTML = '';

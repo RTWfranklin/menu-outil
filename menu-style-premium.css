@@ -636,3 +636,9 @@ html, body {
   }
 }
 /* --- Fin correction finale --- */
+
+@media (max-width: 700px) {
+  .category-nav-btn:first-child {
+    margin-left: 32px;
+  }
+}
