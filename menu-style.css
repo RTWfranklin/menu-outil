@@ -175,15 +175,15 @@
   margin-top: 7px;
 }
 .badges {
-  background: #f7c873;
-  color: #1b2952;
-  font-size: 0.97em;
-  padding: 3px 10px;
-  border-radius: 6px;
-  margin-left: 10px;
-  font-weight: 600;
-  display: inline-block;
-  box-shadow: 0 1px 4px #3a5ba044;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  background: none;
+  border: none;
+  margin-left: 0;
+  padding: 0;
+  box-shadow: none;
 }
 @media (max-width: 700px) {
   .public-menu-wrapper {
@@ -672,12 +672,13 @@ body {
   justify-content: center;
 }
   .item-badge {
-  display: inline-block;
-  padding: 3px 13px 3px 13px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
   border-radius: 16px;
   font-size: 0.98em;
   font-weight: 600;
-  margin: 0 4px 0 0;
+  margin: 0 2px 0 0;
   color: #222;
   background: #eaeaea;
   box-shadow: 0 1px 7px rgba(80,80,80,0.08);
@@ -687,6 +688,18 @@ body {
   transition: background 0.16s, color 0.16s;
   line-height: 1.2;
   position: relative;
+  min-width: 0;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .item-badge {
+    font-size: 0.91em;
+    padding: 2px 6px;
+    margin-bottom: 2px;
+    max-width: 90vw;
+    white-space: normal;
+    word-break: break-word;
+  }
 }
 .item-badge[data-badge="Vegan"] {
   background: #e5fbe4;
