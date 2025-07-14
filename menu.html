@@ -12,6 +12,7 @@
 <body>
   <div id="menu"></div>
   <script>
+    console.log('[DEBUG][PUBLIC] Script menu.html chargé');
     var firebaseConfig = {
       apiKey: "AIzaSyCxVS6IvetneJ1Q5kr8t5d7F3qd8oe8KjQ",
       authDomain: "menu-outil.firebaseapp.com",
@@ -136,6 +137,8 @@ console.log('[DEBUG][PUBLIC] Catégories du menu chargé :', menu.categories);
             }
           });
         });
+      }).catch(function(error) {
+        console.error('[DEBUG][PUBLIC] Erreur Firestore :', error);
       });
     }
   </script>
