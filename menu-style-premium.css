@@ -1,5 +1,12 @@
 /* --- Style premium sobre inspiré cookie.menu --- */
 
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
 .dish-card {
   position: relative;
   display: flex;
