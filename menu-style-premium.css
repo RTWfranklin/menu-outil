@@ -260,6 +260,7 @@ html, body {
   min-height: 0;
   position: relative;
   z-index: 1;
+  overflow-anchor: none;
 }
 .category-nav-btn {
   background: #fff;

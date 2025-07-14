@@ -71,9 +71,12 @@
     if(idx === 0) btn.classList.add('active');
     nav.appendChild(btn);
   });
-  // Correction mobile : forcer le scroll tout à gauche après le rendu
+  // Correction mobile : forcer le scroll tout à gauche après le rendu complet et le paint
   setTimeout(function() {
-    if (nav) nav.scrollLeft = 0;
+    if (nav) {
+      nav.scrollLeft = 0;
+      requestAnimationFrame(() => { nav.scrollLeft = 0; });
+    }
   }, 100);
   // Génération sections de plats par catégorie
   const main = document.getElementById('categories-list');
