@@ -365,11 +365,11 @@ html, body {
 
 @media (max-width: 700px) {
   .logo {
-    width: 82px;
-    height: 82px;
+    width: 100px;
+    height: 100px;
     left: 50%;
     transform: translateX(-50%);
-    bottom: -41px;
+    bottom: -50px;
   }
 }
 
