@@ -511,3 +511,37 @@ html, body {
 }
 
 /* --- Fin ajout/ajustement --- */
+
+/* --- Ajout pour bannière full width en haut de page --- */
+.banner-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  z-index: 1;
+  overflow: hidden;
+  height: 220px;
+}
+.banner {
+  width: 100vw;
+  height: 220px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  border-radius: 0;
+  box-shadow: none;
+  position: static;
+  z-index: 1;
+}
+@media (max-width: 700px) {
+  .banner-container {
+    height: 120px;
+  }
+  .banner {
+    height: 120px;
+    max-height: 140px;
+  }
+}
+/* --- Fin ajout --- */
