@@ -306,6 +306,15 @@ html, body {
   background: #f7f7fa;
 }
 
+.category-nav-btn:first-child {
+  margin-left: 18px;
+}
+@media (max-width: 700px) {
+  .category-nav-btn:first-child {
+    margin-left: 8px;
+  }
+}
+
 .categories-list {
   padding: 0 36px;
 }
