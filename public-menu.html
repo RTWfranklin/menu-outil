@@ -85,11 +85,14 @@
     (cat.items || []).forEach(item => {
       const card = document.createElement('div');
       card.className = 'dish-card';
+      // Structure flex : image à gauche, infos à droite
+      const flexRow = document.createElement('div');
+      flexRow.className = 'dish-row';
       if(item.imgUrl) {
         const img = document.createElement('img');
         img.src = item.imgUrl;
         img.className = 'dish-img';
-        card.appendChild(img);
+        flexRow.appendChild(img);
       }
       const info = document.createElement('div');
       info.className = 'dish-info';
@@ -120,7 +123,8 @@
         badges.textContent = item.badges.join(', ');
         info.appendChild(badges);
       }
-      card.appendChild(info);
+      flexRow.appendChild(info);
+      card.appendChild(flexRow);
       if(item.price) {
         const price = document.createElement('div');
         price.className = 'dish-price';
