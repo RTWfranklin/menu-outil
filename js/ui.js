@@ -6,6 +6,14 @@ import { menus, currentMenuId, saveMenuToFirestore, deleteMenu, setCurrentMenuId
 
 import { uploadImageToCloudinary } from './firebase.js';
 
+let saveTimeout = null;
+function debouncedSaveMenu(menu, user, cb) {
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    saveMenuToFirestore(menu, user, cb);
+  }, 500);
+}
+
 export function renderImagePreview(type, src) {
   const bannerPreviewContainer = document.getElementById('banner-preview');
   const logoPreviewContainer = document.getElementById('logo-preview');
@@ -110,7 +118,7 @@ export function editMenu(index) {
     catNameInput.oninput = function(e) {
       cat.name = e.target.value;
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-        saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+        debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
           console.log('Catégorie sauvegardée');
         });
       }
@@ -233,6 +241,19 @@ export function editMenu(index) {
             badgesWrapper.appendChild(label);
           });
           itemDiv.appendChild(badgesWrapper);
+          // Bouton suppression item (dans sous-catégorie)
+          const delItemBtn = document.createElement('button');
+          delItemBtn.textContent = '🗑️';
+          delItemBtn.title = 'Supprimer cet item';
+          delItemBtn.onclick = function() {
+            if (confirm('Supprimer cet item ?')) {
+              subcat.items.splice(itemIndex, 1);
+              saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+                editMenu(index);
+              });
+            }
+          };
+          itemDiv.appendChild(delItemBtn);
           subItemsDiv.appendChild(itemDiv);
         });
         // Bouton ajout item dans sous-catégorie
@@ -331,6 +352,19 @@ export function editMenu(index) {
           badgesWrapper.appendChild(label);
         });
         itemDiv.appendChild(badgesWrapper);
+        // Bouton suppression item (fallback)
+        const delItemBtn = document.createElement('button');
+        delItemBtn.textContent = '🗑️';
+        delItemBtn.title = 'Supprimer cet item';
+        delItemBtn.onclick = function() {
+          if (confirm('Supprimer cet item ?')) {
+            cat.items.splice(itemIndex, 1);
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+              editMenu(index);
+            });
+          }
+        };
+        itemDiv.appendChild(delItemBtn);
         itemsDiv.appendChild(itemDiv);
       });
       // Bouton ajout item dans catégorie (fallback)
