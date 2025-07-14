@@ -373,29 +373,32 @@ export function setupUI() {
   if (publishOnlineBtn) { console.log('[UI] Bouton publish-online trouvé, wiring...');
     publishOnlineBtn.onclick = function() {
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-        const menu = menus[currentMenuId];
-        const db = firebase.firestore();
-        // Filtrer les champs pour Firestore public
-        const { title, banner, logo, categories } = menu;
-        const publicMenu = {
-          title: title || '',
-          banner: banner || '',
-          logo: logo || '',
-          categories: Array.isArray(categories) ? categories : [],
-          public: true,
-          owner: window.currentUser.uid,
-          publishedAt: new Date().toISOString()
-        };
-        db.collection('public_menus').doc(menu.firestoreId || '').set(publicMenu).then(function() {
-          alert('Menu publié en ligne !');
-          // Active le bouton de visualisation
-          const viewPublishedBtn = document.getElementById('view-published');
-          if (viewPublishedBtn) {
-            viewPublishedBtn.disabled = false;
-            viewPublishedBtn.classList.remove('inactive');
-          }
-        }).catch(function(err) {
-          alert('Erreur lors de la publication : ' + err.message);
+        // Sauvegarde d'abord le menu courant avant de publier
+        saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+          const menu = menus[currentMenuId];
+          const db = firebase.firestore();
+          // Filtrer les champs pour Firestore public
+          const { title, banner, logo, categories } = menu;
+          const publicMenu = {
+            title: title || '',
+            banner: banner || '',
+            logo: logo || '',
+            categories: Array.isArray(categories) ? categories : [],
+            public: true,
+            owner: window.currentUser.uid,
+            publishedAt: new Date().toISOString()
+          };
+          db.collection('public_menus').doc(menu.firestoreId || '').set(publicMenu).then(function() {
+            alert('Menu publié en ligne !');
+            // Active le bouton de visualisation
+            const viewPublishedBtn = document.getElementById('view-published');
+            if (viewPublishedBtn) {
+              viewPublishedBtn.disabled = false;
+              viewPublishedBtn.classList.remove('inactive');
+            }
+          }).catch(function(err) {
+            alert('Erreur lors de la publication : ' + err.message);
+          });
         });
       } else {
         alert('Impossible de publier : aucun menu sélectionné ou utilisateur non connecté.');
