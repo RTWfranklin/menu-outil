@@ -120,22 +120,24 @@
   });
 }
 
-    window.onload = function() {
-      const id = getMenuId();
-      if(!id) {
-        document.getElementById('menu-title').textContent = 'Aucun menu trouvé.';
-        return;
-      }
-      db.collection('public_menus').doc(id).get().then(function(doc) {
-        if(doc.exists) {
-          renderMenu(doc.data());
-        } else {
-          document.getElementById('menu-title').textContent = 'Menu introuvable.';
-        }
-      }).catch(function(err) {
-        document.getElementById('menu-title').textContent = 'Erreur de chargement : ' + err.message;
-      });
+window.onload = function() {
+  const id = getMenuId();
+  const titleEl = document.getElementById('menu-title');
+  if(!id) {
+    if (titleEl) titleEl.textContent = 'Aucun menu trouvé.';
+    return;
+  }
+  db.collection('public_menus').doc(id).get().then(function(doc) {
+    if(doc.exists) {
+      renderMenu(doc.data());
+    } else {
+      if (titleEl) titleEl.textContent = 'Menu introuvable.';
     }
+  }).catch(function(err) {
+    if (titleEl) titleEl.textContent = 'Erreur de chargement : ' + err.message;
+  });
+}
+
   </script>
 
 </head>
