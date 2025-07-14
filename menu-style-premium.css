@@ -362,19 +362,6 @@ html, body {
 
 
 
-
-@media (max-width: 700px) {
-  .logo {
-    width: 100px;
-    height: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: -20px;
-  }
-}
-
-
-
 .category-nav {
   display: flex;
   overflow-x: auto;
