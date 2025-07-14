@@ -101,6 +101,17 @@
         const desc = document.createElement('div');
         desc.className = 'dish-desc';
         desc.textContent = item.desc;
+        // Ajoute la classe 'truncated' si texte trop long
+        if(item.desc.length > 110) desc.classList.add('truncated');
+        // Popup au clic sur la description ou la carte
+        desc.addEventListener('click', function(e) {
+          e.stopPropagation();
+          showDishPopup(item);
+        });
+        card.addEventListener('click', function(e) {
+          // Ouvre le popup uniquement si ce n'est pas déjà un clic sur un bouton interne
+          if(!e.target.classList.contains('dish-desc')) showDishPopup(item);
+        });
         info.appendChild(desc);
       }
       if(Array.isArray(item.badges) && item.badges.length) {
