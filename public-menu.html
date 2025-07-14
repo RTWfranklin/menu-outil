@@ -29,18 +29,29 @@
     }
 
     function renderMenu(menu) {
-  document.getElementById('menu-title').textContent = menu.title || 'Menu';
-  if(menu.banner) {
-    document.getElementById('banner').src = menu.banner;
-    document.getElementById('banner').style.display = '';
+  // Génère dynamiquement tout le header premium
+  var wrapper = document.querySelector('.public-menu-wrapper');
+  var html = '';
+  html += '<header class="public-menu-header">';
+  html += '<div class="banner-logo-wrapper">';
+  if (menu.banner) {
+    html += '<img class="banner" src="' + menu.banner + '" alt="Bannière">';
   }
-  if(menu.logo) {
-    document.getElementById('logo').src = menu.logo;
-    document.getElementById('logo').style.display = '';
-  } // (À adapter dans la génération HTML si besoin, pour garantir que le logo est bien en dehors du header-content)
-  const categories = menu.categories || [];
+  if (menu.logo) {
+    html += '<img class="logo" src="' + menu.logo + '" alt="Logo">';
+  }
+  html += '</div>';
+  html += '<div class="public-menu-header-content">';
+  html += '<h1 id="menu-title">' + (menu.title || 'Menu') + '</h1>';
+  html += '</div>';
+  html += '</header>';
+  html += '<nav id="category-nav" class="category-nav"></nav>';
+  html += '<main id="categories-list" class="categories-list"></main>';
+  wrapper.innerHTML = html;
+
   // Génération navigation catégories
   const nav = document.getElementById('category-nav');
+  const categories = menu.categories || [];
   nav.innerHTML = '';
   categories.forEach((cat, idx) => {
     const btn = document.createElement('button');
@@ -130,13 +141,7 @@
 </head>
 <body>
   <div class="public-menu-wrapper">
-    <header class="public-menu-header">
-      <img id="banner" class="banner" style="display:none;"/>
-      <div class="public-menu-header-content">
-        <img id="logo" class="logo" style="display:none;"/>
-        <h1 id="menu-title">Chargement...</h1>
-      </div>
-    </header>
+
     <nav id="category-nav" class="category-nav"></nav>
     <main id="categories-list" class="categories-list"></main>
   </div>
