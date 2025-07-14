@@ -354,19 +354,6 @@ export function setupUI() {
     };
   }
 
-  // Sauvegarde du menu courant
-  const saveChangesBtn = document.getElementById('save-changes');
-  if (saveChangesBtn) { console.log('[UI] Bouton save-changes trouvé, wiring...');
-    saveChangesBtn.onclick = function() {
-      if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-        saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-          alert('Menu sauvegardé !');
-        });
-      } else {
-        alert('Impossible de sauvegarder : aucun menu sélectionné ou utilisateur non connecté.');
-      }
-    };
-  }
 
   // Publication en ligne du menu courant
   const publishOnlineBtn = document.getElementById('publish-online');
