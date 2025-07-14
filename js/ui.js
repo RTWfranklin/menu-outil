@@ -358,13 +358,15 @@ export function setupUI() {
   // Publication en ligne du menu courant
   const publishOnlineBtn = document.getElementById('publish-online');
   if (publishOnlineBtn) { console.log('[UI] Bouton publish-online trouvé, wiring...');
+    let isPublishing = false;
     publishOnlineBtn.onclick = function() {
+      if (isPublishing) return;
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-        // Sauvegarde d'abord le menu courant avant de publier
+        isPublishing = true;
+        publishOnlineBtn.disabled = true;
         saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
           const menu = menus[currentMenuId];
           const db = firebase.firestore();
-          // Filtrer les champs pour Firestore public
           const { title, banner, logo, categories } = menu;
           const publicMenu = {
             title: title || '',
@@ -377,6 +379,8 @@ export function setupUI() {
           };
           db.collection('public_menus').doc(menu.firestoreId || '').set(publicMenu).then(function() {
             alert('Menu publié en ligne !');
+            isPublishing = false;
+            publishOnlineBtn.disabled = false;
             // Active le bouton de visualisation
             const viewPublishedBtn = document.getElementById('view-published');
             if (viewPublishedBtn) {
@@ -385,6 +389,8 @@ export function setupUI() {
             }
           }).catch(function(err) {
             alert('Erreur lors de la publication : ' + err.message);
+            isPublishing = false;
+            publishOnlineBtn.disabled = false;
           });
         });
       } else {
