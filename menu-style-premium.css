@@ -637,8 +637,16 @@ html, body {
 }
 /* --- Fin correction finale --- */
 
+/* --- Correction finale espacement navigation catégorie --- */
+.category-nav {
+  padding-left: 0 !important;
+}
+.category-nav-btn:first-child {
+  margin-left: 24px !important;
+}
 @media (max-width: 700px) {
   .category-nav-btn:first-child {
-    margin-left: 32px;
+    margin-left: 32px !important;
   }
 }
+/* --- Fin correction finale --- */
