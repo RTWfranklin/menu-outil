@@ -365,8 +365,8 @@ html, body {
 
 @media (max-width: 700px) {
   .logo {
-    width: 62px;
-    height: 62px;
+    width: 82px;
+    height: 82px;
     bottom: -24px;
     transform: translate(-50%, 35%);
   }
