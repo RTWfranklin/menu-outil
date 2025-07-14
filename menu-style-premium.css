@@ -367,8 +367,9 @@ html, body {
   .logo {
     width: 82px;
     height: 82px;
-    bottom: -24px;
-    transform: translate(-50%, 35%);
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -41px;
   }
 }
 
