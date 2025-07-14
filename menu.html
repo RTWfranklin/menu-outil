@@ -44,6 +44,7 @@
           </div>
         </div>
       `;
+      console.log('[DEBUG][PUBLIC] Début récupération menu Firestore', { menuId, uid });
       db.collection('users').doc(uid).collection('menus').doc(menuId).get().then(function(doc) {
         if (!doc.exists) {
           menuDiv.innerHTML = "<div class='menu-error'>Menu introuvable</div>";
