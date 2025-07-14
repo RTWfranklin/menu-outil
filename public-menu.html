@@ -71,13 +71,14 @@
     if(idx === 0) btn.classList.add('active');
     nav.appendChild(btn);
   });
-  // Correction mobile : forcer le scroll tout à gauche après le rendu complet et le paint
-  setTimeout(function() {
-    if (nav) {
-      nav.scrollLeft = 0;
-      requestAnimationFrame(() => { nav.scrollLeft = 0; });
-    }
-  }, 100);
+  // Correction mobile : forcer le scroll tout à gauche de façon répétée et retirer le focus du bouton actif
+  for (let i = 0; i < 6; i++) {
+    setTimeout(() => {
+      if (nav) nav.scrollLeft = 0;
+      const activeBtn = nav.querySelector('.category-nav-btn.active');
+      if (activeBtn) activeBtn.blur();
+    }, 100 * (i + 1));
+  }
   // Génération sections de plats par catégorie
   const main = document.getElementById('categories-list');
   main.innerHTML = '';
