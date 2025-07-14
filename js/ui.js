@@ -129,139 +129,223 @@ export function editMenu(index) {
       }
     };
     catDiv.appendChild(delCatBtn);
-    // Affichage des items de la catégorie
-    const itemsDiv = document.createElement('div');
-    itemsDiv.className = 'items';
-    (cat.items || []).forEach(function(item, itemIndex) {
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'item';
-      // Nom
-      const nameInput = document.createElement('input');
-      nameInput.type = 'text';
-      nameInput.placeholder = 'Nom';
-      nameInput.value = item.name || '';
-      nameInput.oninput = function(e) {
-        item.name = e.target.value;
-        if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-            // Auto-save OK
-          });
-        }
-      };
-      itemDiv.appendChild(nameInput);
-      // Prix
-      const priceInput = document.createElement('input');
-      priceInput.type = 'text';
-      priceInput.placeholder = 'Prix';
-      priceInput.value = item.price || '';
-      priceInput.oninput = function(e) {
-        item.price = e.target.value;
-        if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-            // Auto-save OK
-          });
-        }
-      };
-      itemDiv.appendChild(priceInput);
-      // Description
-      const descInput = document.createElement('input');
-      descInput.type = 'text';
-      descInput.placeholder = 'Description';
-      descInput.value = item.desc || '';
-      descInput.oninput = function(e) {
-        item.desc = e.target.value;
-        if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-            // Auto-save OK
-          });
-        }
-      };
-      itemDiv.appendChild(descInput);
-      // Badges
-      const BADGES = [
-        {label: 'Vegan', value: 'Vegan'},
-        {label: 'Nouveau', value: 'Nouveau'},
-        {label: 'Populaire', value: 'Populaire'},
-        {label: 'Spécialité', value: 'Spécialité'}
-      ];
-      const badgesWrapper = document.createElement('div');
-      badgesWrapper.className = 'badges-editor';
-      BADGES.forEach(function(badge) {
-        const label = document.createElement('label');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = badge.value;
-        checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
-        checkbox.onchange = function(e) {
-          if (!item.badges) item.badges = [];
-          if (e.target.checked) {
-            if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
-          } else {
-            item.badges = item.badges.filter(b => b !== badge.value);
+    // Bouton ajout sous-catégorie
+    const addSubCatBtn = document.createElement('button');
+    addSubCatBtn.textContent = 'Ajouter une sous-catégorie';
+    addSubCatBtn.onclick = function() {
+      if (!cat.subcategories) cat.subcategories = [];
+      cat.subcategories.push({ name: '', items: [] });
+      saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+        editMenu(index);
+      });
+    };
+    catDiv.appendChild(addSubCatBtn);
+    // Affichage des sous-catégories si présentes
+    if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
+      cat.subcategories.forEach(function(subcat, subcatIndex) {
+        const subcatDiv = document.createElement('div');
+        subcatDiv.className = 'subcategory';
+        // Champ nom de sous-catégorie
+        const subcatNameInput = document.createElement('input');
+        subcatNameInput.type = 'text';
+        subcatNameInput.placeholder = 'Nom de la sous-catégorie';
+        subcatNameInput.value = subcat.name || '';
+        subcatNameInput.oninput = function(e) {
+          subcat.name = e.target.value;
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+        };
+        subcatDiv.appendChild(subcatNameInput);
+        // Bouton suppression sous-catégorie
+        const delSubCatBtn = document.createElement('button');
+        delSubCatBtn.textContent = '🗑️';
+        delSubCatBtn.title = 'Supprimer cette sous-catégorie';
+        delSubCatBtn.onclick = function() {
+          if (confirm('Supprimer cette sous-catégorie ?')) {
+            cat.subcategories.splice(subcatIndex, 1);
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+              editMenu(index);
+            });
           }
+        };
+        subcatDiv.appendChild(delSubCatBtn);
+        // Affichage des items de la sous-catégorie
+        const subItemsDiv = document.createElement('div');
+        subItemsDiv.className = 'items';
+        (subcat.items || []).forEach(function(item, itemIndex) {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'item';
+          // Nom
+          const nameInput = document.createElement('input');
+          nameInput.type = 'text';
+          nameInput.placeholder = 'Nom';
+          nameInput.value = item.name || '';
+          nameInput.oninput = function(e) {
+            item.name = e.target.value;
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+          };
+          itemDiv.appendChild(nameInput);
+          // Prix
+          const priceInput = document.createElement('input');
+          priceInput.type = 'text';
+          priceInput.placeholder = 'Prix';
+          priceInput.value = item.price || '';
+          priceInput.oninput = function(e) {
+            item.price = e.target.value;
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+          };
+          itemDiv.appendChild(priceInput);
+          // Description
+          const descInput = document.createElement('input');
+          descInput.type = 'text';
+          descInput.placeholder = 'Description';
+          descInput.value = item.desc || '';
+          descInput.oninput = function(e) {
+            item.desc = e.target.value;
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+          };
+          itemDiv.appendChild(descInput);
+          // Badges (reprendre la logique existante)
+          const BADGES = [
+            {label: 'Vegan', value: 'Vegan'},
+            {label: 'Nouveau', value: 'Nouveau'},
+            {label: 'Populaire', value: 'Populaire'},
+            {label: 'Spécialité', value: 'Spécialité'}
+          ];
+          const badgesWrapper = document.createElement('div');
+          badgesWrapper.className = 'badges-editor';
+          BADGES.forEach(function(badge) {
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = badge.value;
+            checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
+            checkbox.onchange = function(e) {
+              if (!item.badges) item.badges = [];
+              if (e.target.checked) {
+                if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
+              } else {
+                item.badges = item.badges.filter(b => b !== badge.value);
+              }
+              saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+            };
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(badge.label));
+            badgesWrapper.appendChild(label);
+          });
+          itemDiv.appendChild(badgesWrapper);
+          subItemsDiv.appendChild(itemDiv);
+        });
+        // Bouton ajout item dans sous-catégorie
+        const addItemBtn = document.createElement('button');
+        addItemBtn.textContent = 'Ajouter un item';
+        addItemBtn.onclick = function() {
+          if (!subcat.items) subcat.items = [];
+          subcat.items.push({ name: '', price: '', desc: '', badges: [] });
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+            editMenu(index);
+          });
+        };
+        subItemsDiv.appendChild(addItemBtn);
+        subcatDiv.appendChild(subItemsDiv);
+        catDiv.appendChild(subcatDiv);
+      });
+    } else {
+      // Affichage des items de la catégorie (fallback)
+      const itemsDiv = document.createElement('div');
+      itemsDiv.className = 'items';
+      (cat.items || []).forEach(function(item, itemIndex) {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'item';
+        // Nom
+        const nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.placeholder = 'Nom';
+        nameInput.value = item.name || '';
+        nameInput.oninput = function(e) {
+          item.name = e.target.value;
           if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
             saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
               // Auto-save OK
             });
           }
         };
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(badge.label));
-        badgesWrapper.appendChild(label);
-      });
-      itemDiv.appendChild(badgesWrapper);
-      // Image
-      const imgInput = document.createElement('input');
-      imgInput.type = 'file';
-      imgInput.accept = 'image/*';
-      imgInput.onchange = function(e) {
-        const file = imgInput.files[0];
-        if (!file) return;
-        uploadImageToCloudinary(file, function(url) {
-          item.imgUrl = url;
-          imgPreview.src = url;
+        itemDiv.appendChild(nameInput);
+        // Prix
+        const priceInput = document.createElement('input');
+        priceInput.type = 'text';
+        priceInput.placeholder = 'Prix';
+        priceInput.value = item.price || '';
+        priceInput.oninput = function(e) {
+          item.price = e.target.value;
           if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
             saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
               // Auto-save OK
             });
           }
-        }, function(errorMsg) {
-          alert('Erreur upload image plat: ' + errorMsg);
+        };
+        itemDiv.appendChild(priceInput);
+        // Description
+        const descInput = document.createElement('input');
+        descInput.type = 'text';
+        descInput.placeholder = 'Description';
+        descInput.value = item.desc || '';
+        descInput.oninput = function(e) {
+          item.desc = e.target.value;
+          if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+              // Auto-save OK
+            });
+          }
+        };
+        itemDiv.appendChild(descInput);
+        // Badges (reprendre la logique existante)
+        const BADGES = [
+          {label: 'Vegan', value: 'Vegan'},
+          {label: 'Nouveau', value: 'Nouveau'},
+          {label: 'Populaire', value: 'Populaire'},
+          {label: 'Spécialité', value: 'Spécialité'}
+        ];
+        const badgesWrapper = document.createElement('div');
+        badgesWrapper.className = 'badges-editor';
+        BADGES.forEach(function(badge) {
+          const label = document.createElement('label');
+          const checkbox = document.createElement('input');
+          checkbox.type = 'checkbox';
+          checkbox.value = badge.value;
+          checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
+          checkbox.onchange = function(e) {
+            if (!item.badges) item.badges = [];
+            if (e.target.checked) {
+              if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
+            } else {
+              item.badges = item.badges.filter(b => b !== badge.value);
+            }
+            if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
+              saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+                // Auto-save OK
+              });
+            }
+          };
+          label.appendChild(checkbox);
+          label.appendChild(document.createTextNode(badge.label));
+          badgesWrapper.appendChild(label);
+        });
+        itemDiv.appendChild(badgesWrapper);
+        itemsDiv.appendChild(itemDiv);
+      });
+      // Bouton ajout item dans catégorie (fallback)
+      const addItemBtn = document.createElement('button');
+      addItemBtn.textContent = 'Ajouter un item';
+      addItemBtn.onclick = function() {
+        if (!cat.items) cat.items = [];
+        cat.items.push({ name: '', price: '', desc: '', badges: [] });
+        saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+          editMenu(index);
         });
       };
-      itemDiv.appendChild(imgInput);
-      // Preview image
-      const imgPreview = document.createElement('img');
-      imgPreview.style.maxHeight = '40px';
-      imgPreview.style.display = item.imgUrl ? '' : 'none';
-      if (item.imgUrl) imgPreview.src = item.imgUrl;
-      itemDiv.appendChild(imgPreview);
-      // Bouton suppression item
-      const delItemBtn = document.createElement('button');
-      delItemBtn.textContent = '🗑️';
-      delItemBtn.title = 'Supprimer cet item';
-      delItemBtn.onclick = function() {
-        console.log('[UI] Clic bouton supprimer item', itemIndex);
-        if (confirm('Supprimer cet item ?')) {
-          cat.items.splice(itemIndex, 1);
-          renderMenus();
-          editMenu(index);
-        }
-      };
-      itemDiv.appendChild(delItemBtn);
-      itemsDiv.appendChild(itemDiv);
-    });
-    // Bouton ajouter un item
-    const addItemBtn = document.createElement('button');
-    addItemBtn.textContent = '+ Ajouter un plat';
-    addItemBtn.onclick = function() {
-      if (!cat.items) cat.items = [];
-      cat.items.push({ name: '', price: '', desc: '', imgUrl: '', badges: [] });
-      renderMenus();
-      editMenu(index);
-    };
-    itemsDiv.appendChild(addItemBtn);
-    catDiv.appendChild(itemsDiv);
+      itemsDiv.appendChild(addItemBtn);
+      catDiv.appendChild(itemsDiv);
+    }
     categoriesContainer.appendChild(catDiv);
   });
 }
