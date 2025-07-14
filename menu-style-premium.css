@@ -1,6 +1,24 @@
 /* --- Style premium sobre inspiré cookie.menu --- */
 
 html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+
+.public-menu-header {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.banner-logo-wrapper {
+  margin: 0 !important;
+  padding: 0 !important;
+  top: 0 !important;
+}
+
+
+html, body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
