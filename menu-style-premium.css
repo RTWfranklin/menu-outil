@@ -597,3 +597,33 @@ html, body {
   }
 }
 /* --- Fin ajustement --- */
+
+/* --- Correction finale position logo à cheval sur la bannière --- */
+/* Les définitions précédentes de .banner-logo-wrapper sont neutralisées */
+/*
+.banner-logo-wrapper { ... }
+*/
+
+.banner-logo-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 145px !important; /* moitié du logo sur la bannière, moitié en dessous */
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+@media (max-width: 700px) {
+  .banner-logo-wrapper {
+    top: 75px !important;
+    width: 90px;
+    height: 90px;
+  }
+}
+/* --- Fin correction finale --- */
