@@ -155,13 +155,23 @@ html, body {
   border-radius: 0;
   box-shadow: none;
   z-index: 2;
-}
+} /* Assure le positionnement relatif pour le logo centré */
 
 .banner-logo-wrapper {
-  position: relative;
-  width: 100vw;
-  height: 180px;
-  max-height: 220px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 120px; /* Ajuste si besoin */
+  z-index: 10;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px #0002;
+  border: 4px solid #222;
   overflow: visible;
 }
 
