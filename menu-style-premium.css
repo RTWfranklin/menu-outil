@@ -650,4 +650,9 @@ html, body {
     margin-left: 32px !important;
   }
 }
+@media (max-width: 700px) {
+  .category-nav-btn:first-child {
+    margin-left: 8px !important;
+  }
+}
 /* --- Fin correction finale --- */
