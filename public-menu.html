@@ -65,6 +65,8 @@
       const nav = document.getElementById('category-nav');
       const scrollLeft = btn.offsetLeft - nav.offsetLeft - 18; // 18px = margin-left du premier bouton
       
+      console.log('Scroll navigation:', {btnOffset: btn.offsetLeft, navOffset: nav.offsetLeft, scrollLeft});
+      
       nav.scrollTo({
         left: scrollLeft,
         behavior: 'smooth'
@@ -93,7 +95,16 @@
         // Mettre à jour le bouton actif
         document.querySelectorAll('.category-nav-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = nav.querySelector(`.category-nav-btn:nth-child(${idx + 1})`);
-        if (activeBtn) activeBtn.classList.add('active');
+        if (activeBtn) {
+          activeBtn.classList.add('active');
+          
+          // Scroll automatique de la navigation pour centrer le bouton actif
+          const scrollLeft = activeBtn.offsetLeft - nav.offsetLeft - 18; // 18px = margin-left du premier bouton
+          nav.scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+          });
+        }
       }
     });
   });
