@@ -182,6 +182,35 @@ catDiv.ondrop = function(e) {
       cat.subcategories.forEach(function(subcat, subcatIndex) {
         const subcatDiv = document.createElement('div');
         subcatDiv.className = 'subcategory';
+        // --- Drag & Drop pour réordonner les sous-catégories ---
+subcatDiv.draggable = true;
+subcatDiv.ondragstart = function(e) {
+  e.dataTransfer.setData('text/plain', subcatIndex);
+  subcatDiv.classList.add('dragging');
+};
+subcatDiv.ondragend = function() {
+  subcatDiv.classList.remove('dragging');
+};
+subcatDiv.ondragover = function(e) {
+  e.preventDefault();
+  subcatDiv.classList.add('drag-over');
+};
+subcatDiv.ondragleave = function() {
+  subcatDiv.classList.remove('drag-over');
+};
+subcatDiv.ondrop = function(e) {
+  e.preventDefault();
+  subcatDiv.classList.remove('drag-over');
+  const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+  const toIndex = subcatIndex;
+  if (fromIndex !== toIndex) {
+    const movedSubcat = cat.subcategories.splice(fromIndex, 1)[0];
+    cat.subcategories.splice(toIndex, 0, movedSubcat);
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      editMenu(index);
+    });
+  }
+};
         // Champ nom de sous-catégorie
         const subcatNameInput = document.createElement('input');
         subcatNameInput.type = 'text';
