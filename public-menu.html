@@ -81,32 +81,44 @@
     nav.appendChild(btn);
   });
   // Système de détection de scroll pour mettre à jour le bouton actif
+  let scrollTimeout;
+  let lastActiveSection = -1;
+  
   window.addEventListener('scroll', function() {
-    const sections = document.querySelectorAll('.category-section');
-    const nav = document.getElementById('category-nav');
-    const navHeight = nav ? nav.offsetHeight : 0;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    sections.forEach((section, idx) => {
-      const sectionTop = section.offsetTop - navHeight - 50; // 50px de marge
-      const sectionBottom = sectionTop + section.offsetHeight;
+    // Débouncer le scroll pour éviter les animations saccadées
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(function() {
+      const sections = document.querySelectorAll('.category-section');
+      const nav = document.getElementById('category-nav');
+      const navHeight = nav ? nav.offsetHeight : 0;
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
       
-      if (scrollTop >= sectionTop && scrollTop < sectionBottom) {
-        // Mettre à jour le bouton actif
-        document.querySelectorAll('.category-nav-btn').forEach(btn => btn.classList.remove('active'));
-        const activeBtn = nav.querySelector(`.category-nav-btn:nth-child(${idx + 1})`);
-        if (activeBtn) {
-          activeBtn.classList.add('active');
-          
-          // Scroll automatique de la navigation pour centrer le bouton actif
-          const scrollLeft = activeBtn.offsetLeft - nav.offsetLeft - 18; // 18px = margin-left du premier bouton
-          nav.scrollTo({
-            left: scrollLeft,
-            behavior: 'smooth'
-          });
+      sections.forEach((section, idx) => {
+        const sectionTop = section.offsetTop - navHeight - 50; // 50px de marge
+        const sectionBottom = sectionTop + section.offsetHeight;
+        
+        if (scrollTop >= sectionTop && scrollTop < sectionBottom) {
+          // Éviter de refaire le scroll si on est déjà sur cette section
+          if (lastActiveSection !== idx) {
+            lastActiveSection = idx;
+            
+            // Mettre à jour le bouton actif
+            document.querySelectorAll('.category-nav-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = nav.querySelector(`.category-nav-btn:nth-child(${idx + 1})`);
+            if (activeBtn) {
+              activeBtn.classList.add('active');
+              
+              // Scroll automatique de la navigation pour centrer le bouton actif
+              const scrollLeft = activeBtn.offsetLeft - nav.offsetLeft - 18; // 18px = margin-left du premier bouton
+              nav.scrollTo({
+                left: scrollLeft,
+                behavior: 'smooth'
+              });
+            }
+          }
         }
-      }
-    });
+      });
+    }, 100); // Délai de 100ms pour débouncer
   });
   // Génération sections de plats par catégorie
   const main = document.getElementById('categories-list');
