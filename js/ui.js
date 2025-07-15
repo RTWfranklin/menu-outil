@@ -114,6 +114,12 @@ export function editMenu(index) {
 // Désactiver le drag de catégorie si elle contient des sous-catégories
 catDiv.draggable = !(Array.isArray(cat.subcategories) && cat.subcategories.length > 0);
 catDiv.ondragstart = function(e) {
+  // Ne pas exécuter si la catégorie a des sous-catégories
+  console.log('cat.subcategories:', cat.subcategories, 'length:', cat.subcategories ? cat.subcategories.length : 0);
+  if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
+    console.log('DRAGSTART catégorie BLOCKÉ - a des sous-catégories');
+    return false;
+  }
   console.log('DRAGSTART catégorie', catIndex);
   e.dataTransfer.setData('text/plain', catIndex);
   catDiv.classList.add('dragging');
