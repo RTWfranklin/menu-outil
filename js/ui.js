@@ -354,9 +354,12 @@ subItemsDiv.ondrop = function(e) {
           itemDragHandle.className = 'drag-handle';
           itemDragHandle.draggable = true;
           itemDragHandle.ondragstart = function(e) {
+            // Cherche le cat.id et subcat.id dans la portée
+            let catId = cat && cat.id ? cat.id : null;
+            let subcatId = typeof subcat !== 'undefined' && subcat && subcat.id ? subcat.id : null;
             const payload = JSON.stringify({
-              fromCatId: cat.id,
-              fromSubcatId: subcat ? subcat.id : null,
+              fromCatId: catId,
+              fromSubcatId: subcatId,
               fromItem: itemIndex
             });
             console.log('DRAGSTART item', payload);
