@@ -65,6 +65,18 @@
       btn.classList.add('active');
       document.querySelectorAll('.category-section').forEach(sec => sec.style.display = 'none');
       document.getElementById('cat-section-' + idx).style.display = '';
+      
+      // Scroll automatique de la navigation pour centrer le bouton sélectionné
+      const nav = document.getElementById('category-nav');
+      const btnRect = btn.getBoundingClientRect();
+      const navRect = nav.getBoundingClientRect();
+      const scrollLeft = btn.offsetLeft - nav.offsetLeft - 18; // 18px = margin-left du premier bouton
+      
+      nav.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
+      
       // Scroll vers la section sur mobile
       document.getElementById('cat-section-' + idx).scrollIntoView({behavior: 'smooth', block: 'start'});
     };
