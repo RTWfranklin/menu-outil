@@ -656,4 +656,10 @@ html, body {
     margin-left: 8px !important;
   }
 }
+.drag-over {
+  background: #e8eafc !important;
+}
+.dragging {
+  opacity: 0.5;
+}
 /* --- Fin correction finale --- */

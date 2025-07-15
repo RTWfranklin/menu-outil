@@ -179,8 +179,46 @@ export function editMenu(index) {
         // Affichage des items de la sous-catégorie
         const subItemsDiv = document.createElement('div');
         subItemsDiv.className = 'items';
+        // --- Zone de drop sur le conteneur d'items (sous-catégorie) ---
+subItemsDiv.ondragover = function(e) {
+  e.preventDefault();
+  subItemsDiv.classList.add('drag-over');
+};
+subItemsDiv.ondragleave = function() {
+  subItemsDiv.classList.remove('drag-over');
+};
+subItemsDiv.ondrop = function(e) {
+  e.preventDefault();
+  subItemsDiv.classList.remove('drag-over');
+  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  let movedItem;
+  if (data.fromSubcat !== null) {
+    movedItem = menu.categories[data.fromCat].subcategories[data.fromSubcat].items.splice(data.fromItem, 1)[0];
+  } else {
+    movedItem = menu.categories[data.fromCat].items.splice(data.fromItem, 1)[0];
+  }
+  cat.subcategories[subcatIndex].items.push(movedItem);
+  saveMenuToFirestore(menu, window.currentUser, function() {
+    editMenu(index);
+  });
+};
         (subcat.items || []).forEach(function(item, itemIndex) {
           const itemDiv = document.createElement('div');
+          // --- Drag & Drop pour items (dans sous-catégorie) ---
+itemDiv.draggable = true;
+itemDiv.ondragstart = function(e) {
+  e.dataTransfer.setData('text/plain', JSON.stringify({
+    fromCat: catIndex,
+    fromSubcat: subcatIndex,
+    fromItem: itemIndex
+  }));
+  itemDiv.classList.add('dragging');
+};
+itemDiv.ondragend = function() {
+  itemDiv.classList.remove('dragging');
+};
+
+
           itemDiv.className = 'item';
           // Nom
           const nameInput = document.createElement('input');
@@ -300,8 +338,44 @@ export function editMenu(index) {
       // Affichage des items de la catégorie (fallback)
       const itemsDiv = document.createElement('div');
       itemsDiv.className = 'items';
+      // --- Zone de drop sur le conteneur d'items (catégorie simple) ---
+itemsDiv.ondragover = function(e) {
+  e.preventDefault();
+  itemsDiv.classList.add('drag-over');
+};
+itemsDiv.ondragleave = function() {
+  itemsDiv.classList.remove('drag-over');
+};
+itemsDiv.ondrop = function(e) {
+  e.preventDefault();
+  itemsDiv.classList.remove('drag-over');
+  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  let movedItem;
+  if (data.fromSubcat !== null) {
+    movedItem = menu.categories[data.fromCat].subcategories[data.fromSubcat].items.splice(data.fromItem, 1)[0];
+  } else {
+    movedItem = menu.categories[data.fromCat].items.splice(data.fromItem, 1)[0];
+  }
+  cat.items.push(movedItem);
+  saveMenuToFirestore(menu, window.currentUser, function() {
+    editMenu(index);
+  });
+};
       (cat.items || []).forEach(function(item, itemIndex) {
         const itemDiv = document.createElement('div');
+        // --- Drag & Drop pour items (dans catégorie simple) ---
+itemDiv.draggable = true;
+itemDiv.ondragstart = function(e) {
+  e.dataTransfer.setData('text/plain', JSON.stringify({
+    fromCat: catIndex,
+    fromSubcat: null,
+    fromItem: itemIndex
+  }));
+  itemDiv.classList.add('dragging');
+};
+itemDiv.ondragend = function() {
+  itemDiv.classList.remove('dragging');
+};
         itemDiv.className = 'item';
         // Nom
         const nameInput = document.createElement('input');
