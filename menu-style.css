@@ -926,3 +926,15 @@ body {
 .drop-zone.active {
   background: #e0e7ff;
 }
+
+.drag-handle {
+  cursor: grab;
+  margin-right: 8px;
+  font-size: 1.2em;
+  user-select: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+.drag-handle.dragging {
+  opacity: 0.5;
+}
