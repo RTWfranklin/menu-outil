@@ -171,7 +171,13 @@ catDiv.ondrop = function(e) {
     addSubCatBtn.textContent = 'Ajouter une sous-catégorie';
     addSubCatBtn.onclick = function() {
       if (!cat.subcategories) cat.subcategories = [];
-      cat.subcategories.push({ name: '', items: [] });
+      const newSubcat = { 
+        name: '', 
+        items: [] 
+      };
+      // Génération d'un id unique pour la sous-catégorie
+      newSubcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      cat.subcategories.push(newSubcat);
       saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
         editMenu(index);
       });
@@ -185,7 +191,7 @@ catDiv.ondrop = function(e) {
         // --- Drag & Drop pour réordonner les sous-catégories ---
 subcatDiv.draggable = true;
 subcatDiv.ondragstart = function(e) {
-  e.dataTransfer.setData('text/plain', subcatIndex);
+  e.dataTransfer.setData('text/plain', subcat.id);
   subcatDiv.classList.add('dragging');
 };
 subcatDiv.ondragend = function() {
@@ -201,7 +207,8 @@ subcatDiv.ondragleave = function() {
 subcatDiv.ondrop = function(e) {
   e.preventDefault();
   subcatDiv.classList.remove('drag-over');
-  const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+  const fromId = e.dataTransfer.getData('text/plain');
+  const fromIndex = cat.subcategories.findIndex(sc => sc.id === fromId);
   const toIndex = subcatIndex;
   if (fromIndex !== toIndex) {
     const movedSubcat = cat.subcategories.splice(fromIndex, 1)[0];
