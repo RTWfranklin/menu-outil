@@ -220,6 +220,33 @@ itemDiv.ondragend = function() {
 
 
           itemDiv.className = 'item';
+          // --- Drag & Drop pour réordonner dans la même sous-catégorie ---
+itemDiv.ondragover = function(e) {
+  e.preventDefault();
+  itemDiv.classList.add('drag-over');
+};
+itemDiv.ondragleave = function() {
+  itemDiv.classList.remove('drag-over');
+};
+itemDiv.ondrop = function(e) {
+  e.preventDefault();
+  itemDiv.classList.remove('drag-over');
+  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  // On ne traite que le cas où on déplace dans la même sous-catégorie
+  if (
+    data.fromCat === catIndex &&
+    data.fromSubcat === subcatIndex
+  ) {
+    let fromList = cat.subcategories[subcatIndex].items;
+    let movedItem = fromList.splice(data.fromItem, 1)[0];
+    let targetIndex = itemIndex;
+    if (data.fromItem < targetIndex) targetIndex--;
+    fromList.splice(targetIndex, 0, movedItem);
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      editMenu(index);
+    });
+  }
+};
           // Nom
           const nameInput = document.createElement('input');
           nameInput.type = 'text';
@@ -338,6 +365,33 @@ itemDiv.ondragend = function() {
       // Affichage des items de la catégorie (fallback)
       const itemsDiv = document.createElement('div');
       itemsDiv.className = 'items';
+      // --- Drag & Drop pour réordonner dans la même catégorie simple ---
+itemDiv.ondragover = function(e) {
+  e.preventDefault();
+  itemDiv.classList.add('drag-over');
+};
+itemDiv.ondragleave = function() {
+  itemDiv.classList.remove('drag-over');
+};
+itemDiv.ondrop = function(e) {
+  e.preventDefault();
+  itemDiv.classList.remove('drag-over');
+  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  // On ne traite que le cas où on déplace dans la même catégorie simple
+  if (
+    data.fromCat === catIndex &&
+    data.fromSubcat === null
+  ) {
+    let fromList = cat.items;
+    let movedItem = fromList.splice(data.fromItem, 1)[0];
+    let targetIndex = itemIndex;
+    if (data.fromItem < targetIndex) targetIndex--;
+    fromList.splice(targetIndex, 0, movedItem);
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      editMenu(index);
+    });
+  }
+};
       // --- Zone de drop sur le conteneur d'items (catégorie simple) ---
 itemsDiv.ondragover = function(e) {
   e.preventDefault();
