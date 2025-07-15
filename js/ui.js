@@ -128,6 +128,7 @@ catDiv.ondragleave = function() {
 };
 catDiv.ondrop = function(e) {
   e.preventDefault();
+  e.stopPropagation();
   catDiv.classList.remove('drag-over');
   const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
   const toIndex = catIndex;
@@ -205,6 +206,7 @@ catDiv.ondrop = function(e) {
         dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
         dropZone.ondrop = function(e) {
           e.preventDefault();
+          e.stopPropagation();
           dropZone.classList.remove('active');
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
           console.log('DROPZONE ondrop', {
@@ -291,6 +293,7 @@ subItemsDiv.ondragleave = function() {
 };
 subItemsDiv.ondrop = function(e) {
   e.preventDefault();
+  e.stopPropagation();
   subItemsDiv.classList.remove('drag-over');
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
   console.log('DROPZONE ondrop', {
@@ -350,6 +353,7 @@ subItemsDiv.ondrop = function(e) {
           dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
           dropZone.ondrop = function(e) {
             e.preventDefault();
+            e.stopPropagation();
             dropZone.classList.remove('active');
             const data = JSON.parse(e.dataTransfer.getData('text/plain'));
             console.log('DROPZONE ondrop', {
@@ -526,6 +530,7 @@ subItemsDiv.ondrop = function(e) {
         itemDropZoneEnd.ondragleave = function() { itemDropZoneEnd.classList.remove('active'); };
         itemDropZoneEnd.ondrop = function(e) {
           e.preventDefault();
+          e.stopPropagation();
           itemDropZoneEnd.classList.remove('active');
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
           console.log('DROPZONE ondrop', {
@@ -576,6 +581,7 @@ subItemsDiv.ondrop = function(e) {
       dropZoneEnd.ondragleave = function() { dropZoneEnd.classList.remove('active'); };
       dropZoneEnd.ondrop = function(e) {
         e.preventDefault();
+        e.stopPropagation();
         dropZoneEnd.classList.remove('active');
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
         console.log('DROPZONE ondrop', {
@@ -610,6 +616,7 @@ itemsDiv.ondragleave = function() {
 };
 itemsDiv.ondrop = function(e) {
   e.preventDefault();
+  e.stopPropagation();
   itemsDiv.classList.remove('drag-over');
   const raw = e.dataTransfer.getData('text/plain');
   console.log('DROPZONE catégorie simple reçoit', raw);
