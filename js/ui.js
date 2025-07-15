@@ -113,6 +113,11 @@ export function editMenu(index) {
     // --- Drag & Drop pour réordonner les catégories ---
 catDiv.draggable = true;
 catDiv.ondragstart = function(e) {
+  // Empêcher le drag de catégorie si on drag depuis un drag handle
+  if (e.target.classList.contains('drag-handle')) {
+    e.preventDefault();
+    return;
+  }
   console.log('DRAGSTART catégorie', catIndex);
   e.dataTransfer.setData('text/plain', catIndex);
   catDiv.classList.add('dragging');
