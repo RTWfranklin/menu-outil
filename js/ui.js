@@ -112,18 +112,16 @@ export function editMenu(index) {
     catDiv.className = 'category';
     // --- Drag & Drop pour réordonner les catégories ---
 // Désactiver le drag de catégorie si elle contient des sous-catégories
-catDiv.draggable = !(Array.isArray(cat.subcategories) && cat.subcategories.length > 0);
-catDiv.ondragstart = function(e) {
-  // Ne pas exécuter si la catégorie a des sous-catégories
-  console.log('cat.subcategories:', cat.subcategories, 'length:', cat.subcategories ? cat.subcategories.length : 0);
-  if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
-    console.log('DRAGSTART catégorie BLOCKÉ - a des sous-catégories');
-    return false;
-  }
-  console.log('DRAGSTART catégorie', catIndex);
-  e.dataTransfer.setData('text/plain', catIndex);
-  catDiv.classList.add('dragging');
-};
+const hasSubcategories = Array.isArray(cat.subcategories) && cat.subcategories.length > 0;
+catDiv.draggable = !hasSubcategories;
+
+if (!hasSubcategories) {
+  catDiv.ondragstart = function(e) {
+    console.log('DRAGSTART catégorie', catIndex);
+    e.dataTransfer.setData('text/plain', catIndex);
+    catDiv.classList.add('dragging');
+  };
+}
 catDiv.ondragend = function() {
   catDiv.classList.remove('dragging');
 };
