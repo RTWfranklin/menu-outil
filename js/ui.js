@@ -148,6 +148,16 @@ catDiv.ondrop = function(e) {
       cat.name = e.target.value;
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
         debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
+          if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
+            menu.categories.forEach(function(cat) {
+              if (!cat.id) cat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+              if (Array.isArray(cat.subcategories)) {
+                cat.subcategories.forEach(function(subcat) {
+                  if (!subcat.id) subcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                });
+              }
+            });
+          }
           console.log('Catégorie sauvegardée');
         });
       }
@@ -175,6 +185,7 @@ catDiv.ondrop = function(e) {
         name: '', 
         items: [] 
       };
+      
       // Génération d'un id unique pour la sous-catégorie
       newSubcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       cat.subcategories.push(newSubcat);
@@ -802,8 +813,9 @@ export function setupUI() {
       }
       const menu = menus[currentMenuId];
       menu.categories = menu.categories || [];
-      menu.categories.push({ name: "Nouvelle catégorie", items: [] });
-      console.log('[DEBUG] Ajout catégorie - menu AVANT saveMenuToFirestore:', JSON.parse(JSON.stringify(menu)));
+      const newCat = { name: "Nouvelle catégorie", items: [] };
+      if (!newCat.id) newCat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      menu.categories.push(newCat);      console.log('[DEBUG] Ajout catégorie - menu AVANT saveMenuToFirestore:', JSON.parse(JSON.stringify(menu)));
       if (window.currentUser) {
         saveMenuToFirestore(menu, window.currentUser, function() {
           console.log('[DEBUG] saveMenuToFirestore terminé (succès) pour menu:', menu.firestoreId);
