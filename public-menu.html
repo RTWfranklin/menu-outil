@@ -91,57 +91,112 @@
     title.className = 'category-section-title';
     title.textContent = cat.name || `Catégorie ${idx+1}`;
     section.appendChild(title);
-    (cat.items || []).forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'dish-card';
-      // Structure flex : image à gauche, infos à droite
-      const flexRow = document.createElement('div');
-      flexRow.className = 'dish-row';
-      if(item.imgUrl) {
-        const img = document.createElement('img');
-        img.src = item.imgUrl;
-        img.className = 'dish-img';
-        flexRow.appendChild(img);
-      }
-      const info = document.createElement('div');
-      info.className = 'dish-info';
-      const name = document.createElement('div');
-      name.className = 'dish-title';
-      name.textContent = item.name || '';
-      info.appendChild(name);
-      if(item.desc) {
-        const desc = document.createElement('div');
-        desc.className = 'dish-desc';
-        desc.textContent = item.desc;
-        // Ajoute la classe 'truncated' si texte trop long
-        if(item.desc.length > 110) desc.classList.add('truncated');
-        // Popup au clic sur la description ou la carte
-        desc.addEventListener('click', function(e) {
-          e.stopPropagation();
-          showDishPopup(item);
+    // Affichage des sous-catégories si présentes
+    if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
+      cat.subcategories.forEach(subcat => {
+        const subcatTitle = document.createElement('h3');
+        subcatTitle.className = 'subcategory-section-title';
+        subcatTitle.textContent = subcat.name || '';
+        section.appendChild(subcatTitle);
+        (subcat.items || []).forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'dish-card';
+          // Structure flex : image à gauche, infos à droite
+          const flexRow = document.createElement('div');
+          flexRow.className = 'dish-row';
+          if(item.imgUrl) {
+            const img = document.createElement('img');
+            img.src = item.imgUrl;
+            img.className = 'dish-img';
+            flexRow.appendChild(img);
+          }
+          const info = document.createElement('div');
+          info.className = 'dish-info';
+          const name = document.createElement('div');
+          name.className = 'dish-title';
+          name.textContent = item.name || '';
+          info.appendChild(name);
+          if(item.desc) {
+            const desc = document.createElement('div');
+            desc.className = 'dish-desc';
+            desc.textContent = item.desc;
+            if(item.desc.length > 110) desc.classList.add('truncated');
+            desc.addEventListener('click', function(e) {
+              e.stopPropagation();
+              showDishPopup(item);
+            });
+            card.addEventListener('click', function(e) {
+              if(!e.target.classList.contains('dish-desc')) showDishPopup(item);
+            });
+            info.appendChild(desc);
+          }
+          if(Array.isArray(item.badges) && item.badges.length) {
+            const badges = document.createElement('span');
+            badges.className = 'badges';
+            badges.textContent = item.badges.join(', ');
+            info.appendChild(badges);
+          }
+          flexRow.appendChild(info);
+          card.appendChild(flexRow);
+          if(item.price) {
+            const price = document.createElement('div');
+            price.className = 'dish-price';
+            price.textContent = item.price + ' €';
+            card.appendChild(price);
+          }
+          section.appendChild(card);
         });
-        card.addEventListener('click', function(e) {
-          // Ouvre le popup uniquement si ce n'est pas déjà un clic sur un bouton interne
-          if(!e.target.classList.contains('dish-desc')) showDishPopup(item);
-        });
-        info.appendChild(desc);
-      }
-      if(Array.isArray(item.badges) && item.badges.length) {
-        const badges = document.createElement('span');
-        badges.className = 'badges';
-        badges.textContent = item.badges.join(', ');
-        info.appendChild(badges);
-      }
-      flexRow.appendChild(info);
-      card.appendChild(flexRow);
-      if(item.price) {
-        const price = document.createElement('div');
-        price.className = 'dish-price';
-        price.textContent = item.price + ' €';
-        card.appendChild(price);
-      }
-      section.appendChild(card);
-    });
+      });
+    } else {
+      // Affichage direct des plats si pas de sous-catégorie
+      (cat.items || []).forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'dish-card';
+        const flexRow = document.createElement('div');
+        flexRow.className = 'dish-row';
+        if(item.imgUrl) {
+          const img = document.createElement('img');
+          img.src = item.imgUrl;
+          img.className = 'dish-img';
+          flexRow.appendChild(img);
+        }
+        const info = document.createElement('div');
+        info.className = 'dish-info';
+        const name = document.createElement('div');
+        name.className = 'dish-title';
+        name.textContent = item.name || '';
+        info.appendChild(name);
+        if(item.desc) {
+          const desc = document.createElement('div');
+          desc.className = 'dish-desc';
+          desc.textContent = item.desc;
+          if(item.desc.length > 110) desc.classList.add('truncated');
+          desc.addEventListener('click', function(e) {
+            e.stopPropagation();
+            showDishPopup(item);
+          });
+          card.addEventListener('click', function(e) {
+            if(!e.target.classList.contains('dish-desc')) showDishPopup(item);
+          });
+          info.appendChild(desc);
+        }
+        if(Array.isArray(item.badges) && item.badges.length) {
+          const badges = document.createElement('span');
+          badges.className = 'badges';
+          badges.textContent = item.badges.join(', ');
+          info.appendChild(badges);
+        }
+        flexRow.appendChild(info);
+        card.appendChild(flexRow);
+        if(item.price) {
+          const price = document.createElement('div');
+          price.className = 'dish-price';
+          price.textContent = item.price + ' €';
+          card.appendChild(price);
+        }
+        section.appendChild(card);
+      });
+    }
     main.appendChild(section);
   });
 }
