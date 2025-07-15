@@ -885,3 +885,32 @@ body {
       box-sizing: border-box;
     }
   }
+
+/* Drag & Drop sous-catégorie amélioré */
+.subcategory {
+  transition: background 0.2s, border 0.2s, box-shadow 0.2s;
+  cursor: grab;
+  position: relative;
+}
+.subcategory.dragging {
+  opacity: 0.5;
+  background: #e0e7ff;
+  box-shadow: 0 4px 16px rgba(60, 60, 200, 0.15);
+  cursor: grabbing;
+}
+.subcategory.drag-over {
+  border: 2px dashed #4f46e5;
+  background: #f5f3ff;
+}
+.subcategory.drop-indicator-top {
+  border-top: 4px solid #4f46e5;
+}
+.subcategory.drop-indicator-bottom {
+  border-bottom: 4px solid #4f46e5;
+}
+.subcategory .drag-icon {
+  margin-right: 8px;
+  font-size: 1.2em;
+  vertical-align: middle;
+  cursor: grab;
+}

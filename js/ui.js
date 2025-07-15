@@ -189,35 +189,55 @@ catDiv.ondrop = function(e) {
         const subcatDiv = document.createElement('div');
         subcatDiv.className = 'subcategory';
         // --- Drag & Drop pour réordonner les sous-catégories ---
-subcatDiv.draggable = true;
-subcatDiv.ondragstart = function(e) {
-  e.dataTransfer.setData('text/plain', subcat.id);
-  subcatDiv.classList.add('dragging');
-};
-subcatDiv.ondragend = function() {
-  subcatDiv.classList.remove('dragging');
-};
-subcatDiv.ondragover = function(e) {
-  e.preventDefault();
-  subcatDiv.classList.add('drag-over');
-};
-subcatDiv.ondragleave = function() {
-  subcatDiv.classList.remove('drag-over');
-};
-subcatDiv.ondrop = function(e) {
-  e.preventDefault();
-  subcatDiv.classList.remove('drag-over');
-  const fromId = e.dataTransfer.getData('text/plain');
-  const fromIndex = cat.subcategories.findIndex(sc => sc.id === fromId);
-  const toIndex = subcatIndex;
-  if (fromIndex !== toIndex) {
-    const movedSubcat = cat.subcategories.splice(fromIndex, 1)[0];
-    cat.subcategories.splice(toIndex, 0, movedSubcat);
-    saveMenuToFirestore(menu, window.currentUser, function() {
-      editMenu(index);
-    });
-  }
-};
+        subcatDiv.draggable = true;
+        subcatDiv.ondragstart = function(e) {
+          e.dataTransfer.setData('text/plain', subcat.id);
+          subcatDiv.classList.add('dragging');
+        };
+        subcatDiv.ondragend = function() {
+          subcatDiv.classList.remove('dragging');
+        };
+        subcatDiv.ondragover = function(e) {
+          e.preventDefault();
+          const rect = subcatDiv.getBoundingClientRect();
+          const offset = e.clientY - rect.top;
+          if (offset < rect.height / 2) {
+            subcatDiv.classList.add('drop-indicator-top');
+            subcatDiv.classList.remove('drop-indicator-bottom');
+          } else {
+            subcatDiv.classList.add('drop-indicator-bottom');
+            subcatDiv.classList.remove('drop-indicator-top');
+          }
+          subcatDiv.classList.add('drag-over');
+        };
+        subcatDiv.ondragleave = function() {
+          subcatDiv.classList.remove('drag-over', 'drop-indicator-top', 'drop-indicator-bottom');
+        };
+        subcatDiv.ondrop = function(e) {
+          e.preventDefault();
+          subcatDiv.classList.remove('drag-over', 'drop-indicator-top', 'drop-indicator-bottom');
+          const fromId = e.dataTransfer.getData('text/plain');
+          const fromIndex = cat.subcategories.findIndex(sc => sc.id === fromId);
+          let toIndex = subcatIndex;
+          // Si drop en bas, on insère après
+          if (subcatDiv.classList.contains('drop-indicator-bottom')) {
+            toIndex++;
+          }
+          if (fromIndex !== -1 && fromIndex !== toIndex && fromIndex !== toIndex - 1) {
+            const movedSubcat = cat.subcategories.splice(fromIndex, 1)[0];
+            // Ajuste l'index si on déplace vers le bas
+            if (fromIndex < toIndex) toIndex--;
+            cat.subcategories.splice(toIndex, 0, movedSubcat);
+            saveMenuToFirestore(menu, window.currentUser, function() {
+              editMenu(index);
+            });
+          }
+        };
+        // Ajout de l'icône drag ☰
+        const dragIcon = document.createElement('span');
+        dragIcon.textContent = '☰';
+        dragIcon.className = 'drag-icon';
+        subcatDiv.appendChild(dragIcon);
         // Champ nom de sous-catégorie
         const subcatNameInput = document.createElement('input');
         subcatNameInput.type = 'text';
