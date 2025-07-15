@@ -589,49 +589,25 @@ itemsDiv.ondrop = function(e) {
         const thisCat = cat;
         console.log('Boucle items (catégorie simple)', {cat: thisCat, itemIndex});
         const itemDiv = document.createElement('div');
-        // --- Drag & Drop pour items (dans catégorie simple) ---
-itemDiv.draggable = true;
-itemDiv.ondragstart = function(e) {
-  const payload = JSON.stringify({
-    fromCatId: thisCat.id,
-    fromSubcatId: null,
-    fromItem: itemIndex
-  });
-  console.log('DRAGSTART item (catégorie simple)', payload);
-  e.dataTransfer.setData('text/plain', payload);
-  itemDiv.classList.add('dragging');
-};
-itemDiv.ondragend = function() {
-  itemDiv.classList.remove('dragging');
-};
-        itemDiv.className = 'item';
-        // --- Drag & Drop pour réordonner dans la même catégorie simple ---
-itemDiv.ondragover = function(e) {
-  e.preventDefault();
-  itemDiv.classList.add('drag-over');
-};
-itemDiv.ondragleave = function() {
-  itemDiv.classList.remove('drag-over');
-};
-itemDiv.ondrop = function(e) {
-  e.preventDefault();
-  itemDiv.classList.remove('drag-over');
-  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-  // On ne traite que le cas où on déplace dans la même catégorie simple
-  if (
-    data.fromCat === catIndex &&
-    data.fromSubcat === null
-  ) {
-    let fromList = cat.items;
-    let movedItem = fromList.splice(data.fromItem, 1)[0];
-    let targetIndex = itemIndex;
-    if (data.fromItem < targetIndex) targetIndex--;
-    fromList.splice(targetIndex, 0, movedItem);
-    saveMenuToFirestore(menu, window.currentUser, function() {
-      editMenu(index);
-    });
-  }
-};
+        // --- Drag handle uniquement sur la poignée ---
+        const itemDragHandle = document.createElement('span');
+        itemDragHandle.textContent = '☰';
+        itemDragHandle.className = 'drag-handle';
+        itemDragHandle.draggable = true;
+        itemDragHandle.ondragstart = function(e) {
+          const payload = JSON.stringify({
+            fromCatId: thisCat.id,
+            fromSubcatId: null,
+            fromItem: itemIndex
+          });
+          console.log('DRAGSTART item (catégorie simple)', payload);
+          e.dataTransfer.setData('text/plain', payload);
+          itemDragHandle.classList.add('dragging');
+        };
+        itemDragHandle.ondragend = function() {
+          itemDragHandle.classList.remove('dragging');
+        };
+        itemDiv.insertBefore(itemDragHandle, itemDiv.firstChild);
         // Nom
         const nameInput = document.createElement('input');
         nameInput.type = 'text';
