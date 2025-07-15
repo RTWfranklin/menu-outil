@@ -838,6 +838,23 @@ if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
         saveMenuToFirestore(menu, window.currentUser, function() {
           console.log('[DEBUG] saveMenuToFirestore terminé (succès) pour menu:', menu.firestoreId);
           loadMenus(window.currentUser, function() {
+            // MIGRATION : Ajoute un id à chaque catégorie et sous-catégorie si absent
+if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
+  menu.categories.forEach(function(cat) {
+    if (!cat.id) cat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    if (Array.isArray(cat.subcategories)) {
+      cat.subcategories.forEach(function(subcat) {
+        if (!subcat.id) subcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      });
+    }
+  });
+  // Sauvegarde le menu pour persister les ids
+  if (window.currentUser) {
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      console.log('[DEBUG] Migration des ids terminée et menu sauvegardé');
+    });
+  }
+}
             console.log('[DEBUG] loadMenus terminé après ajout catégorie. Menus rechargés:', JSON.parse(JSON.stringify(menus)));
             renderMenus();
             // Retrouve le bon index du menu courant après reload

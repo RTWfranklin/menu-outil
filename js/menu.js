@@ -17,6 +17,21 @@ export function loadMenus(user, cb) {
         menu.firestoreId = doc.id;
         menus.push(menu);
       });
+         // === MIGRATION DES IDS ICI ===
+   menus.forEach(function(menu) {
+    if (Array.isArray(menu.categories)) {
+      menu.categories.forEach(function(cat) {
+        if (!cat.id) cat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        if (Array.isArray(cat.subcategories)) {
+          cat.subcategories.forEach(function(subcat) {
+            if (!subcat.id) subcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          });
+        }
+      });
+    }
+  });
+  console.log('[DEBUG] Après migration', JSON.parse(JSON.stringify(menus)));
+  // =============================
       if (cb) cb();
     });
 }
