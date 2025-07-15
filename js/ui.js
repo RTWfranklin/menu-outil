@@ -189,6 +189,7 @@ catDiv.ondrop = function(e) {
         // 1. Drop zone avant la sous-catégorie
         const dropZone = document.createElement('div');
         dropZone.className = 'drop-zone';
+        console.log('DROPZONE créée (sous-catégorie)', subcatIndex);
         dropZone.ondragover = function(e) { e.preventDefault(); dropZone.classList.add('active'); };
         dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
         dropZone.ondrop = function(e) {
@@ -307,6 +308,7 @@ subItemsDiv.ondrop = function(e) {
           // 1. Drop zone avant l'item
           const dropZone = document.createElement('div');
           dropZone.className = 'drop-zone';
+          console.log('DROPZONE créée (item)', itemIndex);
           dropZone.ondragover = function(e) { e.preventDefault(); dropZone.classList.add('active'); };
           dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
           dropZone.ondrop = function(e) {
@@ -474,6 +476,7 @@ subItemsDiv.ondrop = function(e) {
         // Drop zone finale pour drop à la fin de la liste d'items
         const itemDropZoneEnd = document.createElement('div');
         itemDropZoneEnd.className = 'drop-zone';
+        console.log('DROPZONE créée (fin items)', subcat.items ? subcat.items.length : 0);
         itemDropZoneEnd.ondragover = function(e) { e.preventDefault(); itemDropZoneEnd.classList.add('active'); };
         itemDropZoneEnd.ondragleave = function() { itemDropZoneEnd.classList.remove('active'); };
         itemDropZoneEnd.ondrop = function(e) {
@@ -513,6 +516,7 @@ subItemsDiv.ondrop = function(e) {
       // 3. Drop zone finale (pour drop à la fin)
       const dropZoneEnd = document.createElement('div');
       dropZoneEnd.className = 'drop-zone';
+      console.log('DROPZONE créée (fin sous-catégories)', cat.subcategories ? cat.subcategories.length : 0);
       dropZoneEnd.ondragover = function(e) { e.preventDefault(); dropZoneEnd.classList.add('active'); };
       dropZoneEnd.ondragleave = function() { dropZoneEnd.classList.remove('active'); };
       dropZoneEnd.ondrop = function(e) {
