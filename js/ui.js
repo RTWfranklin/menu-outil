@@ -207,6 +207,17 @@ catDiv.ondrop = function(e) {
           e.preventDefault();
           dropZone.classList.remove('active');
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          console.log('DROPZONE ondrop', {
+  data,
+  menu,
+  categories: menu.categories.map(c => ({
+    id: c.id,
+    subcategories: c.subcategories ? c.subcategories.map(sc => sc.id) : undefined
+  })),
+  currentCatId: typeof cat !== 'undefined' ? cat.id : undefined,
+  currentSubcatId: typeof subcat !== 'undefined' ? subcat.id : undefined
+});
+          
           const fromIndex = cat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
           if (fromIndex !== -1 && fromIndex !== subcatIndex) {
             const moved = cat.subcategories.splice(fromIndex, 1)[0];
@@ -282,6 +293,16 @@ subItemsDiv.ondrop = function(e) {
   e.preventDefault();
   subItemsDiv.classList.remove('drag-over');
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  console.log('DROPZONE ondrop', {
+  data,
+  menu,
+  categories: menu.categories.map(c => ({
+    id: c.id,
+    subcategories: c.subcategories ? c.subcategories.map(sc => sc.id) : undefined
+  })),
+  currentCatId: typeof cat !== 'undefined' ? cat.id : undefined,
+  currentSubcatId: typeof subcat !== 'undefined' ? subcat.id : undefined
+});
   // Recherche de la catégorie et sous-catégorie source par id
   const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
   const fromCat = menu.categories[fromCatIndex];
@@ -331,6 +352,16 @@ subItemsDiv.ondrop = function(e) {
             e.preventDefault();
             dropZone.classList.remove('active');
             const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+            console.log('DROPZONE ondrop', {
+  data,
+  menu,
+  categories: menu.categories.map(c => ({
+    id: c.id,
+    subcategories: c.subcategories ? c.subcategories.map(sc => sc.id) : undefined
+  })),
+  currentCatId: typeof cat !== 'undefined' ? cat.id : undefined,
+  currentSubcatId: typeof subcat !== 'undefined' ? subcat.id : undefined
+});
             // Recherche de la catégorie et sous-catégorie source par id
             const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
             const fromCat = menu.categories[fromCatIndex];
@@ -497,6 +528,16 @@ subItemsDiv.ondrop = function(e) {
           e.preventDefault();
           itemDropZoneEnd.classList.remove('active');
           const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          console.log('DROPZONE ondrop', {
+  data,
+  menu,
+  categories: menu.categories.map(c => ({
+    id: c.id,
+    subcategories: c.subcategories ? c.subcategories.map(sc => sc.id) : undefined
+  })),
+  currentCatId: typeof cat !== 'undefined' ? cat.id : undefined,
+  currentSubcatId: typeof subcat !== 'undefined' ? subcat.id : undefined
+});
           const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
           const fromCat = menu.categories[fromCatIndex];
           let fromSubcatIndex = -1;
@@ -537,6 +578,16 @@ subItemsDiv.ondrop = function(e) {
         e.preventDefault();
         dropZoneEnd.classList.remove('active');
         const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        console.log('DROPZONE ondrop', {
+  data,
+  menu,
+  categories: menu.categories.map(c => ({
+    id: c.id,
+    subcategories: c.subcategories ? c.subcategories.map(sc => sc.id) : undefined
+  })),
+  currentCatId: typeof cat !== 'undefined' ? cat.id : undefined,
+  currentSubcatId: typeof subcat !== 'undefined' ? subcat.id : undefined
+});
         const fromIndex = cat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
         if (fromIndex !== -1 && fromIndex !== cat.subcategories.length - 1) {
           const moved = cat.subcategories.splice(fromIndex, 1)[0];
