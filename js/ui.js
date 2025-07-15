@@ -111,14 +111,9 @@ export function editMenu(index) {
     const catDiv = document.createElement('div');
     catDiv.className = 'category';
     // --- Drag & Drop pour réordonner les catégories ---
-catDiv.draggable = true;
+// Désactiver le drag de catégorie si elle contient des sous-catégories
+catDiv.draggable = !(Array.isArray(cat.subcategories) && cat.subcategories.length > 0);
 catDiv.ondragstart = function(e) {
-  // Empêcher le drag de catégorie si on drag depuis un drag handle
-  if (e.target.classList.contains('drag-handle')) {
-    e.stopPropagation();
-    e.preventDefault();
-    return false;
-  }
   console.log('DRAGSTART catégorie', catIndex);
   e.dataTransfer.setData('text/plain', catIndex);
   catDiv.classList.add('dragging');
