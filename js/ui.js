@@ -113,6 +113,7 @@ export function editMenu(index) {
     // --- Drag & Drop pour réordonner les catégories ---
 catDiv.draggable = true;
 catDiv.ondragstart = function(e) {
+  console.log('DRAGSTART catégorie', catIndex);
   e.dataTransfer.setData('text/plain', catIndex);
   catDiv.classList.add('dragging');
 };
@@ -401,14 +402,12 @@ subItemsDiv.ondrop = function(e) {
           itemDragHandle.className = 'drag-handle';
           itemDragHandle.draggable = true;
           itemDragHandle.ondragstart = function(e) {
-            // Ajoute ce log :
-            console.log('DEBUG ids', thisCat.id, thisSubcat.id, itemIndex);
+            console.log('DRAGSTART item', {catId: thisCat.id, subcatId: thisSubcat.id, itemIndex});
             const payload = JSON.stringify({
               fromCatId: thisCat.id,
               fromSubcatId: thisSubcat.id,
               fromItem: itemIndex
             });
-            console.log('DRAGSTART item (sous-catégorie)', payload);
             e.dataTransfer.setData('text/plain', payload);
             itemDragHandle.classList.add('dragging');
           };
