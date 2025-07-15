@@ -304,7 +304,12 @@ subItemsDiv.ondrop = function(e) {
     console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
   }
 };
+        // --- Boucle des items dans une sous-catégorie ---
         (subcat.items || []).forEach(function(item, itemIndex) {
+          const thisCat = cat;
+          const thisSubcat = subcat;
+          console.log('Boucle items (sous-catégorie)', {cat: thisCat, subcat: thisSubcat, itemIndex});
+          const itemDiv = document.createElement('div');
           // 1. Drop zone avant l'item
           const dropZone = document.createElement('div');
           dropZone.className = 'drop-zone';
@@ -345,24 +350,17 @@ subItemsDiv.ondrop = function(e) {
           subItemsDiv.appendChild(dropZone);
 
           // 2. Création du itemDiv (drag & drop désactivé ici)
-          const itemDiv = document.createElement('div');
-          itemDiv.className = 'item';
-          // --- DRAG HANDLE POUR ITEM (PLAT) ---
-          // Après la création de itemDiv
           const itemDragHandle = document.createElement('span');
           itemDragHandle.textContent = '☰';
           itemDragHandle.className = 'drag-handle';
           itemDragHandle.draggable = true;
           itemDragHandle.ondragstart = function(e) {
-            // Cherche le cat.id et subcat.id dans la portée
-            let catId = cat && cat.id ? cat.id : null;
-            let subcatId = typeof subcat !== 'undefined' && subcat && subcat.id ? subcat.id : null;
             const payload = JSON.stringify({
-              fromCatId: catId,
-              fromSubcatId: subcatId,
+              fromCatId: thisCat.id,
+              fromSubcatId: thisSubcat.id,
               fromItem: itemIndex
             });
-            console.log('DRAGSTART item', payload);
+            console.log('DRAGSTART item (sous-catégorie)', payload);
             e.dataTransfer.setData('text/plain', payload);
             itemDragHandle.classList.add('dragging');
           };
@@ -586,6 +584,7 @@ itemsDiv.ondrop = function(e) {
     console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
   }
 };
+      // --- Boucle des items dans une catégorie simple ---
       (cat.items || []).forEach(function(item, itemIndex) {
         const thisCat = cat;
         console.log('Boucle items (catégorie simple)', {cat: thisCat, itemIndex});
