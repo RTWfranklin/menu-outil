@@ -591,11 +591,13 @@ itemsDiv.ondrop = function(e) {
         // --- Drag & Drop pour items (dans catégorie simple) ---
 itemDiv.draggable = true;
 itemDiv.ondragstart = function(e) {
-  e.dataTransfer.setData('text/plain', JSON.stringify({
-    fromCat: catIndex,
-    fromSubcat: null,
+  const payload = JSON.stringify({
+    fromCatId: cat.id,
+    fromSubcatId: null,
     fromItem: itemIndex
-  }));
+  });
+  console.log('DRAGSTART item (catégorie simple)', payload);
+  e.dataTransfer.setData('text/plain', payload);
   itemDiv.classList.add('dragging');
 };
 itemDiv.ondragend = function() {
