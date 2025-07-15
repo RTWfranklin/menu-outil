@@ -207,21 +207,23 @@ catDiv.ondrop = function(e) {
         // 2. Création du subcatDiv (drag & drop désactivé ici)
         const subcatDiv = document.createElement('div');
         subcatDiv.className = 'subcategory';
+        // --- DRAG HANDLE POUR SOUS-CATEGORIE ---
+        // Après la création de subcatDiv
         const subcatDragHandle = document.createElement('span');
-subcatDragHandle.textContent = '☰';
-subcatDragHandle.className = 'drag-handle';
-subcatDragHandle.draggable = true;
-subcatDragHandle.ondragstart = function(e) {
-  e.dataTransfer.setData('text/plain', JSON.stringify({
-    fromCatId: cat.id,
-    fromSubcatId: subcat.id
-  }));
-  subcatDragHandle.classList.add('dragging');
-};
-subcatDragHandle.ondragend = function() {
-  subcatDragHandle.classList.remove('dragging');
-};
-subcatDiv.insertBefore(subcatDragHandle, subcatDiv.firstChild);
+        subcatDragHandle.textContent = '☰';
+        subcatDragHandle.className = 'drag-handle';
+        subcatDragHandle.draggable = true;
+        subcatDragHandle.ondragstart = function(e) {
+          e.dataTransfer.setData('text/plain', JSON.stringify({
+            fromCatId: cat.id,
+            fromSubcatId: subcat.id
+          }));
+          subcatDragHandle.classList.add('dragging');
+        };
+        subcatDragHandle.ondragend = function() {
+          subcatDragHandle.classList.remove('dragging');
+        };
+        subcatDiv.insertBefore(subcatDragHandle, subcatDiv.firstChild);
         // subcatDiv.draggable = true; // Désactivé pour éviter conflit
         // subcatDiv.ondragstart = ...
         // subcatDiv.ondragend = ...
@@ -341,22 +343,24 @@ subItemsDiv.ondrop = function(e) {
           // 2. Création du itemDiv (drag & drop désactivé ici)
           const itemDiv = document.createElement('div');
           itemDiv.className = 'item';
+          // --- DRAG HANDLE POUR ITEM (PLAT) ---
+          // Après la création de itemDiv
           const itemDragHandle = document.createElement('span');
-itemDragHandle.textContent = '☰';
-itemDragHandle.className = 'drag-handle';
-itemDragHandle.draggable = true;
-itemDragHandle.ondragstart = function(e) {
-  e.dataTransfer.setData('text/plain', JSON.stringify({
-    fromCatId: cat.id,
-    fromSubcatId: subcat.id,
-    fromItem: itemIndex
-  }));
-  itemDragHandle.classList.add('dragging');
-};
-itemDragHandle.ondragend = function() {
-  itemDragHandle.classList.remove('dragging');
-};
-itemDiv.insertBefore(itemDragHandle, itemDiv.firstChild);
+          itemDragHandle.textContent = '☰';
+          itemDragHandle.className = 'drag-handle';
+          itemDragHandle.draggable = true;
+          itemDragHandle.ondragstart = function(e) {
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+              fromCatId: cat.id,
+              fromSubcatId: subcat ? subcat.id : null,
+              fromItem: itemIndex
+            }));
+            itemDragHandle.classList.add('dragging');
+          };
+          itemDragHandle.ondragend = function() {
+            itemDragHandle.classList.remove('dragging');
+          };
+          itemDiv.insertBefore(itemDragHandle, itemDiv.firstChild);
           // itemDiv.draggable = true; // Désactivé pour éviter conflit
           // itemDiv.ondragstart = ...
           // itemDiv.ondragend = ...
@@ -535,16 +539,33 @@ itemsDiv.ondrop = function(e) {
   e.preventDefault();
   itemsDiv.classList.remove('drag-over');
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-  let movedItem;
-  if (data.fromSubcat !== null) {
-    movedItem = menu.categories[data.fromCat].subcategories[data.fromSubcat].items.splice(data.fromItem, 1)[0];
-  } else {
-    movedItem = menu.categories[data.fromCat].items.splice(data.fromItem, 1)[0];
+  const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+  const fromCat = menu.categories[fromCatIndex];
+  let fromSubcatIndex = -1;
+  if (fromCat && data.fromSubcatId) {
+    fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
   }
-  cat.items.push(movedItem);
-  saveMenuToFirestore(menu, window.currentUser, function() {
-    editMenu(index);
-  });
+  let movedItem = null;
+  if (
+    fromCat &&
+    Array.isArray(fromCat.subcategories) &&
+    fromSubcatIndex !== -1 &&
+    fromCat.subcategories[fromSubcatIndex] &&
+    Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+  ) {
+    movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+  } else if (fromCat && Array.isArray(fromCat.items)) {
+    movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+  }
+  if (movedItem) {
+    if (!cat.items) cat.items = [];
+    cat.items.push(movedItem);
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      editMenu(index);
+    });
+  } else {
+    console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
+  }
 };
       (cat.items || []).forEach(function(item, itemIndex) {
         const itemDiv = document.createElement('div');
