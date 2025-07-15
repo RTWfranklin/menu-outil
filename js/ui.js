@@ -366,7 +366,8 @@ subItemsDiv.ondrop = function(e) {
           itemDragHandle.className = 'drag-handle';
           itemDragHandle.draggable = true;
           itemDragHandle.ondragstart = function(e) {
-            console.log('DEBUG drag handle', {thisCat, thisSubcat, itemIndex});
+            // Ajoute ce log :
+            console.log('DEBUG ids', thisCat.id, thisSubcat.id, itemIndex);
             const payload = JSON.stringify({
               fromCatId: thisCat.id,
               fromSubcatId: thisSubcat.id,
