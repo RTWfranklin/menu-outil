@@ -813,6 +813,23 @@ export function setupUI() {
         return;
       }
       const menu = menus[currentMenuId];
+      // Migration : ajoute un id à chaque catégorie et sous-catégorie si absent
+if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
+  menu.categories.forEach(function(cat) {
+    if (!cat.id) cat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    if (Array.isArray(cat.subcategories)) {
+      cat.subcategories.forEach(function(subcat) {
+        if (!subcat.id) subcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      });
+    }
+  });
+  // Sauvegarde le menu pour persister les ids
+  if (window.currentUser) {
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      console.log('[DEBUG] Migration des ids terminée et menu sauvegardé');
+    });
+  }
+}
       menu.categories = menu.categories || [];
       const newCat = { name: "Nouvelle catégorie", items: [] };
       if (!newCat.id) newCat.id = 'cat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
