@@ -587,13 +587,14 @@ itemsDiv.ondrop = function(e) {
   }
 };
       (cat.items || []).forEach(function(item, itemIndex) {
-        console.log('Boucle items (catégorie simple)', {cat, itemIndex});
+        const thisCat = cat;
+        console.log('Boucle items (catégorie simple)', {cat: thisCat, itemIndex});
         const itemDiv = document.createElement('div');
         // --- Drag & Drop pour items (dans catégorie simple) ---
 itemDiv.draggable = true;
 itemDiv.ondragstart = function(e) {
   const payload = JSON.stringify({
-    fromCatId: cat.id,
+    fromCatId: thisCat.id,
     fromSubcatId: null,
     fromItem: itemIndex
   });
