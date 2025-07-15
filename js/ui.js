@@ -256,16 +256,32 @@ subItemsDiv.ondrop = function(e) {
   e.preventDefault();
   subItemsDiv.classList.remove('drag-over');
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-  let movedItem;
-  if (data.fromSubcat !== null) {
-    movedItem = menu.categories[data.fromCat].subcategories[data.fromSubcat].items.splice(data.fromItem, 1)[0];
-  } else {
-    movedItem = menu.categories[data.fromCat].items.splice(data.fromItem, 1)[0];
+  const fromCat = menu.categories[data.fromCat];
+  let movedItem = null;
+
+  if (
+    fromCat &&
+    Array.isArray(fromCat.subcategories) &&
+    data.fromSubcat !== null &&
+    fromCat.subcategories[data.fromSubcat] &&
+    Array.isArray(fromCat.subcategories[data.fromSubcat].items)
+  ) {
+    // Drag depuis une sous-catégorie
+    movedItem = fromCat.subcategories[data.fromSubcat].items.splice(data.fromItem, 1)[0];
+  } else if (fromCat && Array.isArray(fromCat.items)) {
+    // Drag depuis une catégorie simple
+    movedItem = fromCat.items.splice(data.fromItem, 1)[0];
   }
-  cat.subcategories[subcatIndex].items.push(movedItem);
-  saveMenuToFirestore(menu, window.currentUser, function() {
-    editMenu(index);
-  });
+
+  if (movedItem) {
+    if (!cat.subcategories[subcatIndex].items) cat.subcategories[subcatIndex].items = [];
+    cat.subcategories[subcatIndex].items.push(movedItem);
+    saveMenuToFirestore(menu, window.currentUser, function() {
+      editMenu(index);
+    });
+  } else {
+    console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
+  }
 };
         (subcat.items || []).forEach(function(item, itemIndex) {
           const itemDiv = document.createElement('div');
