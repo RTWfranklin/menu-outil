@@ -115,8 +115,9 @@ catDiv.draggable = true;
 catDiv.ondragstart = function(e) {
   // Empêcher le drag de catégorie si on drag depuis un drag handle
   if (e.target.classList.contains('drag-handle')) {
+    e.stopPropagation();
     e.preventDefault();
-    return;
+    return false;
   }
   console.log('DRAGSTART catégorie', catIndex);
   e.dataTransfer.setData('text/plain', catIndex);
