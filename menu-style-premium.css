@@ -252,15 +252,18 @@ html, body {
   overflow-x: auto;
   gap: 16px;
   justify-content: flex-start !important;
-  background: none;
-  box-shadow: none;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   border: none;
-  padding: 24px 0 24px 0;
+  padding: 16px 0 16px 0;
   align-items: center;
   min-height: 0;
-  position: relative;
-  z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 100;
   overflow-anchor: none;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #f0f1f5;
 }
 .category-nav-btn {
   background: #f3f4f8;
@@ -315,10 +318,17 @@ html, body {
   .category-nav-btn:first-child {
     margin-left: 16px !important;
   }
+  .category-nav {
+    padding: 12px 0 12px 0;
+  }
+  .categories-list {
+    margin-top: 4px;
+  }
 }
 
 .categories-list {
   padding: 0 36px;
+  margin-top: 8px;
 }
 .category-section {
   margin-bottom: 44px;
