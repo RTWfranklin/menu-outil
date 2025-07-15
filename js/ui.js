@@ -214,10 +214,12 @@ catDiv.ondrop = function(e) {
         subcatDragHandle.className = 'drag-handle';
         subcatDragHandle.draggable = true;
         subcatDragHandle.ondragstart = function(e) {
-          e.dataTransfer.setData('text/plain', JSON.stringify({
+          const payload = JSON.stringify({
             fromCatId: cat.id,
             fromSubcatId: subcat.id
-          }));
+          });
+          console.log('DRAGSTART sous-catégorie', payload);
+          e.dataTransfer.setData('text/plain', payload);
           subcatDragHandle.classList.add('dragging');
         };
         subcatDragHandle.ondragend = function() {
@@ -350,11 +352,13 @@ subItemsDiv.ondrop = function(e) {
           itemDragHandle.className = 'drag-handle';
           itemDragHandle.draggable = true;
           itemDragHandle.ondragstart = function(e) {
-            e.dataTransfer.setData('text/plain', JSON.stringify({
+            const payload = JSON.stringify({
               fromCatId: cat.id,
               fromSubcatId: subcat ? subcat.id : null,
               fromItem: itemIndex
-            }));
+            });
+            console.log('DRAGSTART item', payload);
+            e.dataTransfer.setData('text/plain', payload);
             itemDragHandle.classList.add('dragging');
           };
           itemDragHandle.ondragend = function() {
@@ -538,7 +542,15 @@ itemsDiv.ondragleave = function() {
 itemsDiv.ondrop = function(e) {
   e.preventDefault();
   itemsDiv.classList.remove('drag-over');
-  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  const raw = e.dataTransfer.getData('text/plain');
+  console.log('DROPZONE catégorie simple reçoit', raw);
+  let data;
+  try {
+    data = JSON.parse(raw);
+  } catch (err) {
+    console.error('Impossible de parser le dataTransfer (catégorie simple)', raw);
+    return;
+  }
   const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
   const fromCat = menu.categories[fromCatIndex];
   let fromSubcatIndex = -1;
