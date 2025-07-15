@@ -187,9 +187,9 @@ export function editMenu(index) {
           nameInput.type = 'text';
           nameInput.placeholder = 'Nom';
           nameInput.value = item.name || '';
-          nameInput.oninput = function(e) {
+          nameInput.onblur = function(e) {
             item.name = e.target.value;
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+            debouncedSaveMenu(menus[currentMenuId], window.currentUser);
           };
           itemDiv.appendChild(nameInput);
           // Prix
@@ -197,9 +197,9 @@ export function editMenu(index) {
           priceInput.type = 'text';
           priceInput.placeholder = 'Prix';
           priceInput.value = item.price || '';
-          priceInput.oninput = function(e) {
+          priceInput.onblur = function(e) {
             item.price = e.target.value;
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+            debouncedSaveMenu(menus[currentMenuId], window.currentUser);
           };
           itemDiv.appendChild(priceInput);
           // Description
@@ -207,9 +207,9 @@ export function editMenu(index) {
           descInput.type = 'text';
           descInput.placeholder = 'Description';
           descInput.value = item.desc || '';
-          descInput.oninput = function(e) {
+          descInput.onblur = function(e) {
             item.desc = e.target.value;
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+            debouncedSaveMenu(menus[currentMenuId], window.currentUser);
           };
           itemDiv.appendChild(descInput);
           // Badges (reprendre la logique existante)
@@ -308,7 +308,7 @@ export function editMenu(index) {
         nameInput.type = 'text';
         nameInput.placeholder = 'Nom';
         nameInput.value = item.name || '';
-        nameInput.oninput = function(e) {
+        nameInput.onblur = function(e) {
           item.name = e.target.value;
           if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
             saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
@@ -322,7 +322,7 @@ export function editMenu(index) {
         priceInput.type = 'text';
         priceInput.placeholder = 'Prix';
         priceInput.value = item.price || '';
-        priceInput.oninput = function(e) {
+        priceInput.onblur = function(e) {
           item.price = e.target.value;
           if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
             saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
@@ -336,7 +336,7 @@ export function editMenu(index) {
         descInput.type = 'text';
         descInput.placeholder = 'Description';
         descInput.value = item.desc || '';
-        descInput.oninput = function(e) {
+        descInput.onblur = function(e) {
           item.desc = e.target.value;
           if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
             saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
