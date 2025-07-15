@@ -186,38 +186,33 @@ catDiv.ondrop = function(e) {
     // Affichage des sous-catégories si présentes
     if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
       cat.subcategories.forEach(function(subcat, subcatIndex) {
-        const subcatDiv = document.createElement('div');
-        subcatDiv.className = 'subcategory';
-        // --- Drag & Drop pour réordonner les sous-catégories (version simple) ---
-        subcatDiv.draggable = true;
-        subcatDiv.ondragstart = function(e) {
-          e.dataTransfer.setData('text/plain', subcat.id);
-          subcatDiv.classList.add('dragging');
-        };
-        subcatDiv.ondragend = function() {
-          subcatDiv.classList.remove('dragging');
-        };
-        subcatDiv.ondragover = function(e) {
+        // 1. Drop zone avant la sous-catégorie
+        const dropZone = document.createElement('div');
+        dropZone.className = 'drop-zone';
+        dropZone.ondragover = function(e) { e.preventDefault(); dropZone.classList.add('active'); };
+        dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
+        dropZone.ondrop = function(e) {
           e.preventDefault();
-          subcatDiv.classList.add('drag-over');
-        };
-        subcatDiv.ondragleave = function() {
-          subcatDiv.classList.remove('drag-over');
-        };
-        subcatDiv.ondrop = function(e) {
-          e.preventDefault();
-          subcatDiv.classList.remove('drag-over');
-          const fromId = e.dataTransfer.getData('text/plain');
-          const fromIndex = cat.subcategories.findIndex(sc => sc.id === fromId);
-          const toIndex = subcatIndex;
-          if (fromIndex !== -1 && fromIndex !== toIndex) {
-            const movedSubcat = cat.subcategories.splice(fromIndex, 1)[0];
-            cat.subcategories.splice(toIndex, 0, movedSubcat);
-            saveMenuToFirestore(menu, window.currentUser, function() {
-              editMenu(index);
-            });
+          dropZone.classList.remove('active');
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          const fromIndex = cat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+          if (fromIndex !== -1 && fromIndex !== subcatIndex) {
+            const moved = cat.subcategories.splice(fromIndex, 1)[0];
+            cat.subcategories.splice(subcatIndex, 0, moved);
+            saveMenuToFirestore(menu, window.currentUser, function() { editMenu(index); });
           }
         };
+        catDiv.appendChild(dropZone);
+
+        // 2. Création du subcatDiv (drag & drop désactivé ici)
+        const subcatDiv = document.createElement('div');
+        subcatDiv.className = 'subcategory';
+        // subcatDiv.draggable = true; // Désactivé pour éviter conflit
+        // subcatDiv.ondragstart = ...
+        // subcatDiv.ondragend = ...
+        // subcatDiv.ondragover = ...
+        // subcatDiv.ondragleave = ...
+        // subcatDiv.ondrop = ...
         // Champ nom de sous-catégorie
         const subcatNameInput = document.createElement('input');
         subcatNameInput.type = 'text';
@@ -290,50 +285,53 @@ subItemsDiv.ondrop = function(e) {
   }
 };
         (subcat.items || []).forEach(function(item, itemIndex) {
+          // 1. Drop zone avant l'item
+          const dropZone = document.createElement('div');
+          dropZone.className = 'drop-zone';
+          dropZone.ondragover = function(e) { e.preventDefault(); dropZone.classList.add('active'); };
+          dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
+          dropZone.ondrop = function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+            // Recherche de la catégorie et sous-catégorie source par id
+            const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+            const fromCat = menu.categories[fromCatIndex];
+            let fromSubcatIndex = -1;
+            if (fromCat && data.fromSubcatId) {
+              fromSubcatIndex = fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+            }
+            let movedItem = null;
+            if (
+              fromCat &&
+              Array.isArray(fromCat.subcategories) &&
+              fromSubcatIndex !== -1 &&
+              fromCat.subcategories[fromSubcatIndex] &&
+              Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+            ) {
+              movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+            } else if (fromCat && Array.isArray(fromCat.items)) {
+              movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+            }
+            if (movedItem) {
+              if (!subcat.items) subcat.items = [];
+              subcat.items.splice(itemIndex, 0, movedItem);
+              saveMenuToFirestore(menu, window.currentUser, function() { editMenu(index); });
+            } else {
+              console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
+            }
+          };
+          subItemsDiv.appendChild(dropZone);
+
+          // 2. Création du itemDiv (drag & drop désactivé ici)
           const itemDiv = document.createElement('div');
-          // --- Drag & Drop pour items (dans sous-catégorie) ---
-itemDiv.draggable = true;
-itemDiv.ondragstart = function(e) {
-  e.dataTransfer.setData('text/plain', JSON.stringify({
-    fromCatId: cat.id,
-    fromSubcatId: subcat.id,
-    fromItem: itemIndex
-  }));
-  itemDiv.classList.add('dragging');
-};
-itemDiv.ondragend = function() {
-  itemDiv.classList.remove('dragging');
-};
-
-
           itemDiv.className = 'item';
-          // --- Drag & Drop pour réordonner dans la même sous-catégorie ---
-itemDiv.ondragover = function(e) {
-  e.preventDefault();
-  itemDiv.classList.add('drag-over');
-};
-itemDiv.ondragleave = function() {
-  itemDiv.classList.remove('drag-over');
-};
-itemDiv.ondrop = function(e) {
-  e.preventDefault();
-  itemDiv.classList.remove('drag-over');
-  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-  // On ne traite que le cas où on déplace dans la même sous-catégorie
-  if (
-    data.fromCat === catIndex &&
-    data.fromSubcat === subcatIndex
-  ) {
-    let fromList = cat.subcategories[subcatIndex].items;
-    let movedItem = fromList.splice(data.fromItem, 1)[0];
-    let targetIndex = itemIndex;
-    if (data.fromItem < targetIndex) targetIndex--;
-    fromList.splice(targetIndex, 0, movedItem);
-    saveMenuToFirestore(menu, window.currentUser, function() {
-      editMenu(index);
-    });
-  }
-};
+          // itemDiv.draggable = true; // Désactivé pour éviter conflit
+          // itemDiv.ondragstart = ...
+          // itemDiv.ondragend = ...
+          // itemDiv.ondragover = ...
+          // itemDiv.ondragleave = ...
+          // itemDiv.ondrop = ...
           // Nom
           const nameInput = document.createElement('input');
           nameInput.type = 'text';
@@ -434,20 +432,62 @@ itemDiv.ondrop = function(e) {
           itemDiv.appendChild(imgPreview);
           subItemsDiv.appendChild(itemDiv);
         });
-        // Bouton ajout item dans sous-catégorie
-        const addItemBtn = document.createElement('button');
-        addItemBtn.textContent = 'Ajouter un item';
-        addItemBtn.onclick = function() {
-          if (!subcat.items) subcat.items = [];
-          subcat.items.push({ name: '', price: '', desc: '', badges: [], imgUrl: '' });
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-            editMenu(index);
-          });
+        // Drop zone finale pour drop à la fin de la liste d'items
+        const itemDropZoneEnd = document.createElement('div');
+        itemDropZoneEnd.className = 'drop-zone';
+        itemDropZoneEnd.ondragover = function(e) { e.preventDefault(); itemDropZoneEnd.classList.add('active'); };
+        itemDropZoneEnd.ondragleave = function() { itemDropZoneEnd.classList.remove('active'); };
+        itemDropZoneEnd.ondrop = function(e) {
+          e.preventDefault();
+          itemDropZoneEnd.classList.remove('active');
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+          const fromCat = menu.categories[fromCatIndex];
+          let fromSubcatIndex = -1;
+          if (fromCat && data.fromSubcatId) {
+            fromSubcatIndex = fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+          }
+          let movedItem = null;
+          if (
+            fromCat &&
+            Array.isArray(fromCat.subcategories) &&
+            fromSubcatIndex !== -1 &&
+            fromCat.subcategories[fromSubcatIndex] &&
+            Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+          ) {
+            movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+          } else if (fromCat && Array.isArray(fromCat.items)) {
+            movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+          }
+          if (movedItem) {
+            if (!subcat.items) subcat.items = [];
+            subcat.items.push(movedItem);
+            saveMenuToFirestore(menu, window.currentUser, function() { editMenu(index); });
+          } else {
+            console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
+          }
         };
-        subItemsDiv.appendChild(addItemBtn);
+        subItemsDiv.appendChild(itemDropZoneEnd);
         subcatDiv.appendChild(subItemsDiv);
         catDiv.appendChild(subcatDiv);
       });
+      // 3. Drop zone finale (pour drop à la fin)
+      const dropZoneEnd = document.createElement('div');
+      dropZoneEnd.className = 'drop-zone';
+      dropZoneEnd.ondragover = function(e) { e.preventDefault(); dropZoneEnd.classList.add('active'); };
+      dropZoneEnd.ondragleave = function() { dropZoneEnd.classList.remove('active'); };
+      dropZoneEnd.ondrop = function(e) {
+        e.preventDefault();
+        dropZoneEnd.classList.remove('active');
+        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+        const fromIndex = cat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+        if (fromIndex !== -1 && fromIndex !== cat.subcategories.length - 1) {
+          const moved = cat.subcategories.splice(fromIndex, 1)[0];
+          cat.subcategories.push(moved);
+          saveMenuToFirestore(menu, window.currentUser, function() { editMenu(index); });
+        }
+      };
+      catDiv.appendChild(dropZoneEnd);
     } else {
       // Affichage des items de la catégorie (fallback)
       const itemsDiv = document.createElement('div');

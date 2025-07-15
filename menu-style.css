@@ -914,3 +914,15 @@ body {
   vertical-align: middle;
   cursor: grab;
 }
+
+/* Drop zones visuelles pour drag & drop */
+.drop-zone {
+  border: 2px dashed #4f46e5;
+  background: #f5f3ff;
+  min-height: 24px;
+  margin: 4px 0;
+  transition: background 0.2s, border 0.2s;
+}
+.drop-zone.active {
+  background: #e0e7ff;
+}
