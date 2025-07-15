@@ -256,18 +256,24 @@ subItemsDiv.ondrop = function(e) {
   e.preventDefault();
   subItemsDiv.classList.remove('drag-over');
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-  const fromCat = menu.categories[data.fromCat];
+  // Recherche de la catégorie et sous-catégorie source par id
+  const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+  const fromCat = menu.categories[fromCatIndex];
+  let fromSubcatIndex = -1;
+  if (fromCat && data.fromSubcatId) {
+    fromSubcatIndex = fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+  }
   let movedItem = null;
 
   if (
     fromCat &&
     Array.isArray(fromCat.subcategories) &&
-    data.fromSubcat !== null &&
-    fromCat.subcategories[data.fromSubcat] &&
-    Array.isArray(fromCat.subcategories[data.fromSubcat].items)
+    fromSubcatIndex !== -1 &&
+    fromCat.subcategories[fromSubcatIndex] &&
+    Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
   ) {
     // Drag depuis une sous-catégorie
-    movedItem = fromCat.subcategories[data.fromSubcat].items.splice(data.fromItem, 1)[0];
+    movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
   } else if (fromCat && Array.isArray(fromCat.items)) {
     // Drag depuis une catégorie simple
     movedItem = fromCat.items.splice(data.fromItem, 1)[0];
@@ -289,8 +295,8 @@ subItemsDiv.ondrop = function(e) {
 itemDiv.draggable = true;
 itemDiv.ondragstart = function(e) {
   e.dataTransfer.setData('text/plain', JSON.stringify({
-    fromCat: catIndex,
-    fromSubcat: subcatIndex,
+    fromCatId: cat.id,
+    fromSubcatId: subcat.id,
     fromItem: itemIndex
   }));
   itemDiv.classList.add('dragging');
