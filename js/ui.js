@@ -587,6 +587,7 @@ itemsDiv.ondrop = function(e) {
   }
 };
       (cat.items || []).forEach(function(item, itemIndex) {
+        console.log('Boucle items (catégorie simple)', {cat, itemIndex});
         const itemDiv = document.createElement('div');
         // --- Drag & Drop pour items (dans catégorie simple) ---
 itemDiv.draggable = true;
