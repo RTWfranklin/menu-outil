@@ -186,7 +186,11 @@
             badges.className = 'badges';
             item.badges.forEach(function(badge) {
               const badgeSpan = document.createElement('span');
-              badgeSpan.textContent = badge;
+              if (badge === 'Origine France') {
+                badgeSpan.innerHTML = 'Origine France<sup style="font-size:0.7em;vertical-align:super;">fr</sup> 🇫🇷';
+              } else {
+                badgeSpan.textContent = badge;
+              }
               badgeSpan.className = 'badge';
               if (badge === 'Vegan') badgeSpan.classList.add('badge-vegan');
               if (badge === 'Végétarien') badgeSpan.classList.add('badge-vegetarien');
@@ -245,7 +249,11 @@
           badges.className = 'badges';
           item.badges.forEach(function(badge) {
             const badgeSpan = document.createElement('span');
-            badgeSpan.textContent = badge;
+            if (badge === 'Origine France') {
+              badgeSpan.innerHTML = 'Origine France<sup style="font-size:0.7em;vertical-align:super;">fr</sup> 🇫🇷';
+            } else {
+              badgeSpan.textContent = badge;
+            }
             badgeSpan.className = 'badge';
             if (badge === 'Vegan') badgeSpan.classList.add('badge-vegan');
             if (badge === 'Végétarien') badgeSpan.classList.add('badge-vegetarien');
