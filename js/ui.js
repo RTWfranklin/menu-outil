@@ -639,62 +639,62 @@ subItemsDiv.ondrop = function(e) {
       };
       catDiv.appendChild(dropZoneEnd);
     } else {
-      // Affichage des items de la catégorie (fallback)
+      // Affichage des items de la catégorie (toujours, même s'il y a des sous-catégories)
       const itemsDiv = document.createElement('div');
       itemsDiv.className = 'items';
-      // --- Zone de drop sur le conteneur d'items (catégorie simple) ---
-itemsDiv.ondragover = function(e) {
-  e.preventDefault();
-  itemsDiv.classList.add('drag-over');
-};
-itemsDiv.ondragleave = function() {
-  itemsDiv.classList.remove('drag-over');
-};
-itemsDiv.ondrop = function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  itemsDiv.classList.remove('drag-over');
-  const raw = e.dataTransfer.getData('text/plain');
-  console.log('DROPZONE catégorie simple reçoit', raw);
-  let data;
-  try {
-    data = JSON.parse(raw);
-  } catch (err) {
-    console.error('Impossible de parser le dataTransfer (catégorie simple)', raw);
-    return;
-  }
-  const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
-  const fromCat = menu.categories[fromCatIndex];
-  let fromSubcatIndex = -1;
-  if (fromCat && data.fromSubcatId) {
-    fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
-  }
-  let movedItem = null;
-  if (
-    fromCat &&
-    Array.isArray(fromCat.subcategories) &&
-    fromSubcatIndex !== -1 &&
-    fromCat.subcategories[fromSubcatIndex] &&
-    Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
-  ) {
-    movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
-  } else if (fromCat && Array.isArray(fromCat.items)) {
-    movedItem = fromCat.items.splice(data.fromItem, 1)[0];
-  }
-  if (movedItem) {
-    if (!cat.items) cat.items = [];
-    cat.items.push(movedItem);
-    saveMenuToFirestore(menu, window.currentUser, function() {
-      editMenu(index);
-    });
-  } else {
-    console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
-  }
-};
-      // --- Boucle des items dans une catégorie simple ---
+      // --- Zone de drop sur le conteneur d'items (catégorie) ---
+      itemsDiv.ondragover = function(e) {
+        e.preventDefault();
+        itemsDiv.classList.add('drag-over');
+      };
+      itemsDiv.ondragleave = function() {
+        itemsDiv.classList.remove('drag-over');
+      };
+      itemsDiv.ondrop = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        itemsDiv.classList.remove('drag-over');
+        const raw = e.dataTransfer.getData('text/plain');
+        console.log('DROPZONE catégorie reçoit', raw);
+        let data;
+        try {
+          data = JSON.parse(raw);
+        } catch (err) {
+          console.error('Impossible de parser le dataTransfer (catégorie)', raw);
+          return;
+        }
+        const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+        const fromCat = menu.categories[fromCatIndex];
+        let fromSubcatIndex = -1;
+        if (fromCat && data.fromSubcatId) {
+          fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+        }
+        let movedItem = null;
+        if (
+          fromCat &&
+          Array.isArray(fromCat.subcategories) &&
+          fromSubcatIndex !== -1 &&
+          fromCat.subcategories[fromSubcatIndex] &&
+          Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+        ) {
+          movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+        } else if (fromCat && Array.isArray(fromCat.items)) {
+          movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+        }
+        if (movedItem) {
+          if (!cat.items) cat.items = [];
+          cat.items.push(movedItem);
+          saveMenuToFirestore(menu, window.currentUser, function() {
+            editMenu(index);
+          });
+        } else {
+          console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
+        }
+      };
+      // --- Boucle des items dans la catégorie ---
       (cat.items || []).forEach(function(item, itemIndex) {
         const thisCat = cat;
-        console.log('Boucle items (catégorie simple)', {cat: thisCat, itemIndex});
+        console.log('Boucle items (catégorie)', {cat: thisCat, itemIndex});
         const itemDiv = document.createElement('div');
         // --- Drag handle uniquement sur la poignée ---
         const itemDragHandle = document.createElement('span');
@@ -707,7 +707,7 @@ itemsDiv.ondrop = function(e) {
             fromSubcatId: null,
             fromItem: itemIndex
           });
-          console.log('DRAGSTART item (catégorie simple)', payload);
+          console.log('DRAGSTART item (catégorie)', payload);
           e.dataTransfer.setData('text/plain', payload);
           itemDragHandle.classList.add('dragging');
         };
@@ -831,7 +831,7 @@ itemsDiv.ondrop = function(e) {
         itemDiv.appendChild(imgPreview2);
         itemsDiv.appendChild(itemDiv);
       });
-      // Bouton ajout item dans catégorie (fallback)
+      // Bouton ajout item dans catégorie
       const addItemBtn = document.createElement('button');
       addItemBtn.textContent = 'Ajouter un item';
       addItemBtn.onclick = function() {
