@@ -608,6 +608,8 @@ subItemsDiv.ondrop = function(e) {
         subItemsDiv.appendChild(itemDropZoneEnd);
         subcatDiv.appendChild(subItemsDiv);
         catDiv.appendChild(subcatDiv);
+        const btn = catDiv.querySelector('button');
+console.log('[DEBUG] Après ajout sous-catégorie', subcat.name, 'bouton Ajouter un item présent ?', !!btn, btn);
       });
       // 3. Drop zone finale (pour drop à la fin)
       const dropZoneEnd = document.createElement('div');
