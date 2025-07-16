@@ -56,9 +56,14 @@
   const categories = menu.categories || [];
   nav.innerHTML = '';
   categories.forEach((cat, idx) => {
+    // Ajout du drapeau si badge Origine France
+    let catNameDisplay = cat.name || `Catégorie ${idx+1}`;
+    if (Array.isArray(cat.badges) && cat.badges.includes('Origine France')) {
+      catNameDisplay += ' 🇫🇷';
+    }
     const btn = document.createElement('button');
     btn.className = 'category-nav-btn';
-    btn.textContent = cat.name || `Catégorie ${idx+1}`;
+    btn.textContent = catNameDisplay;
     btn.onclick = function() {
       // Scroll automatique de la navigation pour centrer le bouton sélectionné
       const nav = document.getElementById('category-nav');
@@ -129,7 +134,7 @@
     section.id = 'cat-section-' + idx;
     const title = document.createElement('h2');
     title.className = 'category-section-title';
-    title.textContent = cat.name || `Catégorie ${idx+1}`;
+    title.textContent = catNameDisplay;
     section.appendChild(title);
     // Affichage des sous-catégories si présentes
     if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
@@ -173,7 +178,16 @@
           if(Array.isArray(item.badges) && item.badges.length) {
             const badges = document.createElement('span');
             badges.className = 'badges';
-            badges.textContent = item.badges.join(', ');
+            item.badges.forEach(function(badge) {
+              const badgeSpan = document.createElement('span');
+              badgeSpan.textContent = badge;
+              badgeSpan.className = 'badge';
+              if (badge === 'Vegan') badgeSpan.classList.add('badge-vegan');
+              if (badge === 'Végétarien') badgeSpan.classList.add('badge-vegetarien');
+              if (badge === 'Origine France') badgeSpan.classList.add('badge-france');
+              badgeSpan.style.marginRight = '6px';
+              badges.appendChild(badgeSpan);
+            });
             info.appendChild(badges);
           }
           flexRow.appendChild(info);
@@ -223,7 +237,16 @@
         if(Array.isArray(item.badges) && item.badges.length) {
           const badges = document.createElement('span');
           badges.className = 'badges';
-          badges.textContent = item.badges.join(', ');
+          item.badges.forEach(function(badge) {
+            const badgeSpan = document.createElement('span');
+            badgeSpan.textContent = badge;
+            badgeSpan.className = 'badge';
+            if (badge === 'Vegan') badgeSpan.classList.add('badge-vegan');
+            if (badge === 'Végétarien') badgeSpan.classList.add('badge-vegetarien');
+            if (badge === 'Origine France') badgeSpan.classList.add('badge-france');
+            badgeSpan.style.marginRight = '6px';
+            badges.appendChild(badgeSpan);
+          });
           info.appendChild(badges);
         }
         flexRow.appendChild(info);
