@@ -174,7 +174,12 @@ catDiv.draggable = !hasSubcategories;
     const catNameInput = document.createElement('input');
     catNameInput.type = 'text';
     catNameInput.placeholder = 'Nom de la catégorie';
-    catNameInput.value = cat.name || '';
+    // Pour le nom de la catégorie :
+    let catNameDisplay = cat.name || '';
+    if (Array.isArray(cat.badges) && cat.badges.includes('Origine France')) {
+      catNameDisplay += ' 🇫🇷';
+    }
+    catNameInput.value = catNameDisplay;
     catNameInput.oninput = function(e) {
       cat.name = e.target.value;
       if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
@@ -401,28 +406,17 @@ catDiv.draggable = !hasSubcategories;
       ];
       const badgesWrapper = document.createElement('div');
       badgesWrapper.className = 'badges-editor';
-      BADGES.forEach(function(badge) {
-        const label = document.createElement('label');
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.value = badge.value;
-        checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
-        checkbox.onchange = function(e) {
-          if (!item.badges) item.badges = [];
-          if (e.target.checked) {
-            if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
-          } else {
-            item.badges = item.badges.filter(b => b !== badge.value);
-          }
-          if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-            debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
-              // Auto-save OK
-            });
-          }
-        };
-        label.appendChild(checkbox);
-        label.appendChild(document.createTextNode(badge.label));
-        badgesWrapper.appendChild(label);
+      (BADGES || []).forEach(function(badge) {
+        if (Array.isArray(item.badges) && item.badges.includes(badge.value)) {
+          const badgeSpan = document.createElement('span');
+          badgeSpan.textContent = badge.label;
+          badgeSpan.className = 'badge';
+          if (badge.value === 'Vegan') badgeSpan.classList.add('badge-vegan');
+          if (badge.value === 'Végétarien') badgeSpan.classList.add('badge-vegetarien');
+          if (badge.value === 'Origine France') badgeSpan.classList.add('badge-france');
+          badgeSpan.style.marginRight = '6px';
+          badgesWrapper.appendChild(badgeSpan);
+        }
       });
       itemDiv.appendChild(badgesWrapper);
       // Bouton suppression item (fallback)
@@ -826,24 +820,17 @@ subItemsDiv.ondrop = function(e) {
           ];
           const badgesWrapper = document.createElement('div');
           badgesWrapper.className = 'badges-editor';
-          BADGES.forEach(function(badge) {
-            const label = document.createElement('label');
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.value = badge.value;
-            checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
-            checkbox.onchange = function(e) {
-              if (!item.badges) item.badges = [];
-              if (e.target.checked) {
-                if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
-              } else {
-                item.badges = item.badges.filter(b => b !== badge.value);
-              }
-              saveMenuToFirestore(menus[currentMenuId], window.currentUser);
-            };
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(badge.label));
-            badgesWrapper.appendChild(label);
+          (BADGES || []).forEach(function(badge) {
+            if (Array.isArray(item.badges) && item.badges.includes(badge.value)) {
+              const badgeSpan = document.createElement('span');
+              badgeSpan.textContent = badge.label;
+              badgeSpan.className = 'badge';
+              if (badge.value === 'Vegan') badgeSpan.classList.add('badge-vegan');
+              if (badge.value === 'Végétarien') badgeSpan.classList.add('badge-vegetarien');
+              if (badge.value === 'Origine France') badgeSpan.classList.add('badge-france');
+              badgeSpan.style.marginRight = '6px';
+              badgesWrapper.appendChild(badgeSpan);
+            }
           });
           itemDiv.appendChild(badgesWrapper);
           // Bouton suppression item (dans sous-catégorie)
