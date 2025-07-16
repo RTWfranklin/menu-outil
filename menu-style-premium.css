@@ -684,27 +684,25 @@ html, body {
 }
 /* --- Fin correction finale --- */
 
-/* Badges Vegan et Végétarien : vert très léger et sobre */
+/* Style général pour tous les badges */
+.badge {
+  border-radius: 12px;
+  padding: 2px 10px;
+  margin-right: 6px;
+  font-weight: 500;
+  display: inline-block;
+  border: 1px solid #b6e2b6;
+}
+
 .badge-vegan,
 .badge-vegetarien {
   background: #eafbe7;
   color: #218838;
-  border: 1px solid #b6e2b6;
-  border-radius: 12px;
-  padding: 2px 10px;
-  margin-right: 6px;
-  font-weight: 500;
-  display: inline-block;
+  border-color: #b6e2b6;
 }
 
-/* Badge Origine France */
 .badge-france {
   background: #f5f5f5;
   color: #1a1a1a;
-  border: 1px solid #d1d1d1;
-  border-radius: 12px;
-  padding: 2px 10px;
-  margin-right: 6px;
-  font-weight: 500;
-  display: inline-block;
+  border-color: #d1d1d1;
 }
