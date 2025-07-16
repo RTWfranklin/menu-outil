@@ -72,8 +72,14 @@
         behavior: 'smooth'
       });
       
-      // Scroll vers la section correspondante
-      document.getElementById('cat-section-' + idx).scrollIntoView({behavior: 'smooth', block: 'start'});
+      // Scroll vers la section correspondante en tenant compte de la barre sticky
+      const section = document.getElementById('cat-section-' + idx);
+      const navHeight = nav ? nav.offsetHeight : 0;
+      const sectionTop = section.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: sectionTop - navHeight - 10, // 10px de marge optionnelle
+        behavior: 'smooth'
+      });
     };
     if(idx === 0) {
       btn.classList.add('active');
