@@ -142,6 +142,8 @@ export function editMenu(index) {
     // Création du conteneur de catégorie
     const catDiv = document.createElement('div');
     catDiv.className = 'category';
+    
+  const hasSubcategories = Array.isArray(cat.subcategories) && cat.subcategories.length > 0;
     // Ajout du handle ☰ pour drag & drop de la catégorie
 const catDragHandle = document.createElement('span');
 catDragHandle.textContent = '☰';
@@ -166,40 +168,8 @@ catDiv.draggable = false;
 catDiv.ondragstart = null;
     // --- Drag & Drop pour réordonner les catégories ---
 // Désactiver le drag de catégorie si elle contient des sous-catégories
-const hasSubcategories = Array.isArray(cat.subcategories) && cat.subcategories.length > 0;
 catDiv.draggable = !hasSubcategories;
 
-if (!hasSubcategories) {
-  catDiv.ondragstart = function(e) {
-    console.log('DRAGSTART catégorie', catIndex);
-    e.dataTransfer.setData('text/plain', catIndex);
-    catDiv.classList.add('dragging');
-  };
-}
-catDiv.ondragend = function() {
-  catDiv.classList.remove('dragging');
-};
-catDiv.ondragover = function(e) {
-  e.preventDefault();
-  catDiv.classList.add('drag-over');
-};
-catDiv.ondragleave = function() {
-  catDiv.classList.remove('drag-over');
-};
-catDiv.ondrop = function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  catDiv.classList.remove('drag-over');
-  const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
-  const toIndex = catIndex;
-  if (fromIndex !== toIndex) {
-    const movedCat = menu.categories.splice(fromIndex, 1)[0];
-    menu.categories.splice(toIndex, 0, movedCat);
-    saveMenuToFirestore(menu, window.currentUser, function() {
-      editMenu(index);
-    });
-  }
-};
     // Champ nom de catégorie
     const catNameInput = document.createElement('input');
     catNameInput.type = 'text';
