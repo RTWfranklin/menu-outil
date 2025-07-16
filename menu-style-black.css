@@ -1,0 +1,686 @@
+/* --- Style noir basé sur le premium --- */
+
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    height: 100% !important;
+  }
+  
+  body > *:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border: none !important;
+  }
+  
+  
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+  }
+  
+  .public-menu-header {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
+  .banner-logo-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    top: 0 !important;
+  }
+  
+  
+  html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  
+  .dish-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    background: #fafbff;
+    border-radius: 18px;
+    box-shadow: 0 2px 10px #0001;
+    padding: 10px 18px 36px 18px;
+    min-height: 120px;
+    max-width: 100%;
+    height: 170px;
+    margin-bottom: 18px;
+    overflow: hidden;
+    transition: box-shadow 0.18s;
+  }
+  
+  .dish-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .dish-img {
+    flex-shrink: 0;
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-right: 14px;
+    margin-top: 2px;
+    background: #eee;
+  }
+  
+  .dish-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1 1 0%;
+    min-width: 0;
+    height: 100%;
+  }
+  
+  .dish-title {
+    font-weight: 700;
+    font-size: 1.08em;
+    color: #1b2952;
+    margin-bottom: 4px;
+    text-align: left;
+    word-break: break-word;
+  }
+  
+  .dish-card:hover {
+    box-shadow: 0 4px 18px #0002;
+  }
+  
+  .dish-price {
+    position: absolute;
+    right: 16px;
+    bottom: 12px;
+    font-weight: 700;
+    color: #111;
+    background: #fff9;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 1.08em;
+    z-index: 2;
+  }
+  
+  .dish-desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    max-height: 3.1em;
+    line-height: 1.55em;
+    margin-bottom: 8px;
+    cursor: pointer;
+    color: #444;
+  }
+  
+  .dish-desc.truncated::after {
+    content: '...';
+    color: #888;
+  }
+  
+  @media (max-width: 700px) {
+    .dish-card {
+      height: 145px;
+      min-height: 120px;
+      padding: 12px 10px 32px 10px;
+    }
+    .dish-price {
+      right: 10px;
+      bottom: 8px;
+      font-size: 1em;
+      padding: 2px 8px;
+    }
+  }
+  .public-menu-header {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 40px;
+    overflow: visible;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 2;
+  } /* Assure le positionnement relatif pour le logo centré */
+  
+  .banner-logo-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 120px; /* Ajuste si besoin */
+    z-index: 10;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 12px #0002;
+    border: 4px solid #222;
+    overflow: visible;
+  }
+  
+  .banner {
+    width: 100vw;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+    margin: 0;
+    box-shadow: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+  }
+  
+  .public-menu-header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    position: relative;
+    z-index: 3;
+    margin-top: 76px !important;
+  }
+  
+  #menu-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #111;
+    margin: 0 0 12px 0;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+  
+  @media (max-width: 700px) {
+    .public-menu-header-content {
+      margin-top: 48px !important;
+    }
+    #menu-title {
+      text-align: center !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      width: 100vw;
+      left: 50%;
+      position: relative;
+      transform: translateX(-50%);
+      box-sizing: border-box;
+    }
+  }
+  
+  @media (max-width: 700px) {
+    .banner {
+      height: 120px;
+      max-height: 140px;
+    }
+  }
+  
+  .public-menu-wrapper {
+    max-width: 700px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 rgba(30,40,80,0.13), 0 1.5px 7px rgba(30,40,80,0.09);
+    padding-bottom: 32px;
+    overflow: visible;
+    position: relative;
+  }
+  .public-menu-header-content {
+    margin-top: 38px;
+  }
+  
+  
+  
+  .category-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    justify-content: flex-start !important;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: none;
+    padding: 16px 0 16px 0;
+    align-items: center;
+    min-height: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    overflow-anchor: none;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #f0f1f5;
+  }
+  .category-nav-btn {
+    background: #f3f4f8;
+    opacity: 0.85;
+    color: #7a7e8a;
+    border-radius: 16px;
+    padding: 9px 22px;
+    font-size: 1rem;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0;
+    position: relative;
+    outline: none;
+    border: none;
+    box-shadow: 0 2px 8px #1b295211;
+    transition: box-shadow 0.18s, background 0.18s, color 0.18s, opacity 0.18s;
+  }
+  .category-nav-btn.active, .category-nav-btn:focus {
+    background: #111;
+    color: #fff;
+    opacity: 1;
+  }
+  .category-nav-btn:hover:not(.active) {
+    background: #f5f6fa;
+    color: #111;
+  }
+  .category-nav-btn.active, .category-nav-btn:focus {
+    color: #111;
+  }
+  .category-nav-btn.active::after, .category-nav-btn:focus::after {
+    content: '';
+    display: block;
+    height: 3.5px;
+    border-radius: 2px 2px 0 0;
+    background: linear-gradient(90deg,#f5f6fa 0%,#fff 100%);
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    bottom: -2px;
+    transition: all 0.2s;
+  }
+  .category-nav-btn:not(.active):hover {
+    color: #c97d00;
+    background: #f7f7fa;
+  }
+  
+  .category-nav-btn:first-child {
+    margin-left: 18px !important;
+  }
+  @media (max-width: 700px) {
+    .category-nav-btn:first-child {
+      margin-left: 16px !important;
+    }
+    .category-nav {
+      padding: 12px 0 12px 0;
+    }
+    .categories-list {
+      margin-top: 4px;
+    }
+  }
+  
+  .categories-list {
+    padding: 0 36px;
+    margin-top: 8px;
+  }
+  .category-section {
+    margin-bottom: 44px;
+    border-bottom: 1.5px solid #f0f1f5;
+    padding-bottom: 30px;
+  }
+  .category-section:last-child {
+    border-bottom: none;
+  }
+  .category-section-title {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 1.29rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 18px;
+    margin-top: 26px;
+    letter-spacing: 0.5px;
+    border-left: 5px solid #111;
+    padding-left: 17px;
+  }
+  .dish-card {
+    display: flex;
+    align-items: flex-start;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 4px 32px 0 rgba(30,40,80,0.10), 0 1.5px 7px rgba(30,40,80,0.09);
+    padding: 18px 22px;
+    margin-bottom: 18px;
+    gap: 24px;
+    transition: box-shadow 0.18s, transform 0.18s;
+    position: relative;
+  }
+  .dish-card:hover {
+    box-shadow: 0 8px 44px #11111144, 0 2px 12px #11111122;
+    transform: translateY(-2px) scale(1.012);
+  }
+  .dish-img {
+    width: 84px;
+    height: 84px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: #fff;
+    box-shadow: 0 2px 12px #0001;
+    flex-shrink: 0;
+    margin-right: 10px;
+  }
+  .dish-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .dish-title {
+    font-size: 1.13rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+    letter-spacing: 0.01em;
+  }
+  .dish-desc {
+    font-size: 0.99rem;
+    color: #575b6b;
+    margin: 0;
+    opacity: 0.94;
+  }
+  .dish-price {
+    font-size: 1.11rem;
+    font-weight: 700;
+    color: #e8b547;
+    margin-left: auto;
+    align-self: flex-end;
+    margin-top: 7px;
+  }
+  .badges {
+    background: #f5f6fa;
+    color: #111;
+    font-size: 0.85em;
+    padding: 3px 11px;
+    border-radius: 999px;
+    margin-left: 7px;
+    font-weight: 600;
+    display: inline-block;
+    box-shadow: none;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+  }
+  
+  .badge-vegan {
+    background: #d8f5e0;
+    color: #259d5a;
+  }
+  .badge-premium {
+    background: #e5e5e5;
+    color: #111;
+  }
+  .badge-bio {
+    background: #eaf8d8;
+    color: #6a9b1b;
+  }
+  .badge-epice, .badge-piquant {
+    background: #ffe4e0;
+    color: #e65b3a;
+  }
+  .badge-nouveau {
+    background: #e5e5e5;
+    color: #111;
+  }
+  .badge-sansgluten {
+    background: #fff9e3;
+    color: #c29a00;
+  }
+  .badge-vegetarien {
+    background: #e6f7e6;
+    color: #4a9c3f;
+  }
+  
+  @media (max-width: 700px) {
+    .public-menu-wrapper {
+      max-width: 100vw;
+      border-radius: 0;
+      box-shadow: none;
+      padding-bottom: 16px;
+    }
+    .public-menu-header-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 18px 10px 0 10px;
+    }
+  }
+  
+  /* --- Ajout/ajustement pour bannière et logo centrés et superposés --- */
+  
+  .public-menu-header {
+    position: relative;
+    width: 100%;
+    min-height: 220px; /* hauteur suffisante pour la bannière + logo */
+    margin-bottom: 60px; /* espace sous le header */
+    background: none;
+    padding: 0;
+    z-index: 2;
+  }
+  
+  .banner {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+    margin: 0 auto;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .banner-logo-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 170px; /* place le logo à cheval sur la bannière */
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  
+  .logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #fff;
+    border: 6px solid #fff;
+    box-shadow: 0 4px 24px #0002, 0 1.5px 7px #0001;
+    display: block;
+    position: relative;
+    z-index: 11;
+  }
+  
+  @media (max-width: 700px) {
+    .banner {
+      height: 120px;
+      max-height: 140px;
+    }
+    .banner-logo-wrapper {
+      top: 80px;
+      width: 90px;
+      height: 90px;
+    }
+    .logo {
+      width: 90px;
+      height: 90px;
+      border-width: 4px;
+    }
+  }
+  
+  /* --- Fin ajout/ajustement --- */
+  
+  /* --- Nettoyage et ajustement pour header bannière+logo superposés --- */
+  .banner-container {
+    display: none !important;
+  }
+  .public-menu-header {
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    transform: translateX(-50%);
+    min-height: 220px;
+    margin-bottom: 60px;
+    background: none;
+    padding: 0;
+    z-index: 2;
+    overflow: visible;
+  }
+  .banner {
+    width: 100vw;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+    margin: 0 auto;
+    box-shadow: none;
+    position: relative;
+    z-index: 1;
+  }
+  .banner-logo-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 140px;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  .logo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #fff;
+    border: 6px solid #fff;
+    box-shadow: 0 4px 24px #0002, 0 1.5px 7px #0001;
+    display: block;
+    position: relative;
+    z-index: 11;
+  }
+  .public-menu-header-content {
+    margin-top: 90px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 3;
+  }
+  @media (max-width: 700px) {
+    .public-menu-header {
+      min-height: 120px;
+    }
+    .banner {
+      height: 120px;
+      max-height: 140px;
+    }
+    .banner-logo-wrapper {
+      top: 40px;
+      width: 90px;
+      height: 90px;
+    }
+    .logo {
+      width: 90px;
+      height: 90px;
+      border-width: 4px;
+    }
+    .public-menu-header-content {
+      margin-top: 55px !important;
+    }
+  }
+  /* --- Fin ajustement --- */
+  
+  /* --- Correction finale position logo à cheval sur la bannière --- */
+  /* Les définitions précédentes de .banner-logo-wrapper sont neutralisées */
+  /*
+  .banner-logo-wrapper { ... }
+  */
+  
+  .banner-logo-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 145px !important; /* moitié du logo sur la bannière, moitié en dessous */
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  @media (max-width: 700px) {
+    .banner-logo-wrapper {
+      top: 75px !important;
+      width: 90px;
+      height: 90px;
+    }
+  }
+  /* --- Fin correction finale --- */
+  
+  /* --- Correction finale espacement navigation catégorie --- */
+  .category-nav {
+    padding-left: 0 !important;
+  }
+  .category-nav-btn:first-child {
+    margin-left: 24px !important;
+  }
+  @media (max-width: 700px) {
+    .category-nav-btn:first-child {
+      margin-left: 32px !important;
+    }
+  }
+  @media (max-width: 700px) {
+    .category-nav-btn:first-child {
+      margin-left: 8px !important;
+    }
+  }
+  .drag-over {
+    background: #e8eafc !important;
+  }
+  .dragging {
+    opacity: 0.5;
+  }
+  .drop-zone {
+    border: 2px dashed #4f46e5;
+    background: #f5f3ff;
+    min-height: 24px;
+    margin: 4px 0;
+    transition: background 0.2s, border 0.2s;
+  }
+  .drop-zone.active {
+    background: #e0e7ff;
+  }
+  /* --- Fin correction finale --- */
+  

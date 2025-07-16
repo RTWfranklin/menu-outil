@@ -102,6 +102,38 @@ export function editMenu(index) {
   document.getElementById('menu-selection').classList.add('hidden');
   document.getElementById('menu-editor').classList.remove('hidden');
   document.getElementById('menu-title').value = menu.title || '';
+
+  // Ajout du sélecteur de style
+  let styleSelectorWrapper = document.getElementById('style-selector-wrapper');
+  if (!styleSelectorWrapper) {
+    styleSelectorWrapper = document.createElement('div');
+    styleSelectorWrapper.id = 'style-selector-wrapper';
+    styleSelectorWrapper.style.margin = '12px 0';
+    const styleSelectorLabel = document.createElement('label');
+    styleSelectorLabel.textContent = 'Style du menu : ';
+    styleSelectorLabel.style.marginRight = '8px';
+    const styleSelector = document.createElement('select');
+    styleSelector.innerHTML = `
+      <option value="1">Style 1 (Bleu foncé)</option>
+      <option value="2">Style 2 (Noir)</option>
+    `;
+    styleSelector.value = menu.style ? String(menu.style) : '1';
+    styleSelector.onchange = function(e) {
+      menu.style = parseInt(e.target.value, 10);
+      saveMenuToFirestore(menu, window.currentUser, function() {
+        // Optionnel : feedback visuel ou reload de l’éditeur
+      });
+    };
+    styleSelectorWrapper.appendChild(styleSelectorLabel);
+    styleSelectorWrapper.appendChild(styleSelector);
+    // On insère le sélecteur juste après le champ titre
+    const menuTitleInput = document.getElementById('menu-title');
+    menuTitleInput.parentNode.insertBefore(styleSelectorWrapper, menuTitleInput.nextSibling);
+  } else {
+    // Met à jour la valeur si on édite un autre menu
+    const styleSelector = styleSelectorWrapper.querySelector('select');
+    if (styleSelector) styleSelector.value = menu.style ? String(menu.style) : '1';
+  }
   renderImagePreview('banner', menu.banner || '');
   renderImagePreview('logo', menu.logo || '');
   const categoriesContainer = document.getElementById('categories');
@@ -834,7 +866,7 @@ export function setupUI() {
   if (addMenuBtn) { console.log('[UI] Bouton add-menu trouvé, wiring...');
     addMenuBtn.onclick = function() {
       // Crée un nouveau menu vierge
-      const newMenu = { title: '', banner: '', logo: '', categories: [] };
+      const newMenu = { title: '', banner: '', logo: '', categories: [], style: 1 };
       menus.push(newMenu);
       saveMenuToFirestore(newMenu, window.currentUser, function() {
         loadMenus(window.currentUser, function() {
@@ -958,6 +990,7 @@ if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
             banner: banner || '',
             logo: logo || '',
             categories: Array.isArray(categories) ? categories : [],
+            style: menu.style || 1, // ← Ajout ici
             public: true,
             owner: window.currentUser.uid,
             publishedAt: new Date().toISOString()

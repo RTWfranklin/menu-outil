@@ -6,7 +6,6 @@
   <title>Menu publié</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/menu-style-premium.css">
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script>
@@ -277,26 +276,41 @@ function showDishPopup(item) {
   };
 }
 
-window.onload = function() {
-  console.log('[DEBUG][PUBLIC] Début récupération menu Firestore');
-  const id = getMenuId();
-  const titleEl = document.getElementById('menu-title');
-  if(!id) {
-    if (titleEl) titleEl.textContent = 'Aucun menu trouvé.';
-    return;
-  }
-  db.collection('public_menus').doc(id).get().then(function(doc) {
-    if(doc.exists) {
-      console.log('[DEBUG][PUBLIC] Catégories du menu chargé :', doc.data().categories);
-      renderMenu(doc.data());
-    } else {
+function loadMenuAndApplyStyle(menuId) {
+  db.collection('public_menus').doc(menuId).get().then(function(doc) {
+    if (!doc.exists) {
+      const titleEl = document.getElementById('menu-title');
       if (titleEl) titleEl.textContent = 'Menu introuvable.';
+      console.error('[DEBUG][PUBLIC] Menu introuvable dans Firestore.');
+      return;
     }
+    const menu = doc.data();
+    // Appliquer le bon style
+    let styleHref = '/menu-style-premium.css'; // par défaut
+    if (menu.style === 2) styleHref = '/menu-style-black.css';
+    // Supprimer tout ancien <link rel="stylesheet" ...> de style menu
+    document.querySelectorAll('link[rel=stylesheet]').forEach(link => {
+      if (link.href.includes('menu-style')) link.remove();
+    });
+    // Ajouter le bon <link>
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = styleHref;
+    document.head.appendChild(link);
+
+    renderMenu(menu);
   }).catch(function(err) {
     console.error('[DEBUG][PUBLIC] Erreur Firestore :', err);
+    const titleEl = document.getElementById('menu-title');
     if (titleEl) titleEl.textContent = 'Erreur de chargement : ' + err.message;
   });
 }
+
+// Appel initial
+window.addEventListener('DOMContentLoaded', function() {
+  const menuId = getMenuId();
+  if (menuId) loadMenuAndApplyStyle(menuId);
+});
 
   </script>
 
