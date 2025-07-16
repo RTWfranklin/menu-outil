@@ -318,7 +318,7 @@ catDiv.ondrop = function(e) {
       nameInput.onblur = function(e) {
         item.name = e.target.value;
         if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+          debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
             // Auto-save OK
           });
         }
@@ -332,7 +332,7 @@ catDiv.ondrop = function(e) {
       priceInput.onblur = function(e) {
         item.price = e.target.value;
         if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+          debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
             // Auto-save OK
           });
         }
@@ -346,7 +346,7 @@ catDiv.ondrop = function(e) {
       descInput.onblur = function(e) {
         item.desc = e.target.value;
         if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+          debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
             // Auto-save OK
           });
         }
@@ -375,7 +375,7 @@ catDiv.ondrop = function(e) {
             item.badges = item.badges.filter(b => b !== badge.value);
           }
           if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+            debouncedSaveMenu(menus[currentMenuId], window.currentUser, function() {
               // Auto-save OK
             });
           }
@@ -424,6 +424,47 @@ catDiv.ondrop = function(e) {
       imgPreview2.style.display = item.imgUrl ? '' : 'none';
       if (item.imgUrl) imgPreview2.src = item.imgUrl;
       itemDiv.appendChild(imgPreview2);
+      // Ajout suppression image sur hover
+      imgPreview2.style.transition = 'filter 0.2s';
+      const deleteImgBtn = document.createElement('span');
+      deleteImgBtn.textContent = '✖';
+      deleteImgBtn.title = 'Supprimer l\'image';
+      deleteImgBtn.style.position = 'absolute';
+      deleteImgBtn.style.top = '2px';
+      deleteImgBtn.style.right = '2px';
+      deleteImgBtn.style.background = 'rgba(0,0,0,0.6)';
+      deleteImgBtn.style.color = 'white';
+      deleteImgBtn.style.borderRadius = '50%';
+      deleteImgBtn.style.padding = '2px 6px';
+      deleteImgBtn.style.cursor = 'pointer';
+      deleteImgBtn.style.fontSize = '14px';
+      deleteImgBtn.style.display = 'none';
+      deleteImgBtn.style.zIndex = '2';
+      // Conteneur relatif pour positionner la croix
+      const imgWrapper = document.createElement('div');
+      imgWrapper.style.position = 'relative';
+      imgWrapper.style.display = 'inline-block';
+      imgWrapper.appendChild(imgPreview2);
+      imgWrapper.appendChild(deleteImgBtn);
+      itemDiv.appendChild(imgWrapper);
+      // Hover : griser + afficher croix
+      imgWrapper.onmouseenter = function() {
+        if (item.imgUrl) {
+          imgPreview2.style.filter = 'grayscale(60%) brightness(0.7)';
+          deleteImgBtn.style.display = '';
+        }
+      };
+      imgWrapper.onmouseleave = function() {
+        imgPreview2.style.filter = '';
+        deleteImgBtn.style.display = 'none';
+      };
+      deleteImgBtn.onclick = function(e) {
+        e.stopPropagation();
+        item.imgUrl = '';
+        imgPreview2.style.display = 'none';
+        deleteImgBtn.style.display = 'none';
+        debouncedSaveMenu(menus[currentMenuId], window.currentUser);
+      };
       itemsDiv.appendChild(itemDiv);
     });
     console.log('[DEBUG] Création bouton Ajouter un item pour la catégorie', cat.name);
@@ -763,6 +804,47 @@ subItemsDiv.ondrop = function(e) {
           imgPreview.style.display = item.imgUrl ? '' : 'none';
           if (item.imgUrl) imgPreview.src = item.imgUrl;
           itemDiv.appendChild(imgPreview);
+          // Ajout suppression image sur hover
+          imgPreview.style.transition = 'filter 0.2s';
+          const deleteImgBtn = document.createElement('span');
+          deleteImgBtn.textContent = '✖';
+          deleteImgBtn.title = 'Supprimer l\'image';
+          deleteImgBtn.style.position = 'absolute';
+          deleteImgBtn.style.top = '2px';
+          deleteImgBtn.style.right = '2px';
+          deleteImgBtn.style.background = 'rgba(0,0,0,0.6)';
+          deleteImgBtn.style.color = 'white';
+          deleteImgBtn.style.borderRadius = '50%';
+          deleteImgBtn.style.padding = '2px 6px';
+          deleteImgBtn.style.cursor = 'pointer';
+          deleteImgBtn.style.fontSize = '14px';
+          deleteImgBtn.style.display = 'none';
+          deleteImgBtn.style.zIndex = '2';
+          // Conteneur relatif pour positionner la croix
+          const imgWrapper = document.createElement('div');
+          imgWrapper.style.position = 'relative';
+          imgWrapper.style.display = 'inline-block';
+          imgWrapper.appendChild(imgPreview);
+          imgWrapper.appendChild(deleteImgBtn);
+          itemDiv.appendChild(imgWrapper);
+          // Hover : griser + afficher croix
+          imgWrapper.onmouseenter = function() {
+            if (item.imgUrl) {
+              imgPreview.style.filter = 'grayscale(60%) brightness(0.7)';
+              deleteImgBtn.style.display = '';
+            }
+          };
+          imgWrapper.onmouseleave = function() {
+            imgPreview.style.filter = '';
+            deleteImgBtn.style.display = 'none';
+          };
+          deleteImgBtn.onclick = function(e) {
+            e.stopPropagation();
+            item.imgUrl = '';
+            imgPreview.style.display = 'none';
+            deleteImgBtn.style.display = 'none';
+            debouncedSaveMenu(menus[currentMenuId], window.currentUser);
+          };
           subItemsDiv.appendChild(itemDiv);
         });
         // Drop zone finale pour drop à la fin de la liste d'items
