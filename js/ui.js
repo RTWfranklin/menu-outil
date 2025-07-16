@@ -479,6 +479,45 @@ catDiv.ondrop = function(e) {
     };
     console.log('[DEBUG] Ajout du bouton Ajouter un item au DOM pour la catégorie', cat.name);
     itemsDiv.appendChild(addItemBtn);
+    // Drop zone FINALE à la fin de la catégorie (pour drag & drop à la toute fin)
+    if (!hasSubcategories) {
+      const dropZoneEnd = document.createElement('div');
+      dropZoneEnd.className = 'drop-zone';
+      dropZoneEnd.ondragover = function(e) { e.preventDefault(); dropZoneEnd.classList.add('active'); };
+      dropZoneEnd.ondragleave = function() { dropZoneEnd.classList.remove('active'); };
+      dropZoneEnd.ondrop = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZoneEnd.classList.remove('active');
+        const raw = e.dataTransfer.getData('text/plain');
+        let data;
+        try { data = JSON.parse(raw); } catch (err) { return; }
+        const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+        const fromCat = menu.categories[fromCatIndex];
+        let fromSubcatIndex = -1;
+        if (fromCat && data.fromSubcatId) {
+          fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+        }
+        let movedItem = null;
+        if (
+          fromCat &&
+          Array.isArray(fromCat.subcategories) &&
+          fromSubcatIndex !== -1 &&
+          fromCat.subcategories[fromSubcatIndex] &&
+          Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+        ) {
+          movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+        } else if (fromCat && Array.isArray(fromCat.items)) {
+          movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+        }
+        if (movedItem) {
+          if (!cat.items) cat.items = [];
+          cat.items.push(movedItem);
+          saveMenuToFirestore(menu, window.currentUser, function() { editMenu(index); });
+        }
+      };
+      itemsDiv.appendChild(dropZoneEnd);
+    }
     // --- Fin du bloc déplacé ---
 
     // Affichage des sous-catégories si présentes
