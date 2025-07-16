@@ -142,6 +142,28 @@ export function editMenu(index) {
     // Création du conteneur de catégorie
     const catDiv = document.createElement('div');
     catDiv.className = 'category';
+    // Ajout du handle ☰ pour drag & drop de la catégorie
+const catDragHandle = document.createElement('span');
+catDragHandle.textContent = '☰';
+catDragHandle.className = 'drag-handle cat-drag-handle';
+catDragHandle.style.cursor = 'grab';
+catDragHandle.style.marginRight = '8px';
+catDragHandle.draggable = !hasSubcategories;
+if (!hasSubcategories) {
+  catDragHandle.ondragstart = function(e) {
+    console.log('DRAGSTART catégorie', catIndex);
+    e.dataTransfer.setData('text/plain', catIndex);
+    catDragHandle.classList.add('dragging');
+  };
+  catDragHandle.ondragend = function() {
+    catDragHandle.classList.remove('dragging');
+  };
+}
+catDiv.appendChild(catDragHandle);
+
+// Désactive le drag sur tout le conteneur de catégorie
+catDiv.draggable = false;
+catDiv.ondragstart = null;
     // --- Drag & Drop pour réordonner les catégories ---
 // Désactiver le drag de catégorie si elle contient des sous-catégories
 const hasSubcategories = Array.isArray(cat.subcategories) && cat.subcategories.length > 0;
