@@ -1072,16 +1072,24 @@ if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
         saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
           const menu = menus[currentMenuId];
           const db = firebase.firestore();
-          const { title, banner, logo, categories } = menu;
           const publicMenu = {
-            title: title || '',
-            banner: banner || '',
-            logo: logo || '',
-            categories: Array.isArray(categories) ? categories : [],
-            style: menu.style || 1, // ← Ajout ici
+            title: menu.title || '',
+            banner: menu.banner || '',
+            logo: menu.logo || '',
+            style: menu.style || 1,
             public: true,
             owner: window.currentUser.uid,
-            publishedAt: new Date().toISOString()
+            publishedAt: new Date().toISOString(),
+            categories: (menu.categories || []).map(cat => ({
+              ...cat,
+              items: Array.isArray(cat.items) ? cat.items : [],
+              subcategories: Array.isArray(cat.subcategories)
+                ? cat.subcategories.map(subcat => ({
+                    ...subcat,
+                    items: Array.isArray(subcat.items) ? subcat.items : []
+                  }))
+                : []
+            }))
           };
           db.collection('public_menus').doc(menu.firestoreId || '').set(publicMenu).then(function() {
             alert('Menu publié en ligne !');
