@@ -321,7 +321,12 @@ catDiv.ondrop = function(e) {
           }
           if (movedItem) {
             if (!cat.items) cat.items = [];
-            cat.items.splice(itemIndex, 0, movedItem);
+            // Si on déplace vers une position après soi-même, il faut ajuster l'index
+            let targetIndex = itemIndex;
+            if (fromCat === cat && data.fromSubcatId === null && data.fromItem < itemIndex) {
+              targetIndex--;
+            }
+            cat.items.splice(targetIndex, 0, movedItem);
             saveMenuToFirestore(menu, window.currentUser, function() {
               editMenu(index);
             });
