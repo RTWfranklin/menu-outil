@@ -642,6 +642,7 @@ subItemsDiv.ondrop = function(e) {
       // Affichage des items de la catégorie (toujours, même s'il y a des sous-catégories)
       const itemsDiv = document.createElement('div');
       itemsDiv.className = 'items';
+      console.log('[DEBUG] Début affichage items de la catégorie', cat.name, cat.items);
       // --- Zone de drop sur le conteneur d'items (catégorie) ---
       itemsDiv.ondragover = function(e) {
         e.preventDefault();
@@ -831,7 +832,7 @@ subItemsDiv.ondrop = function(e) {
         itemDiv.appendChild(imgPreview2);
         itemsDiv.appendChild(itemDiv);
       });
-      // Bouton ajout item dans catégorie
+      console.log('[DEBUG] Création bouton Ajouter un item pour la catégorie', cat.name);
       const addItemBtn = document.createElement('button');
       addItemBtn.textContent = 'Ajouter un item';
       addItemBtn.onclick = function() {
@@ -841,6 +842,7 @@ subItemsDiv.ondrop = function(e) {
           editMenu(index);
         });
       };
+      console.log('[DEBUG] Ajout du bouton Ajouter un item au DOM pour la catégorie', cat.name);
       itemsDiv.appendChild(addItemBtn);
       catDiv.appendChild(itemsDiv);
     }
