@@ -1071,7 +1071,7 @@ if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
         publishOnlineBtn.disabled = true;
         saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
           const menu = menus[currentMenuId];
-          const db = firebase.firestore();
+          console.log('[DEBUG][PUBLICATION] menu avant publication:', JSON.parse(JSON.stringify(menu)));
           const publicMenu = {
             title: menu.title || '',
             banner: menu.banner || '',
@@ -1091,7 +1091,10 @@ if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
                 : []
             }))
           };
+          console.log('[DEBUG][PUBLICATION] publicMenu envoyé à Firestore:', JSON.parse(JSON.stringify(publicMenu)));
+          const db = firebase.firestore();
           db.collection('public_menus').doc(menu.firestoreId || '').set(publicMenu).then(function() {
+            console.log('[DEBUG][PUBLICATION] Menu publié avec succès !');
             alert('Menu publié en ligne !');
             isPublishing = false;
             publishOnlineBtn.disabled = false;
@@ -1102,6 +1105,7 @@ if (typeof menu !== 'undefined' && Array.isArray(menu.categories)) {
               viewPublishedBtn.classList.remove('inactive');
             }
           }).catch(function(err) {
+            console.error('[DEBUG][PUBLICATION] Erreur lors de la publication :', err);
             alert('Erreur lors de la publication : ' + err.message);
             isPublishing = false;
             publishOnlineBtn.disabled = false;
