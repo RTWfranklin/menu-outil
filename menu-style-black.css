@@ -284,14 +284,11 @@ html, body {
   }
   .category-nav-btn.active, .category-nav-btn:focus {
     background: #111;
-    color: #fff;
+    color: #fff !important;
     opacity: 1;
   }
   .category-nav-btn:hover:not(.active) {
     background: #f5f6fa;
-    color: #111;
-  }
-  .category-nav-btn.active, .category-nav-btn:focus {
     color: #111;
   }
   .category-nav-btn.active::after, .category-nav-btn:focus::after {
