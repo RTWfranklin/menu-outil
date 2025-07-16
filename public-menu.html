@@ -187,7 +187,7 @@
             item.badges.forEach(function(badge) {
               const badgeSpan = document.createElement('span');
               if (badge === 'Origine France') {
-                badgeSpan.innerHTML = 'Origine France<sup style="font-size:0.7em;vertical-align:super;">fr</sup> 🇫🇷';
+                badgeSpan.textContent = 'Origine France 🇫🇷';
               } else {
                 badgeSpan.textContent = badge;
               }
@@ -250,7 +250,7 @@
           item.badges.forEach(function(badge) {
             const badgeSpan = document.createElement('span');
             if (badge === 'Origine France') {
-              badgeSpan.innerHTML = 'Origine France<sup style="font-size:0.7em;vertical-align:super;">fr</sup> 🇫🇷';
+              badgeSpan.textContent = 'Origine France 🇫🇷';
             } else {
               badgeSpan.textContent = badge;
             }
