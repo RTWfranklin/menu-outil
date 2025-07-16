@@ -129,12 +129,18 @@
   const main = document.getElementById('categories-list');
   main.innerHTML = '';
   categories.forEach((cat, idx) => {
+    // Section de la catégorie
     const section = document.createElement('section');
     section.className = 'category-section';
     section.id = 'cat-section-' + idx;
+    // Redéclare catNameDisplay ici pour le titre de section
+    let catNameDisplaySection = cat.name || `Catégorie ${idx+1}`;
+    if (Array.isArray(cat.badges) && cat.badges.includes('Origine France')) {
+      catNameDisplaySection += ' 🇫🇷';
+    }
     const title = document.createElement('h2');
     title.className = 'category-section-title';
-    title.textContent = catNameDisplay;
+    title.textContent = catNameDisplaySection;
     section.appendChild(title);
     // Affichage des sous-catégories si présentes
     if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
