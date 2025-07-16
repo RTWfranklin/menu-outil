@@ -393,6 +393,8 @@ catDiv.draggable = !hasSubcategories;
       // Badges (reprendre la logique existante)
       const BADGES = [
         {label: 'Vegan', value: 'Vegan'},
+        {label: 'Végétarien', value: 'Végétarien'},
+        {label: 'Origine France 🇫🇷', value: 'Origine France'},
         {label: 'Nouveau', value: 'Nouveau'},
         {label: 'Populaire', value: 'Populaire'},
         {label: 'Spécialité', value: 'Spécialité'}
@@ -816,6 +818,8 @@ subItemsDiv.ondrop = function(e) {
           // Badges (reprendre la logique existante)
           const BADGES = [
             {label: 'Vegan', value: 'Vegan'},
+            {label: 'Végétarien', value: 'Végétarien'},
+            {label: 'Origine France 🇫🇷', value: 'Origine France'},
             {label: 'Nouveau', value: 'Nouveau'},
             {label: 'Populaire', value: 'Populaire'},
             {label: 'Spécialité', value: 'Spécialité'}
