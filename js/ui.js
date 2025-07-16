@@ -224,7 +224,6 @@ catDiv.ondrop = function(e) {
         name: '', 
         items: [] 
       };
-      
       // Génération d'un id unique pour la sous-catégorie
       newSubcat.id = 'subcat_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       cat.subcategories.push(newSubcat);
@@ -233,6 +232,214 @@ catDiv.ondrop = function(e) {
       });
     };
     catDiv.appendChild(addSubCatBtn);
+
+    // --- Début du bloc déplacé (création/remplissage de itemsDiv) ---
+    const itemsDiv = document.createElement('div');
+    itemsDiv.className = 'items';
+    console.log('[DEBUG] Début affichage items de la catégorie', cat.name, cat.items);
+    // --- Zone de drop sur le conteneur d'items (catégorie) ---
+    itemsDiv.ondragover = function(e) {
+      e.preventDefault();
+      itemsDiv.classList.add('drag-over');
+    };
+    itemsDiv.ondragleave = function() {
+      itemsDiv.classList.remove('drag-over');
+    };
+    itemsDiv.ondrop = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      itemsDiv.classList.remove('drag-over');
+      const raw = e.dataTransfer.getData('text/plain');
+      console.log('DROPZONE catégorie reçoit', raw);
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (err) {
+        console.error('Impossible de parser le dataTransfer (catégorie)', raw);
+        return;
+      }
+      const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+      const fromCat = menu.categories[fromCatIndex];
+      let fromSubcatIndex = -1;
+      if (fromCat && data.fromSubcatId) {
+        fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+      }
+      let movedItem = null;
+      if (
+        fromCat &&
+        Array.isArray(fromCat.subcategories) &&
+        fromSubcatIndex !== -1 &&
+        fromCat.subcategories[fromSubcatIndex] &&
+        Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+      ) {
+        movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+      } else if (fromCat && Array.isArray(fromCat.items)) {
+        movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+      }
+      if (movedItem) {
+        if (!cat.items) cat.items = [];
+        cat.items.push(movedItem);
+        saveMenuToFirestore(menu, window.currentUser, function() {
+          editMenu(index);
+        });
+      } else {
+        console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
+      }
+    };
+    // --- Boucle des items dans la catégorie ---
+    (cat.items || []).forEach(function(item, itemIndex) {
+      const thisCat = cat;
+      console.log('Boucle items (catégorie)', {cat: thisCat, itemIndex});
+      const itemDiv = document.createElement('div');
+      // --- Drag handle uniquement sur la poignée ---
+      const itemDragHandle = document.createElement('span');
+      itemDragHandle.textContent = '☰';
+      itemDragHandle.className = 'drag-handle';
+      itemDragHandle.draggable = true;
+      itemDragHandle.ondragstart = function(e) {
+        const payload = JSON.stringify({
+          fromCatId: thisCat.id,
+          fromSubcatId: null,
+          fromItem: itemIndex
+        });
+        console.log('DRAGSTART item (catégorie)', payload);
+        e.dataTransfer.setData('text/plain', payload);
+        itemDragHandle.classList.add('dragging');
+      };
+      itemDragHandle.ondragend = function() {
+        itemDragHandle.classList.remove('dragging');
+      };
+      itemDiv.insertBefore(itemDragHandle, itemDiv.firstChild);
+      // Nom
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.placeholder = 'Nom';
+      nameInput.value = item.name || '';
+      nameInput.onblur = function(e) {
+        item.name = e.target.value;
+        if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+            // Auto-save OK
+          });
+        }
+      };
+      itemDiv.appendChild(nameInput);
+      // Prix
+      const priceInput = document.createElement('input');
+      priceInput.type = 'text';
+      priceInput.placeholder = 'Prix';
+      priceInput.value = item.price || '';
+      priceInput.onblur = function(e) {
+        item.price = e.target.value;
+        if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+            // Auto-save OK
+          });
+        }
+      };
+      itemDiv.appendChild(priceInput);
+      // Description
+      const descInput = document.createElement('input');
+      descInput.type = 'text';
+      descInput.placeholder = 'Description';
+      descInput.value = item.desc || '';
+      descInput.onblur = function(e) {
+        item.desc = e.target.value;
+        if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+            // Auto-save OK
+          });
+        }
+      };
+      itemDiv.appendChild(descInput);
+      // Badges (reprendre la logique existante)
+      const BADGES = [
+        {label: 'Vegan', value: 'Vegan'},
+        {label: 'Nouveau', value: 'Nouveau'},
+        {label: 'Populaire', value: 'Populaire'},
+        {label: 'Spécialité', value: 'Spécialité'}
+      ];
+      const badgesWrapper = document.createElement('div');
+      badgesWrapper.className = 'badges-editor';
+      BADGES.forEach(function(badge) {
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = badge.value;
+        checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
+        checkbox.onchange = function(e) {
+          if (!item.badges) item.badges = [];
+          if (e.target.checked) {
+            if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
+          } else {
+            item.badges = item.badges.filter(b => b !== badge.value);
+          }
+          if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
+            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+              // Auto-save OK
+            });
+          }
+        };
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(badge.label));
+        badgesWrapper.appendChild(label);
+      });
+      itemDiv.appendChild(badgesWrapper);
+      // Bouton suppression item (fallback)
+      const delItemBtn = document.createElement('button');
+      delItemBtn.textContent = '🗑️';
+      delItemBtn.title = 'Supprimer cet item';
+      delItemBtn.onclick = function() {
+        if (confirm('Supprimer cet item ?')) {
+          cat.items.splice(itemIndex, 1);
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+            editMenu(index);
+          });
+        }
+      };
+      itemDiv.appendChild(delItemBtn);
+      // Ajout input file pour image
+      const imgInput2 = document.createElement('input');
+      imgInput2.type = 'file';
+      imgInput2.accept = 'image/*';
+      imgInput2.onchange = function(e) {
+        const file = imgInput2.files[0];
+        if (!file) return;
+        uploadImageToCloudinary(file, function(url) {
+          item.imgUrl = url;
+          const imgPreview2 = document.createElement('img');
+          imgPreview2.style.maxHeight = '40px';
+          imgPreview2.style.display = item.imgUrl ? '' : 'none';
+          if (item.imgUrl) imgPreview2.src = item.imgUrl;
+          itemDiv.appendChild(imgPreview2);
+          saveMenuToFirestore(menus[currentMenuId], window.currentUser);
+        }, function(errorMsg) {
+          alert('Erreur upload image plat: ' + errorMsg);
+        });
+      };
+      itemDiv.appendChild(imgInput2);
+      // Preview image
+      const imgPreview2 = document.createElement('img');
+      imgPreview2.style.maxHeight = '40px';
+      imgPreview2.style.display = item.imgUrl ? '' : 'none';
+      if (item.imgUrl) imgPreview2.src = item.imgUrl;
+      itemDiv.appendChild(imgPreview2);
+      itemsDiv.appendChild(itemDiv);
+    });
+    console.log('[DEBUG] Création bouton Ajouter un item pour la catégorie', cat.name);
+    const addItemBtn = document.createElement('button');
+    addItemBtn.textContent = 'Ajouter un item';
+    addItemBtn.onclick = function() {
+      if (!cat.items) cat.items = [];
+      cat.items.push({ name: '', price: '', desc: '', badges: [], imgUrl: '' });
+      saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
+        editMenu(index);
+      });
+    };
+    console.log('[DEBUG] Ajout du bouton Ajouter un item au DOM pour la catégorie', cat.name);
+    itemsDiv.appendChild(addItemBtn);
+    // --- Fin du bloc déplacé ---
+
     // Affichage des sous-catégories si présentes
     if (Array.isArray(cat.subcategories) && cat.subcategories.length > 0) {
       cat.subcategories.forEach(function(subcat, subcatIndex) {
@@ -640,214 +847,9 @@ console.log('[DEBUG] Après ajout sous-catégorie', subcat.name, 'bouton Ajouter
         }
       };
       catDiv.appendChild(dropZoneEnd);
-      catDiv.appendChild(itemsDiv);
-    } else {
-      // Affichage des items de la catégorie (toujours, même s'il y a des sous-catégories)
-      const itemsDiv = document.createElement('div');
-      itemsDiv.className = 'items';
-      console.log('[DEBUG] Début affichage items de la catégorie', cat.name, cat.items);
-      // --- Zone de drop sur le conteneur d'items (catégorie) ---
-      itemsDiv.ondragover = function(e) {
-        e.preventDefault();
-        itemsDiv.classList.add('drag-over');
-      };
-      itemsDiv.ondragleave = function() {
-        itemsDiv.classList.remove('drag-over');
-      };
-      itemsDiv.ondrop = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        itemsDiv.classList.remove('drag-over');
-        const raw = e.dataTransfer.getData('text/plain');
-        console.log('DROPZONE catégorie reçoit', raw);
-        let data;
-        try {
-          data = JSON.parse(raw);
-        } catch (err) {
-          console.error('Impossible de parser le dataTransfer (catégorie)', raw);
-          return;
-        }
-        const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
-        const fromCat = menu.categories[fromCatIndex];
-        let fromSubcatIndex = -1;
-        if (fromCat && data.fromSubcatId) {
-          fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
-        }
-        let movedItem = null;
-        if (
-          fromCat &&
-          Array.isArray(fromCat.subcategories) &&
-          fromSubcatIndex !== -1 &&
-          fromCat.subcategories[fromSubcatIndex] &&
-          Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
-        ) {
-          movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
-        } else if (fromCat && Array.isArray(fromCat.items)) {
-          movedItem = fromCat.items.splice(data.fromItem, 1)[0];
-        }
-        if (movedItem) {
-          if (!cat.items) cat.items = [];
-          cat.items.push(movedItem);
-          saveMenuToFirestore(menu, window.currentUser, function() {
-            editMenu(index);
-          });
-        } else {
-          console.error('Drag & drop item: impossible de trouver l\'item à déplacer', data, menu);
-        }
-      };
-      // --- Boucle des items dans la catégorie ---
-      (cat.items || []).forEach(function(item, itemIndex) {
-        const thisCat = cat;
-        console.log('Boucle items (catégorie)', {cat: thisCat, itemIndex});
-        const itemDiv = document.createElement('div');
-        // --- Drag handle uniquement sur la poignée ---
-        const itemDragHandle = document.createElement('span');
-        itemDragHandle.textContent = '☰';
-        itemDragHandle.className = 'drag-handle';
-        itemDragHandle.draggable = true;
-        itemDragHandle.ondragstart = function(e) {
-          const payload = JSON.stringify({
-            fromCatId: thisCat.id,
-            fromSubcatId: null,
-            fromItem: itemIndex
-          });
-          console.log('DRAGSTART item (catégorie)', payload);
-          e.dataTransfer.setData('text/plain', payload);
-          itemDragHandle.classList.add('dragging');
-        };
-        itemDragHandle.ondragend = function() {
-          itemDragHandle.classList.remove('dragging');
-        };
-        itemDiv.insertBefore(itemDragHandle, itemDiv.firstChild);
-        // Nom
-        const nameInput = document.createElement('input');
-        nameInput.type = 'text';
-        nameInput.placeholder = 'Nom';
-        nameInput.value = item.name || '';
-        nameInput.onblur = function(e) {
-          item.name = e.target.value;
-          if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-              // Auto-save OK
-            });
-          }
-        };
-        itemDiv.appendChild(nameInput);
-        // Prix
-        const priceInput = document.createElement('input');
-        priceInput.type = 'text';
-        priceInput.placeholder = 'Prix';
-        priceInput.value = item.price || '';
-        priceInput.onblur = function(e) {
-          item.price = e.target.value;
-          if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-              // Auto-save OK
-            });
-          }
-        };
-        itemDiv.appendChild(priceInput);
-        // Description
-        const descInput = document.createElement('input');
-        descInput.type = 'text';
-        descInput.placeholder = 'Description';
-        descInput.value = item.desc || '';
-        descInput.onblur = function(e) {
-          item.desc = e.target.value;
-          if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-              // Auto-save OK
-            });
-          }
-        };
-        itemDiv.appendChild(descInput);
-        // Badges (reprendre la logique existante)
-        const BADGES = [
-          {label: 'Vegan', value: 'Vegan'},
-          {label: 'Nouveau', value: 'Nouveau'},
-          {label: 'Populaire', value: 'Populaire'},
-          {label: 'Spécialité', value: 'Spécialité'}
-        ];
-        const badgesWrapper = document.createElement('div');
-        badgesWrapper.className = 'badges-editor';
-        BADGES.forEach(function(badge) {
-          const label = document.createElement('label');
-          const checkbox = document.createElement('input');
-          checkbox.type = 'checkbox';
-          checkbox.value = badge.value;
-          checkbox.checked = Array.isArray(item.badges) && item.badges.includes(badge.value);
-          checkbox.onchange = function(e) {
-            if (!item.badges) item.badges = [];
-            if (e.target.checked) {
-              if (!item.badges.includes(badge.value)) item.badges.push(badge.value);
-            } else {
-              item.badges = item.badges.filter(b => b !== badge.value);
-            }
-            if (currentMenuId !== null && menus[currentMenuId] && window.currentUser) {
-              saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-                // Auto-save OK
-              });
-            }
-          };
-          label.appendChild(checkbox);
-          label.appendChild(document.createTextNode(badge.label));
-          badgesWrapper.appendChild(label);
-        });
-        itemDiv.appendChild(badgesWrapper);
-        // Bouton suppression item (fallback)
-        const delItemBtn = document.createElement('button');
-        delItemBtn.textContent = '🗑️';
-        delItemBtn.title = 'Supprimer cet item';
-        delItemBtn.onclick = function() {
-          if (confirm('Supprimer cet item ?')) {
-            cat.items.splice(itemIndex, 1);
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-              editMenu(index);
-            });
-          }
-        };
-        itemDiv.appendChild(delItemBtn);
-        // Ajout input file pour image
-        const imgInput2 = document.createElement('input');
-        imgInput2.type = 'file';
-        imgInput2.accept = 'image/*';
-        imgInput2.onchange = function(e) {
-          const file = imgInput2.files[0];
-          if (!file) return;
-          uploadImageToCloudinary(file, function(url) {
-            item.imgUrl = url;
-            const imgPreview2 = document.createElement('img');
-            imgPreview2.style.maxHeight = '40px';
-            imgPreview2.style.display = item.imgUrl ? '' : 'none';
-            if (item.imgUrl) imgPreview2.src = item.imgUrl;
-            itemDiv.appendChild(imgPreview2);
-            saveMenuToFirestore(menus[currentMenuId], window.currentUser);
-          }, function(errorMsg) {
-            alert('Erreur upload image plat: ' + errorMsg);
-          });
-        };
-        itemDiv.appendChild(imgInput2);
-        // Preview image
-        const imgPreview2 = document.createElement('img');
-        imgPreview2.style.maxHeight = '40px';
-        imgPreview2.style.display = item.imgUrl ? '' : 'none';
-        if (item.imgUrl) imgPreview2.src = item.imgUrl;
-        itemDiv.appendChild(imgPreview2);
-        itemsDiv.appendChild(itemDiv);
-      });
-      console.log('[DEBUG] Création bouton Ajouter un item pour la catégorie', cat.name);
-      const addItemBtn = document.createElement('button');
-      addItemBtn.textContent = 'Ajouter un item';
-      addItemBtn.onclick = function() {
-        if (!cat.items) cat.items = [];
-        cat.items.push({ name: '', price: '', desc: '', badges: [], imgUrl: '' });
-        saveMenuToFirestore(menus[currentMenuId], window.currentUser, function() {
-          editMenu(index);
-        });
-      };
-      console.log('[DEBUG] Ajout du bouton Ajouter un item au DOM pour la catégorie', cat.name);
-      itemsDiv.appendChild(addItemBtn);
     }
+    // Toujours à la fin, ajouter itemsDiv
+    catDiv.appendChild(itemsDiv);
     categoriesContainer.appendChild(catDiv);
   });
 }
