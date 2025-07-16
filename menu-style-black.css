@@ -281,15 +281,18 @@ html, body {
     border: none;
     box-shadow: 0 2px 8px #1b295211;
     transition: box-shadow 0.18s, background 0.18s, color 0.18s, opacity 0.18s;
+    color: #fff !important;
   }
   .category-nav-btn.active, .category-nav-btn:focus {
     background: #111;
     color: #fff;
     opacity: 1;
+    color: #fff !important;
   }
   .category-nav-btn:hover:not(.active) {
     background: #f5f6fa;
     color: #111;
+    color: #fff !important;
   }
   .category-nav-btn.active, .category-nav-btn:focus {
     color: #111;
