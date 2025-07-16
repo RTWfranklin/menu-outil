@@ -288,6 +288,47 @@ catDiv.ondrop = function(e) {
     };
     // --- Boucle des items dans la catégorie ---
     (cat.items || []).forEach(function(item, itemIndex) {
+      // Drop zone AVANT chaque item (pour drag & drop entre plats)
+      if (!hasSubcategories) {
+        const dropZone = document.createElement('div');
+        dropZone.className = 'drop-zone';
+        dropZone.ondragover = function(e) { e.preventDefault(); dropZone.classList.add('active'); };
+        dropZone.ondragleave = function() { dropZone.classList.remove('active'); };
+        dropZone.ondrop = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          dropZone.classList.remove('active');
+          const raw = e.dataTransfer.getData('text/plain');
+          let data;
+          try { data = JSON.parse(raw); } catch (err) { return; }
+          const fromCatIndex = menu.categories.findIndex(c => c.id === data.fromCatId);
+          const fromCat = menu.categories[fromCatIndex];
+          let fromSubcatIndex = -1;
+          if (fromCat && data.fromSubcatId) {
+            fromSubcatIndex = fromCat.subcategories && fromCat.subcategories.findIndex(sc => sc.id === data.fromSubcatId);
+          }
+          let movedItem = null;
+          if (
+            fromCat &&
+            Array.isArray(fromCat.subcategories) &&
+            fromSubcatIndex !== -1 &&
+            fromCat.subcategories[fromSubcatIndex] &&
+            Array.isArray(fromCat.subcategories[fromSubcatIndex].items)
+          ) {
+            movedItem = fromCat.subcategories[fromSubcatIndex].items.splice(data.fromItem, 1)[0];
+          } else if (fromCat && Array.isArray(fromCat.items)) {
+            movedItem = fromCat.items.splice(data.fromItem, 1)[0];
+          }
+          if (movedItem) {
+            if (!cat.items) cat.items = [];
+            cat.items.splice(itemIndex, 0, movedItem);
+            saveMenuToFirestore(menu, window.currentUser, function() {
+              editMenu(index);
+            });
+          }
+        };
+        itemsDiv.appendChild(dropZone);
+      }
       const thisCat = cat;
       console.log('Boucle items (catégorie)', {cat: thisCat, itemIndex});
       const itemDiv = document.createElement('div');
