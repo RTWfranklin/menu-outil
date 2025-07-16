@@ -640,6 +640,7 @@ console.log('[DEBUG] Après ajout sous-catégorie', subcat.name, 'bouton Ajouter
         }
       };
       catDiv.appendChild(dropZoneEnd);
+      catDiv.appendChild(itemsDiv);
     } else {
       // Affichage des items de la catégorie (toujours, même s'il y a des sous-catégories)
       const itemsDiv = document.createElement('div');
@@ -846,7 +847,6 @@ console.log('[DEBUG] Après ajout sous-catégorie', subcat.name, 'bouton Ajouter
       };
       console.log('[DEBUG] Ajout du bouton Ajouter un item au DOM pour la catégorie', cat.name);
       itemsDiv.appendChild(addItemBtn);
-      catDiv.appendChild(itemsDiv);
     }
     categoriesContainer.appendChild(catDiv);
   });
